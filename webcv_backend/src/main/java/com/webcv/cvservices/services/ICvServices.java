@@ -1,9 +1,10 @@
-package com.webcv.authservices.services;
-
+package com.webcv.cvservices.services;
 
 import com.webcv.authservices.dto.UserDTO;
 import com.webcv.authservices.entity.User;
 
-public interface IUserServices {
+import java.util.Optional;
+
+public interface ICvServices {
     User createUser(UserDTO userDTO) throws Exception;
 }

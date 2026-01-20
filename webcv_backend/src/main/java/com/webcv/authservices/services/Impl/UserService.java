@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class UserService implements IUserServices {
 
     @Override
-    public User create(UserDTO userDTO) throws Exception {
+    public User createUser(UserDTO userDTO) throws Exception {
         return null;
     }
 }

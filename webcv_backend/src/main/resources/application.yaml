@@ -22,8 +22,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-api:
-  prefix: api
 jwt:
   expiration: 1800000 #30 minutes to millisecond = 30 * 60 * 1000
   secret: S1TZnHDnQS6ojlPYPI+bjd6CXxYhBP/eYmubZsRSANY=
