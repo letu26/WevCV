@@ -31,6 +31,12 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
+    @Column(name = "fullname", nullable = false)
+    private String fullname;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "userid", nullable = false),

@@ -9,20 +9,15 @@ export interface SignUpPayload {
   fullname: string;
 }
 
-export interface SignUpResponse {
-  id: number;
-  email: string;
-  fullname: string;
-}
 
 export async function signUp(
   payload: SignUpPayload,
-): Promise<SignUpResponse> {
-  const res = await fetcher<ApiResponse<SignUpResponse>>({
+): Promise<ApiResponse> {
+  const res = await fetcher<ApiResponse>({
     url: "/users/register",
     method: "POST",
     data: payload,
   });
 
-  return res.data;
+  return res;
 }
