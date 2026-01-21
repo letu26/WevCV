@@ -1,5 +1,5 @@
 import axios, { type AxiosRequestConfig } from "axios";
-import { API_URL } from "@/config/env";
+import { API_URL } from "@/config";
 
 //Tạo một instance axios riêng, tự reject nếu quá 10s không có phản hồi
 const apiClient = axios.create({
