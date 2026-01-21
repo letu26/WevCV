@@ -1,4 +1,4 @@
-package com.webcv.dto;
+package com.webcv.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class RegisterRequest {
 
     @NotBlank(message = "Username is required")
     private String username;

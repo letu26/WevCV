@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "user")
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,7 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "userid", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "roleid", nullable = false))
     @Builder.Default
-    private List<Role> roles = new ArrayList<>();
+    private List<RoleEntity> roles = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,10 +1,11 @@
 package com.webcv.util;
 
 import com.webcv.customexception.InvalidParamException;
-import com.webcv.entity.User;
+import com.webcv.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -17,38 +18,51 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtil {
-    @Value("${jwt.expiration}")
-    private Long expiration;
+    @Value("${jwt.expirationAccess}")
+    private Long expirationAccess;
+
+    @Value("${jwt.expirationRefresh}")
+    private Long expirationRefresh;
 
     @Value("${jwt.secret}")
     private String secretkey;
 
     //sinh token
-    public String generateToken(User user) throws InvalidParamException {
+    public String generateToken(UserEntity user, Long expirationTime) throws InvalidParamException {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
         try {
-            String token = Jwts.builder()
-                    .setClaims(claims)
-                    .setSubject(user.getUsername())
-                    .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                    .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            return Jwts.builder()
+                    .claims(claims)
+                    .subject(user.getUsername())
+                    .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                    .id(UUID.randomUUID().toString())
+                    .signWith(getSignInKey())
                     .compact();
-            return token;
         }catch (Exception e){
             throw new InvalidParamException("can not create jwt" + e.getMessage());
         }
     }
 
+    //tạo access token:
+    public String generateAccessToken(UserEntity user) throws InvalidParamException {
+        return generateToken(user, expirationAccess);
+    }
+
+    //tạo refresh token:
+    public String generateRefreshToken(UserEntity user) throws InvalidParamException {
+        return generateToken(user, expirationRefresh);
+    }
+
     //tạo khóa bí mật dùng trong tạo token và xác thực
     private Key getSignInKey() {
         byte[] bytes = Decoders.BASE64.decode(secretkey);
-        //Keys.hmacShaKeyFor(Decoders.BASE64.decode("TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI="));
         return Keys.hmacShaKeyFor(bytes);
     }
 

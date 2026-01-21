@@ -1,7 +1,8 @@
 package com.webcv.controller;
 
-import com.webcv.dto.UserDTO;
-import com.webcv.entity.User;
+import com.webcv.request.LoginRequest;
+import com.webcv.request.RegisterRequest;
+import com.webcv.entity.UserEntity;
 import com.webcv.response.BaseResponse;
 import com.webcv.services.IUserServices;
 import jakarta.validation.Valid;
@@ -25,7 +26,7 @@ public class UserController {
     private final IUserServices userServices;
 
     @PostMapping("/register")
-    public ResponseEntity <BaseResponse> createUser(@Valid @RequestBody UserDTO userDTO, BindingResult result){
+    public ResponseEntity <?> createUser(@Valid @RequestBody RegisterRequest userRequest, BindingResult result){
         try{
             if(result.hasErrors()){
                 String error = result.getFieldErrors()
@@ -39,7 +40,7 @@ public class UserController {
                                 .build()
                 );
             }
-            if(!userDTO.getPassword().equals(userDTO.getRetypePassword())){
+            if(!userRequest.getPassword().equals(userRequest.getRetypePassword())){
                 return ResponseEntity.badRequest().body(
                         BaseResponse.builder()
                                 .code("400")
@@ -48,7 +49,7 @@ public class UserController {
                 );
             }
             try{
-                User user = userServices.createUser(userDTO);
+                UserEntity user = userServices.createUser(userRequest);
                 return ResponseEntity.ok(
                         BaseResponse.builder()
                                 .code("200")
@@ -70,6 +71,16 @@ public class UserController {
                             .message(e.getMessage())
                             .build()
             );
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity <?> login(@Valid @RequestBody LoginRequest loginRequest){
+        try{
+            return ResponseEntity.ok().body(userServices.login(loginRequest.getUsername(), loginRequest.getPassword()));
+        }
+        catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

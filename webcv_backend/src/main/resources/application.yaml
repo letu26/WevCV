@@ -8,6 +8,16 @@ spring:
     username: root
     password: 123456789
 
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 60000
+      max-lifetime: 1500000
+      connection-timeout: 30000
+      validation-timeout: 5000
+      keepalive-time: 300000
+      leak-detection-threshold: 2000
+
   jpa:
     show-sql: true
     hibernate:
@@ -28,7 +38,6 @@ app:
       http://localhost:5173
 
 jwt:
-  expiration: 1800000 #30 minutes to millisecond = 30 * 60 * 1000
-  secret: S1TZnHDnQS6ojlPYPI+bjd6CXxYhBP/eYmubZsRSANY=
-refresh:
-  expiration: 1209600000 #14 days to millisecond = 14 * 24 * 60 * 60 * 1000
+  expirationAccess: 1800000 #30 minutes to millisecond = 30 * 60 * 1000
+  expirationRefresh: 1209600000 #14 days to millisecond = 14 * 24 * 60 * 60 * 1000
+  secret: tDZeLB1lCmlfwZ1+fVs9BRquyMtaisf1bWRHbq7WL+w=

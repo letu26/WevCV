@@ -1,6 +1,6 @@
 package com.webcv.filter;
 
-import com.webcv.entity.User;
+import com.webcv.entity.UserEntity;
 import com.webcv.util.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -47,7 +47,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             final String token = authHeader.substring(7);
             final String username = jwtTokenUtil.extractUsername(token);
             if(username == null || SecurityContextHolder.getContext().getAuthentication() == null){
-                User userDetails = (User) userDetailsService.loadUserByUsername(username);
+                UserEntity userDetails = (UserEntity) userDetailsService.loadUserByUsername(username);
                 if(jwtTokenUtil.validateToken(token,userDetails)){
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
