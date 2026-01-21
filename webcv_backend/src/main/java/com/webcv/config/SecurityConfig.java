@@ -29,7 +29,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         return username -> userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("username not found = "+ username));
+                .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
     }
 
     @Bean

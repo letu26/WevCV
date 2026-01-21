@@ -49,6 +49,7 @@ public class UserService implements IUserServices {
 
     @Override
     public LoginResponse login(String username, String password) throws Exception {
+
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if(user.isEmpty()){
             throw new Exception("User not found");
