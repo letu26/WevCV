@@ -24,7 +24,7 @@ const SignInPage: React.FC = () => {
   console.log(user);
   return (
     <>
-      <div>SignInPage</div>
+      <div>Đây là trang đăng nhập</div>
     </>
   );
 };

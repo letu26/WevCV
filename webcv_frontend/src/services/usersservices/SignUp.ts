@@ -19,7 +19,7 @@ export async function signUp(
   payload: SignUpPayload,
 ): Promise<SignUpResponse> {
   const res = await fetcher<ApiResponse<SignUpResponse>>({
-    url: "/auth/signup",
+    url: "/users/register",
     method: "POST",
     data: payload,
   });

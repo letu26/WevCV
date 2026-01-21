@@ -3,7 +3,8 @@ import React from 'react';
 const SignUpPage: React.FC = () => {
   return (
     <>
-      <div >SignUpPage</div>
+      <div >Đây là trang đăng ký
+      </div>
     </>
   );
 };
