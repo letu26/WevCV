@@ -1,13 +1,12 @@
 package com.webcv.util;
 
-import com.webcv.customexception.InvalidParamException;
+import com.webcv.exception.customexception.JwtGenerationException;
 import com.webcv.entity.UserEntity;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,7 +33,7 @@ public class JwtTokenUtil {
     private String secretkey;
 
     //sinh token
-    public String generateToken(UserEntity user, Long expirationTime) throws InvalidParamException {
+    public String generateToken(UserEntity user, Long expirationTime){
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
         try {
@@ -45,18 +44,18 @@ public class JwtTokenUtil {
                     .id(UUID.randomUUID().toString())
                     .signWith(getSignInKey())
                     .compact();
-        }catch (Exception e){
-            throw new InvalidParamException("can not create jwt" + e.getMessage());
+        }catch (JwtException e){
+            throw new JwtGenerationException("Can not create JWT" + e.getMessage());
         }
     }
 
     //tạo access token:
-    public String generateAccessToken(UserEntity user) throws InvalidParamException {
+    public String generateAccessToken(UserEntity user){
         return generateToken(user, expirationAccess);
     }
 
     //tạo refresh token:
-    public String generateRefreshToken(UserEntity user) throws InvalidParamException {
+    public String generateRefreshToken(UserEntity user){
         return generateToken(user, expirationRefresh);
     }
 

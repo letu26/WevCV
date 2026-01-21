@@ -1,10 +1,12 @@
 package com.webcv.services.Impl;
 
-import com.webcv.request.RegisterRequest;
 import com.webcv.entity.RoleEntity;
 import com.webcv.entity.UserEntity;
+import com.webcv.exception.customexception.NotFoundException;
+import com.webcv.exception.customexception.UnauthorizedException;
 import com.webcv.repository.RoleRepository;
 import com.webcv.repository.UserRepository;
+import com.webcv.request.RegisterRequest;
 import com.webcv.response.LoginResponse;
 import com.webcv.services.IUserServices;
 import com.webcv.util.JwtTokenUtil;
@@ -28,14 +30,14 @@ public class UserService implements IUserServices {
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
-    public UserEntity createUser(RegisterRequest userDTO) throws Exception {
+    public UserEntity createUser(RegisterRequest userDTO){
         String username = userDTO.getUsername();
         //check username
         if(userRepository.existsByUsername(username)){
             throw new DataIntegrityViolationException("Username already exists");
         }
         RoleEntity role = roleRepository.findByName("USER")
-                .orElseThrow(() -> new Exception("Role not found"));
+                .orElseThrow(() -> new NotFoundException("Role not found"));
 
         UserEntity newUser = UserEntity.builder()
                 .username(userDTO.getUsername())
@@ -48,15 +50,15 @@ public class UserService implements IUserServices {
     }
 
     @Override
-    public LoginResponse login(String username, String password) throws Exception {
+    public LoginResponse login(String username, String password){
 
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if(user.isEmpty()){
-            throw new Exception("User not found");
+            throw new NotFoundException("User not found");
         }
         UserEntity userEntity = user.get();
         if(!passwordEncoder.matches(password,userEntity.getPassword())){
-            throw new Exception("Wrong password");
+            throw new UnauthorizedException("Wrong password or username!");
         }
 
         UsernamePasswordAuthenticationToken authenticationToken =new UsernamePasswordAuthenticationToken(username, password

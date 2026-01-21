@@ -6,6 +6,6 @@ import com.webcv.entity.UserEntity;
 import com.webcv.response.LoginResponse;
 
 public interface IUserServices {
-    UserEntity createUser(RegisterRequest userDTO) throws Exception;
-    LoginResponse login(String username, String password) throws Exception;
+    UserEntity createUser(RegisterRequest userDTO);
+    LoginResponse login(String username, String password);
 }

@@ -3,7 +3,6 @@ package com.webcv.filter;
 import com.webcv.entity.UserEntity;
 import com.webcv.util.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -31,7 +30,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
+            throws IOException {
         try{
             if(isBypassToken(request)){
                 filterChain.doFilter(request,response);
