@@ -1,9 +1,0 @@
-package com.webcv.authservices.services;
-
-
-import com.webcv.authservices.dto.UserDTO;
-import com.webcv.authservices.entity.User;
-
-public interface IUserServices {
-    User createUser(UserDTO userDTO) throws Exception;
-}
