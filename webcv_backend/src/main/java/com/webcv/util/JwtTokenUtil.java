@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +46,7 @@ public class JwtTokenUtil {
                     .subject(user.getUsername())
                     .expiration(new Date(System.currentTimeMillis() + expirationTime))
                     .id(UUID.randomUUID().toString())
+                    .issuedAt(new Date())
                     .signWith(getSignInKey(secret))
                     .compact();
         }catch (JwtException e){
@@ -97,10 +99,28 @@ public class JwtTokenUtil {
     public String tokenId(String token, String secret) {
         return extractClaim(token, Claims::getId, secret);
     }
+    //lấy thời gian tạo
+    public Instant tokenIssuedAtInstant(String token, String secret) {
+        Date issuedAt = extractClaim(token, Claims::getIssuedAt, secret);
+        return issuedAt != null ? issuedAt.toInstant() : null;
+    }
+
+
     //xác định token là của người dùng nào và kiểm tra hạn
     public boolean validateToken(String token, UserDetails userDetails, String secret) {
-        String username = extractUsername(token, secret);
-        return (username.equals(userDetails.getUsername()))
-                && !isTokenExpired(token, secret); //check hạn của token
+        UserEntity user = (UserEntity) userDetails;
+        if (!extractUsername(token, secret).equals(user.getUsername())) {
+            return false;
+        }
+        if (isTokenExpired(token, secret)) {
+            return false;
+        }
+
+        Instant changePassAt = user.getChangePasswordAt();
+        if(changePassAt != null){
+            Instant issuedAt = tokenIssuedAtInstant(token, secret);
+            return !issuedAt.isBefore(changePassAt);
+        }
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 package com.webcv.controller;
 
+import com.webcv.request.ChangePassRequest;
 import com.webcv.request.LoginRequest;
 import com.webcv.request.RefreshTokenRequest;
 import com.webcv.request.RegisterRequest;
@@ -54,6 +55,17 @@ public class UserController {
             @Valid @RequestBody RefreshTokenRequest refreshTokenRequest
     ){
         RefreshTokenResponse response = userServices.refreshToken(refreshTokenRequest.getRefreshToken());
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/changepass")
+    public ResponseEntity<BaseResponse> changePassword(
+            @Valid @RequestBody ChangePassRequest request
+    ){
+        if(!request.getNewPassword().equals(request.getRetypeNewPassword())){
+            throw new IllegalArgumentException("Passwords don't match");
+        }
+        BaseResponse response = userServices.changePass(request.getOldPassword(), request.getNewPassword());
         return ResponseEntity.ok().body(response);
     }
 }

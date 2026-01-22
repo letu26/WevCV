@@ -7,18 +7,23 @@ import com.webcv.exception.customexception.UnauthorizedException;
 import com.webcv.repository.RoleRepository;
 import com.webcv.repository.UserRepository;
 import com.webcv.request.RegisterRequest;
+import com.webcv.response.BaseResponse;
 import com.webcv.response.LoginResponse;
 import com.webcv.response.RefreshTokenResponse;
 import com.webcv.services.IUserServices;
 import com.webcv.util.JwtTokenUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -68,7 +73,6 @@ public class UserService implements IUserServices {
 
         UsernamePasswordAuthenticationToken authenticationToken =new UsernamePasswordAuthenticationToken(username, password
         , userEntity.getAuthorities());
-
         authenticationManager.authenticate(authenticationToken);
         String accessToken = jwtTokenUtil.generateAccessToken(userEntity);
         String refreshToken = jwtTokenUtil.generateRefreshToken(userEntity);
@@ -87,13 +91,39 @@ public class UserService implements IUserServices {
             throw new NotFoundException("User not found");
         }
         UserEntity userEntity = user.get();
+        Instant changePasswordAt = userEntity.getChangePasswordAt();
+        if(changePasswordAt != null) {
+            Instant issuedAt = jwtTokenUtil.tokenIssuedAtInstant(refreshToken, secretRefresh);
+            if(issuedAt.isBefore(changePasswordAt)){
+                throw new UnauthorizedException("REFRESH_TOKEN_INVALID or REFRESH_TOKEN_EXPIRED!");
+            }
+        }
         if(jwtTokenUtil.isTokenExpired(refreshToken,secretRefresh)){
-            throw new UnauthorizedException("Refresh token expired or not valid!");
+            throw new UnauthorizedException("RefreshToken expired or not valid!");
         }
         String accessToken = jwtTokenUtil.generateAccessToken(userEntity);
 
         return RefreshTokenResponse.builder()
                 .accessToken(accessToken)
+                .build();
+    }
+
+    @Override
+    public BaseResponse changePass(String oldPassword, String newPassword) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new NotFoundException("User not found!"));
+        String password = user.getPassword();
+        if(!passwordEncoder.matches(oldPassword,password)){
+            throw new UnauthorizedException("Wrong password or username!");
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setChangePasswordAt(Instant.now());
+        userRepository.save(user);
+        return BaseResponse.builder()
+                .code("200")
+                .message("Successfully changed password!")
                 .build();
     }
 }

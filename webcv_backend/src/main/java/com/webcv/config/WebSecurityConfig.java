@@ -38,6 +38,8 @@ public class WebSecurityConfig {
                             .requestMatchers(PUT, "/api/products/**").hasAnyRole("ADMIN")
 
                             .requestMatchers(DELETE,"/api/products/**").hasAnyRole("ADMIN")
+
+                            .requestMatchers(POST, "/api/users/changepass").hasAnyRole("USER", "ADMIN")
                             .anyRequest().authenticated();
                 });
         return http.build();

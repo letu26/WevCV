@@ -2,7 +2,6 @@ package com.webcv.util;
 
 import com.webcv.response.BaseResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

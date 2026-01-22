@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,17 +56,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         final String token = authHeader.substring(7);
 
         try {
-            String username = jwtTokenUtil.extractUsername(token, secretAccess);
 
+            String username = jwtTokenUtil.extractUsername(token, secretAccess);
             if (username == null) {
                 sendUnauthorized(response, "TOKEN_INVALID or TOKEN_EXPIRED!");
                 return;
             }
-
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserEntity userDetails =
                         (UserEntity) userDetailsService.loadUserByUsername(username);
-
                 if (!jwtTokenUtil.validateToken(token, userDetails, secretAccess)) {
                     sendUnauthorized(response, "TOKEN_INVALID or TOKEN_EXPIRED!");
                     return;

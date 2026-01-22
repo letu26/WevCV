@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,6 +44,9 @@ public class UserEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "roleid", nullable = false))
     @Builder.Default
     private List<RoleEntity> roles = new ArrayList<>();
+
+    @Column(name = "change_password_at", nullable = true)
+    private Instant changePasswordAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
