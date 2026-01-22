@@ -14,35 +14,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
+import static com.webcv.util.ExceptionUtil.buildErrorResponse;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse> handleException(Exception ex) {
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(BaseResponse.builder()
-                        .code("500")
-                        .message("Internal server error")
-                        .build());
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"500", ex.getMessage());
     }
     @ExceptionHandler(NotFoundException.class)
     ResponseEntity<BaseResponse> notFoundException(NotFoundException ex){
-        return ResponseEntity.badRequest().body(
-                BaseResponse.builder()
-                        .code("404")
-                        .message(ex.getMessage())
-                        .build()
-        );
+        return buildErrorResponse(HttpStatus.NOT_FOUND,"404", ex.getMessage());
     };
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     ResponseEntity<BaseResponse> dataExists(DataIntegrityViolationException ex){
-        return ResponseEntity.badRequest().body(
-                BaseResponse.builder()
-                        .code("409")
-                        .message(ex.getMessage())
-                        .build()
-        );
+        return buildErrorResponse(HttpStatus.CONFLICT,"409", ex.getMessage());
     };
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -55,30 +42,18 @@ public class GlobalExceptionHandler {
                 .map(FieldError::getDefaultMessage)
                 .collect(Collectors.joining(", "));
 
-        return ResponseEntity.badRequest().body(
-                BaseResponse.builder()
-                        .code("400")
-                        .message(error)
-                        .build());
+        return buildErrorResponse(HttpStatus.BAD_REQUEST,"400", error);
     };
 
     @ExceptionHandler(UnauthorizedException.class)
     ResponseEntity<BaseResponse> unauthorized(UnauthorizedException ex){
-        return ResponseEntity.badRequest().body(
-                BaseResponse.builder()
-                        .code("401")
-                        .message(ex.getMessage())
-                        .build()
-        );
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED,"401", ex.getMessage());
     };
 
     @ExceptionHandler(JwtGenerationException.class)
     ResponseEntity<BaseResponse> invalidParamException(JwtGenerationException ex){
-        return ResponseEntity.badRequest().body(
-                BaseResponse.builder()
-                        .code("500")
-                        .message(ex.getMessage())
-                        .build()
-        );
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"500", ex.getMessage());
     };
+
+
 }
