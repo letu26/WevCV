@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static com.webcv.util.ExceptionUtil.buildErrorResponse;
 
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)

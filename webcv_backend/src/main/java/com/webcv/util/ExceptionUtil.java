@@ -1,12 +1,17 @@
 package com.webcv.util;
 
 import com.webcv.response.BaseResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@NoArgsConstructor
+import java.io.IOException;
+
 public class ExceptionUtil {
+    private ExceptionUtil() {
+    }
+
     public static ResponseEntity<BaseResponse> buildErrorResponse(HttpStatus status, String code, String message){
         return ResponseEntity.status(status).body(
                 BaseResponse.builder()
@@ -14,5 +19,20 @@ public class ExceptionUtil {
                         .message(message)
                         .build()
         );
-    }
+    };
+
+    public static void sendUnauthorized(HttpServletResponse response, String message)
+            throws IOException {
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        response.getWriter().write("""
+        {
+          "code": "401",
+          "message": "%s"
+        }
+        """.formatted(message));
+    };
 }

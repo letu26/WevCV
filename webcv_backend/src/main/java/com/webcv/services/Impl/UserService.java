@@ -8,9 +8,11 @@ import com.webcv.repository.RoleRepository;
 import com.webcv.repository.UserRepository;
 import com.webcv.request.RegisterRequest;
 import com.webcv.response.LoginResponse;
+import com.webcv.response.RefreshTokenResponse;
 import com.webcv.services.IUserServices;
 import com.webcv.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +24,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class UserService implements IUserServices {
+
+    @Value("${jwt.refresh.secret}")
+    private String secretRefresh;
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -71,6 +76,24 @@ public class UserService implements IUserServices {
         return LoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .build();
+    }
+
+    @Override
+    public RefreshTokenResponse refreshToken(String refreshToken) {
+        String username = jwtTokenUtil.extractUsername(refreshToken,secretRefresh);
+        Optional<UserEntity> user = userRepository.findByUsername(username);
+        if(user.isEmpty()){
+            throw new NotFoundException("User not found");
+        }
+        UserEntity userEntity = user.get();
+        if(jwtTokenUtil.isTokenExpired(refreshToken,secretRefresh)){
+            throw new UnauthorizedException("Refresh token expired or not valid!");
+        }
+        String accessToken = jwtTokenUtil.generateAccessToken(userEntity);
+
+        return RefreshTokenResponse.builder()
+                .accessToken(accessToken)
                 .build();
     }
 }

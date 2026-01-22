@@ -23,17 +23,20 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtil {
-    @Value("${jwt.expirationAccess}")
+    @Value("${jwt.access.expiration}")
     private Long expirationAccess;
 
-    @Value("${jwt.expirationRefresh}")
+    @Value("${jwt.refresh.expiration}")
     private Long expirationRefresh;
 
-    @Value("${jwt.secret}")
-    private String secretkey;
+    @Value("${jwt.access.secret}")
+    private String secretAccess;
+
+    @Value("${jwt.refresh.secret}")
+    private String secretRefresh;
 
     //sinh token
-    public String generateToken(UserEntity user, Long expirationTime){
+    public String generateToken(UserEntity user, Long expirationTime, String secret){
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
         try {
@@ -42,7 +45,7 @@ public class JwtTokenUtil {
                     .subject(user.getUsername())
                     .expiration(new Date(System.currentTimeMillis() + expirationTime))
                     .id(UUID.randomUUID().toString())
-                    .signWith(getSignInKey())
+                    .signWith(getSignInKey(secret))
                     .compact();
         }catch (JwtException e){
             throw new JwtGenerationException("Can not create JWT" + e.getMessage());
@@ -51,50 +54,53 @@ public class JwtTokenUtil {
 
     //tạo access token:
     public String generateAccessToken(UserEntity user){
-        return generateToken(user, expirationAccess);
+        return generateToken(user, expirationAccess, secretAccess);
     }
 
     //tạo refresh token:
     public String generateRefreshToken(UserEntity user){
-        return generateToken(user, expirationRefresh);
+        return generateToken(user, expirationRefresh,  secretRefresh);
     }
 
     //tạo khóa bí mật dùng trong tạo token và xác thực
-    private Key getSignInKey() {
+    private Key getSignInKey(String secretkey) {
         byte[] bytes = Decoders.BASE64.decode(secretkey);
         return Keys.hmacShaKeyFor(bytes);
     }
 
     //dùng để đọc và xác thực jwt rồi lấy toàn bộ thông tin
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token, String secret) {
         return Jwts.parser()
-                .verifyWith((SecretKey) getSignInKey())
+                .verifyWith((SecretKey) getSignInKey(secret))
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
     //áp dụng T class dùng để lấy thông tin trong token 1 cách linh động
-    public  <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = this.extractAllClaims(token);
+    public  <T> T extractClaim(String token, Function<Claims, T> claimsResolver,  String secret) {
+        final Claims claims = this.extractAllClaims(token, secret);
         return claimsResolver.apply(claims);
     }
 
     //check hạn token
-    public boolean isTokenExpired(String token) {
-        Date expirationDate = this.extractClaim(token, Claims::getExpiration);
+    public boolean isTokenExpired(String token, String secret) {
+        Date expirationDate = this.extractClaim(token, Claims::getExpiration, secret);
         return expirationDate.before(new Date());
     }
 
     //lấy username
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public String extractUsername(String token, String secret) {
+        return extractClaim(token, Claims::getSubject, secret);
     }
-
+    //lấy token id
+    public String tokenId(String token, String secret) {
+        return extractClaim(token, Claims::getId, secret);
+    }
     //xác định token là của người dùng nào và kiểm tra hạn
-    public boolean validateToken(String token, UserDetails userDetails) {
-        String username = extractUsername(token);
+    public boolean validateToken(String token, UserDetails userDetails, String secret) {
+        String username = extractUsername(token, secret);
         return (username.equals(userDetails.getUsername()))
-                && !isTokenExpired(token); //check hạn của token
+                && !isTokenExpired(token, secret); //check hạn của token
     }
 }

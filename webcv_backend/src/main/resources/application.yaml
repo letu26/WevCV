@@ -38,6 +38,9 @@ app:
       http://localhost:5173
 
 jwt:
-  expirationAccess: 1800000 #30 minutes to millisecond = 30 * 60 * 1000
-  expirationRefresh: 1209600000 #14 days to millisecond = 14 * 24 * 60 * 60 * 1000
-  secret: tDZeLB1lCmlfwZ1+fVs9BRquyMtaisf1bWRHbq7WL+w=
+  access:
+    expiration: 18000000 #30 minutes to millisecond = 30 * 60 * 1000
+    secret: tDZeLB1lCmlfwZ1+fVs9BRquyMtaisf1bWRHbq7WL+w=
+  refresh:
+    expiration: 1209600000 #14 days to millisecond = 14 * 24 * 60 * 60 * 1000
+    secret: S1TZnHDnQS6ojlPYPI+bjd6CXxYhBP/eYmubZsRSANY=

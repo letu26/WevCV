@@ -1,6 +1,7 @@
 import { fetcher } from "@/api/Fetcher";
 import type { ApiResponse } from "@/api/ApiResponse";
 
+//định nghĩa kiểu dữ liệu gửi lên khi đăng ký
 export interface SignUpPayload {
   email: string;
   username: string;

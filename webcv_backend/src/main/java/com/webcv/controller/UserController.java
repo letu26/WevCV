@@ -1,9 +1,11 @@
 package com.webcv.controller;
 
 import com.webcv.request.LoginRequest;
+import com.webcv.request.RefreshTokenRequest;
 import com.webcv.request.RegisterRequest;
 import com.webcv.response.BaseResponse;
 import com.webcv.response.LoginResponse;
+import com.webcv.response.RefreshTokenResponse;
 import com.webcv.services.IUserServices;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,4 +49,11 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshTokenResponse> refreshToken(
+            @Valid @RequestBody RefreshTokenRequest refreshTokenRequest
+    ){
+        RefreshTokenResponse response = userServices.refreshToken(refreshTokenRequest.getRefreshToken());
+        return ResponseEntity.ok().body(response);
+    }
 }
