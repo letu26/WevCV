@@ -8,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class BaseResponse {
-    private String code;
-    private String message;
+public class CheckOTPResponse extends BaseResponse {
+    private String resetToken;
 }

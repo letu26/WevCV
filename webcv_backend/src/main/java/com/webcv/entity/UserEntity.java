@@ -44,6 +44,9 @@ public class UserEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "roleid", nullable = false))
     @Builder.Default
     private List<RoleEntity> roles = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user")
+    private List<PasswordResetEntity> resetTokens;
 
     @Column(name = "change_password_at", nullable = true)
     private Instant changePasswordAt;

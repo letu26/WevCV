@@ -40,20 +40,23 @@ public class UserService implements IUserServices {
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
-    public UserEntity createUser(RegisterRequest userDTO){
-        String username = userDTO.getUsername();
+    public UserEntity createUser(RegisterRequest registerRequest) {
+        String username = registerRequest.getUsername();
         //check username
         if(userRepository.existsByUsername(username)){
             throw new DataIntegrityViolationException("Username already exists");
+        }
+        if(userRepository.existsByEmail(registerRequest.getEmail())){
+            throw new DataIntegrityViolationException("Email already exists");
         }
         RoleEntity role = roleRepository.findByName("USER")
                 .orElseThrow(() -> new NotFoundException("Role not found"));
 
         UserEntity newUser = UserEntity.builder()
-                .username(userDTO.getUsername())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
-                .fullname(userDTO.getFullname())
-                .email(userDTO.getEmail())
+                .username(registerRequest.getUsername())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .fullname(registerRequest.getFullname())
+                .email(registerRequest.getEmail())
                 .build();
         newUser.getRoles().add(role);
         return userRepository.save(newUser);

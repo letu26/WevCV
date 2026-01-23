@@ -1,5 +1,6 @@
 package com.webcv.exception;
 
+import com.webcv.exception.customexception.DataExpiredException;
 import com.webcv.exception.customexception.JwtGenerationException;
 import com.webcv.exception.customexception.NotFoundException;
 import com.webcv.exception.customexception.UnauthorizedException;
@@ -23,6 +24,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse> handleException(Exception ex) {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"500", ex.getMessage());
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<BaseResponse> handleException(RuntimeException ex) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"500", ex.getMessage());
+    }
+
     @ExceptionHandler(NotFoundException.class)
     ResponseEntity<BaseResponse> notFoundException(NotFoundException ex){
         return buildErrorResponse(HttpStatus.NOT_FOUND,"404", ex.getMessage());
@@ -56,5 +63,8 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"500", ex.getMessage());
     };
 
-
+    @ExceptionHandler(DataExpiredException.class)
+    ResponseEntity<BaseResponse> invalidParamException(DataExpiredException ex){
+        return buildErrorResponse(HttpStatus.GONE,"410", ex.getMessage());
+    };
 }
