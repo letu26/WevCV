@@ -29,7 +29,7 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
                     requests
-                            .requestMatchers("api/users/register", "/api/users/login", "/api/users/refresh", "/api/forgot/checkmail","/api/forgot/checkotp", "/api/forgot/resetpassword")
+                            .requestMatchers("api/auth/register", "/api/auth/login", "/api/auth/refresh", "/api/forgot/checkmail","/api/forgot/checkotp", "/api/forgot/resetpassword")
                             .permitAll()
                             .requestMatchers(GET, "/api/products**").hasAnyRole("USER", "ADMIN")
 

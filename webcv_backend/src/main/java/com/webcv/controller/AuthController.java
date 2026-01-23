@@ -8,7 +8,7 @@ import com.webcv.request.RegisterRequest;
 import com.webcv.response.BaseResponse;
 import com.webcv.response.LoginResponse;
 import com.webcv.response.RefreshTokenResponse;
-import com.webcv.services.IUserServices;
+import com.webcv.services.IAuthServices;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/auth")
+public class AuthController {
 
-    private final IUserServices userServices;
+    private final IAuthServices userServices;
     //
     @PostMapping("/register")
     public ResponseEntity<BaseResponse> createUser(

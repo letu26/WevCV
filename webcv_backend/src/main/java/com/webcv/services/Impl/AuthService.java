@@ -5,14 +5,13 @@ import com.webcv.entity.UserEntity;
 import com.webcv.exception.customexception.NotFoundException;
 import com.webcv.exception.customexception.UnauthorizedException;
 import com.webcv.repository.RoleRepository;
-import com.webcv.repository.UserRepository;
+import com.webcv.repository.AuthRepository;
 import com.webcv.request.RegisterRequest;
 import com.webcv.response.BaseResponse;
 import com.webcv.response.LoginResponse;
 import com.webcv.response.RefreshTokenResponse;
-import com.webcv.services.IUserServices;
+import com.webcv.services.IAuthServices;
 import com.webcv.util.JwtTokenUtil;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,12 +27,12 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class UserService implements IUserServices {
+public class AuthService implements IAuthServices {
 
     @Value("${jwt.refresh.secret}")
     private String secretRefresh;
 
-    private final UserRepository userRepository;
+    private final AuthRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;

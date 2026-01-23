@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -95,9 +94,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     //kiểm tra url và method của api hiện tại có khớp với những api được bỏ qua xác thực jwt
     private boolean isBypassToken(@NonNull HttpServletRequest request){
         final List<Pair<String, String>> bypassToken = Arrays.asList(
-                Pair.of("/api/users/login", "POST"),
-                Pair.of("/api/users/register", "POST"),
-                Pair.of("/api/users/refresh", "POST"),
+                Pair.of("/api/auth/login", "POST"),
+                Pair.of("/api/auth/register", "POST"),
+                Pair.of("/api/auth/refresh", "POST"),
                 Pair.of("/api/forgot/checkmail", "POST"),
                 Pair.of("/api/forgot/checkotp", "POST"),
                 Pair.of("/api/forgot/resetpassword", "POST")

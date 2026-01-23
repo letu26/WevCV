@@ -5,7 +5,7 @@ import com.webcv.entity.UserEntity;
 import com.webcv.exception.customexception.DataExpiredException;
 import com.webcv.exception.customexception.NotFoundException;
 import com.webcv.repository.PasswordResetRepository;
-import com.webcv.repository.UserRepository;
+import com.webcv.repository.AuthRepository;
 import com.webcv.request.CheckOTPRequest;
 import com.webcv.request.ResetPasswordRequest;
 import com.webcv.response.BaseResponse;
@@ -26,7 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PasswordResetService implements IPasswordResetServices {
 
-    private final UserRepository userRepository;
+    private final AuthRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetRepository passwordResetRepository;
     private final MailService mailService;
