@@ -28,13 +28,9 @@ public class UserController {
     public ResponseEntity<BaseResponse> createUser(
             @Valid @RequestBody RegisterRequest userRequest) {
 
-        userServices.createUser(userRequest);
+        BaseResponse response = userServices.createUser(userRequest);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BaseResponse.builder()
-                        .code("201")
-                        .message("Register successfully")
-                        .build());
+        return ResponseEntity.ok().body(response);
     }
 
 

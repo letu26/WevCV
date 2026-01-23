@@ -40,7 +40,7 @@ public class UserService implements IUserServices {
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
-    public UserEntity createUser(RegisterRequest registerRequest) {
+    public BaseResponse createUser(RegisterRequest registerRequest) {
         String username = registerRequest.getUsername();
         //check username
         if(userRepository.existsByUsername(username)){
@@ -59,7 +59,12 @@ public class UserService implements IUserServices {
                 .email(registerRequest.getEmail())
                 .build();
         newUser.getRoles().add(role);
-        return userRepository.save(newUser);
+        userRepository.save(newUser);
+
+        return BaseResponse.builder()
+                .code("200")
+                .message("Successfully created user!")
+                .build();
     }
 
     @Override
