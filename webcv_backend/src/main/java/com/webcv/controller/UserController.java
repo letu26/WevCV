@@ -1,5 +1,6 @@
 package com.webcv.controller;
 
+import com.webcv.exception.customexception.PasswordNotMatchException;
 import com.webcv.request.ChangePassRequest;
 import com.webcv.request.LoginRequest;
 import com.webcv.request.RefreshTokenRequest;
@@ -10,7 +11,6 @@ import com.webcv.response.RefreshTokenResponse;
 import com.webcv.services.IUserServices;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,9 +27,10 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<BaseResponse> createUser(
             @Valid @RequestBody RegisterRequest userRequest) {
-
+        if(!userRequest.getPassword().equals(userRequest.getRetypePassword())){
+            throw new PasswordNotMatchException("Passwords don't match");
+        }
         BaseResponse response = userServices.createUser(userRequest);
-
         return ResponseEntity.ok().body(response);
     }
 
@@ -59,7 +60,7 @@ public class UserController {
             @Valid @RequestBody ChangePassRequest request
     ){
         if(!request.getNewPassword().equals(request.getRetypeNewPassword())){
-            throw new IllegalArgumentException("Passwords don't match");
+            throw new PasswordNotMatchException("Passwords don't match");
         }
         BaseResponse response = userServices.changePass(request.getOldPassword(), request.getNewPassword());
         return ResponseEntity.ok().body(response);

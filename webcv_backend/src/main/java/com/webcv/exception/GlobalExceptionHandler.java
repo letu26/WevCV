@@ -1,9 +1,6 @@
 package com.webcv.exception;
 
-import com.webcv.exception.customexception.DataExpiredException;
-import com.webcv.exception.customexception.JwtGenerationException;
-import com.webcv.exception.customexception.NotFoundException;
-import com.webcv.exception.customexception.UnauthorizedException;
+import com.webcv.exception.customexception.*;
 import com.webcv.response.BaseResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -66,5 +63,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataExpiredException.class)
     ResponseEntity<BaseResponse> invalidParamException(DataExpiredException ex){
         return buildErrorResponse(HttpStatus.GONE,"DATA_EXPIRED", ex.getMessage());
+    };
+
+    @ExceptionHandler(PasswordNotMatchException.class)
+    ResponseEntity<BaseResponse> invalidParamException(PasswordNotMatchException ex){
+        return buildErrorResponse(HttpStatus.BAD_REQUEST,"DATA_NOT_MATCH", ex.getMessage());
     };
 }
