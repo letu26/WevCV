@@ -93,6 +93,7 @@ public class PasswordResetService implements IPasswordResetServices {
 
         UserEntity user = passwordReset.getUser();
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setChangePasswordAt(Instant.now());
         userRepository.save(user);
 
         return BaseResponse.builder()
