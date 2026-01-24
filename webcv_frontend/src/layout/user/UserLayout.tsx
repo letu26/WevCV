@@ -3,7 +3,22 @@ import SideBar from '@/components/SideBar';
 import React from 'react';
 import { Outlet } from 'react-router';
 
-const UserLayout: React.FC = () => {
+export function UserLayout({ language, setLanguage }: UserLayoutProps) {
+  const [userName, setUserName] = useState<string>('User');
+
+  useEffect(() => {
+    // Get user info from localStorage
+    const userStr = localStorage.getItem(STORAGE_KEYS.USER);
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setUserName(user.fullName || user.username || user.email || 'User');
+      } catch (error) {
+        console.error('Failed to parse user data:', error);
+      }
+    }
+  }, []);
+
   return (
     <>
       <Header/>
