@@ -28,11 +28,24 @@ class Fetcher {
     localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
   }
 
-//Tạo một instance axios riêng, tự reject nếu quá 10s không có phản hồi
-const apiClient = axios.create({
-  baseURL: API_URL,
-  timeout: 10000,
-});
+  private clearTokens(): void {
+    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER);
+  }
+
+  private async refreshAccessToken(): Promise<string | null> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) return null;
+
+    try {
+      const response = await fetch(`${this.baseURL}${API_CONFIG.ENDPOINTS.AUTH.REFRESH}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
 
 //Đính kèm token nếu có
 apiClient.interceptors.request.use((config) => {
