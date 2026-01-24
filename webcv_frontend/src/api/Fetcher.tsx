@@ -1,5 +1,32 @@
-import axios, { type AxiosRequestConfig } from "axios";
-import { API_URL } from "@/config";
+import { API_CONFIG, STORAGE_KEYS } from '@/config';
+import { ApiError, ApiResponse } from '@/api/ApiResponse';
+
+interface FetcherOptions extends RequestInit {
+  requiresAuth?: boolean;
+  customHeaders?: Record<string, string>;
+}
+
+class Fetcher {
+  private baseURL: string;
+  private timeout: number;
+
+  constructor() {
+    this.baseURL = API_CONFIG.BASE_URL;
+    this.timeout = API_CONFIG.TIMEOUT;
+  }
+
+  private getAccessToken(): string | null {
+    return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+  }
+
+  private getRefreshToken(): string | null {
+    return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+  }
+
+  private setTokens(accessToken: string, refreshToken: string): void {
+    localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
+    localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+  }
 
 //Tạo một instance axios riêng, tự reject nếu quá 10s không có phản hồi
 const apiClient = axios.create({
