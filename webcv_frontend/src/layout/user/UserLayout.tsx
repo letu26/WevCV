@@ -1,7 +1,13 @@
-import Header from '@/components/Header';
+import { Outlet } from 'react-router-dom';
+import { Header } from '@/components/Header';
 import SideBar from '@/components/SideBar';
-import React from 'react';
-import { Outlet } from 'react-router';
+import { useState, useEffect } from 'react';
+import { STORAGE_KEYS } from '@/config';
+
+interface UserLayoutProps {
+  language: 'vi' | 'en';
+  setLanguage: (lang: 'vi' | 'en') => void;
+}
 
 export function UserLayout({ language, setLanguage }: UserLayoutProps) {
   const [userName, setUserName] = useState<string>('User');
@@ -20,14 +26,16 @@ export function UserLayout({ language, setLanguage }: UserLayoutProps) {
   }, []);
 
   return (
-    <>
-      <Header/>
-      <SideBar/>
-      <main className="pt-21 pl-69 pr-5 min-h-screen bg-gray-50">
-        <Outlet/>
-      </main>
-    </>
+    <div className="min-h-screen bg-gray-50">
+      <Header language={language} setLanguage={setLanguage} userName={userName} />
+      <div className="flex">
+        <SideBar language={language} />
+        <main className="flex-1 p-6">
+          <Outlet />
+        </main>
+      </div>
+    </div>
   );
-};
+}
 
 export default UserLayout;
