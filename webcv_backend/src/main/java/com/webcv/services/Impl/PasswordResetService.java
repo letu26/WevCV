@@ -26,14 +26,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PasswordResetService implements IPasswordResetServices {
 
-    private final AuthRepository userRepository;
+    private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetRepository passwordResetRepository;
     private final MailService mailService;
 
     @Override
     public CheckMailResponse checkMail(String emailRequest) {
-        UserEntity user = userRepository.findByEmail(emailRequest)
+        UserEntity user = authRepository.findByEmail(emailRequest)
                 .orElseThrow(() -> new NotFoundException("Email not found"));
         String otp = OtpUtil.generateOtp();
         String hashedOtp = passwordEncoder.encode(otp);
@@ -94,7 +94,7 @@ public class PasswordResetService implements IPasswordResetServices {
         UserEntity user = passwordReset.getUser();
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         user.setChangePasswordAt(Instant.now());
-        userRepository.save(user);
+        authRepository.save(user);
 
         return BaseResponse.builder()
                 .code("200")
