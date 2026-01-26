@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class UserEntity extends BaseEntity implements UserDetails {
 
     @Id
@@ -34,16 +34,16 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @Column(name = "fullName", nullable = false)
+    @Column(name = "full_name", nullable = false)
     private String fullname;
 
     @Column(name = "email", nullable = false)
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "userid", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "roleid", nullable = false))
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
     @Builder.Default
     private List<RoleEntity> roles = new ArrayList<>();
     
@@ -71,4 +71,75 @@ public class UserEntity extends BaseEntity implements UserDetails {
         }
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleEntity> roles) {
+        this.roles = roles;
+    }
+
+    public List<PasswordResetEntity> getResetTokens() {
+        return resetTokens;
+    }
+
+    public void setResetTokens(List<PasswordResetEntity> resetTokens) {
+        this.resetTokens = resetTokens;
+    }
+
+    public Instant getChangePasswordAt() {
+        return changePasswordAt;
+    }
+
+    public void setChangePasswordAt(Instant changePasswordAt) {
+        this.changePasswordAt = changePasswordAt;
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
 }
