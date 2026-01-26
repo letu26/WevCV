@@ -1,8 +1,10 @@
 package com.webcv.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.webcv.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +21,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "user")
-public class UserEntity implements UserDetails {
+public class UserEntity extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +34,7 @@ public class UserEntity implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @Column(name = "fullname", nullable = false)
+    @Column(name = "fullName", nullable = false)
     private String fullname;
 
     @Column(name = "email", nullable = false)
@@ -51,10 +53,22 @@ public class UserEntity implements UserDetails {
     @Column(name = "change_password_at", nullable = true)
     private Instant changePasswordAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private UserStatus status;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()))
                 .toList();
     }
+
+    @PrePersist
+    public void prePersist() {
+        if (this.status == null) {
+            this.status = UserStatus.ACTIVE;
+        }
+    }
+
 }
