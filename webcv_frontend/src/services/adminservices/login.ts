@@ -1,4 +1,4 @@
-import { fetcher } from "@/api/Fetcher";
+import { fetcher } from "@/api/FetcherAdmin";
 
 export interface LoginRequest {
   username: string;

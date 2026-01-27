@@ -6,6 +6,7 @@ import { Label } from '@/app/components/ui/label';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { authService } from '@/services/authService';
+import React from 'react';
 
 interface SignInPageProps {
   language: 'vi' | 'en';
@@ -71,7 +72,7 @@ export default function SignInPage({ language }: SignInPageProps) {
         // Login with backend API
               // POST /auth/login
               const response = await authService.login(formData);
-              console.log("Token: " + response.accessToken + " " + response.refreshToken);
+              console.log("Token: " + response.data?.accessToken + " " + response.data?.refreshToken);
               if (response.success) {
                 toast.success(t.loginSuccess);
                 navigate('/dashboard');

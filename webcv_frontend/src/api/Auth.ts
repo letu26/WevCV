@@ -1,4 +1,4 @@
-import { fetcher } from "@/api/Fetcher";
+import { fetcher } from "./FetcherAdmin";
 
 export const refreshToken = () => {
   return fetcher<{

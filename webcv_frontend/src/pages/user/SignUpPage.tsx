@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Label } from '@/app/components/ui/label';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { authService } from '@/services/authService';
+import React from 'react';
+import { Button } from '@/app/components/ui/button';
 
 interface SignUpPageProps {
   language: 'vi' | 'en';
@@ -26,6 +27,7 @@ const translations = {
     registering: 'Đang xử lý...',
     haveAccount: 'Đã có tài khoản?',
     loginNow: 'Đăng nhập ngay',
+    registerSuccess: 'Đăng ký thành công!',
     successMessage: 'Đăng ký thành công! Đang chuyển hướng...',
     passwordMismatch: 'Mật khẩu không khớp',
     registerError: 'Đăng ký thất bại. Vui lòng thử lại.',
@@ -44,6 +46,7 @@ const translations = {
     registering: 'Processing...',
     haveAccount: 'Already have an account?',
     loginNow: 'Login now',
+    registerSuccess: 'Registration successful!',
     successMessage: 'Registration successful! Redirecting...',
     passwordMismatch: 'Passwords do not match',
     registerError: 'Registration failed. Please try again.',
@@ -56,9 +59,9 @@ export default function SignUpPage({ language }: SignUpPageProps) {
   const t = translations[language];
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: '',
+    fullname: '',
     email: '',
-    phone: '',
+    username: '',
     password: '',
     confirmPassword: ''
   });
@@ -66,7 +69,7 @@ export default function SignUpPage({ language }: SignUpPageProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (formData.password !== formData.retypePassword) {
+    if (formData.password !== formData.confirmPassword) {
       toast.error(t.passwordMismatch);
       return;
     }
@@ -86,14 +89,14 @@ export default function SignUpPage({ language }: SignUpPageProps) {
           email: formData.email,
           username: formData.username,
           password: formData.password,
-          retypePassword: formData.retypePassword,
+          retypePassword: formData.confirmPassword,
       });
 
-      if (response.success) {
-              toast.success(t.registerSuccess);
+      if (response.success && response.data?.code === "200") {
+              toast.success(response.data.message || t.registerSuccess);
               setTimeout(() => navigate('/signin'), 2000);
             } else {
-              toast.error(response.message || t.registerError);
+              toast.error(response.data?.message || response.message || t.registerError);
             }
 
 
@@ -190,12 +193,12 @@ export default function SignUpPage({ language }: SignUpPageProps) {
             </div>
 
             <div>
-              <Label htmlFor="retypePassword" className="text-gray-700">{t.retypePassword}</Label>
+              <Label htmlFor="confirmPassword" className="text-gray-700">{t.retypePassword}</Label>
               <Input
-                id="retypePassword"
+                id="confirmPassword"
                 type="password"
-                value={formData.retypePassword}
-                onChange={(e) => setFormData({ ...formData, retypePassword: e.target.value })}
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 required
                 className="mt-1 bg-input-background border-border focus:border-primary focus:ring-primary"
                 placeholder="••••••••"

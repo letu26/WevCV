@@ -1,16 +1,23 @@
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from '@/pages/user/HomePage';
 import SignInPage from '@/pages/user/SignInPage';
 import SignUpPage from '@/pages/user/SignUpPage';
-import ChangePasswordPage from '@/pages/ChangePasswordPage';
-import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
-import CheckOtpPage from '@/pages/CheckOtpPage';
-import ResetPasswordPage from '@/pages/ResetPasswordPage';
+import ChangePasswordPage from '@/pages/user/ChangePasswordPage';
+import ForgotPasswordPage from '@/pages/user/ForgotPasswordPage';
+import CheckOtpPage from '@/pages/user/CheckOtpPage';
+import ResetPasswordPage from '@/pages/user/ResetPasswordPage';
 import Profile from '@/pages/user/Profile';
 import About from '@/pages/user/About';
 import Contact from '@/pages/user/Contact';
-import Settings from '@/pages/Settings';
+import Settings from '@/pages/user/Settings';
 import UserLayout from '@/layout/user/UserLayout';
+import DashBoard from '@/pages/admin/DashBoard';
+import AdminLayout from '@/layout/admin/AdminLayout';
+import AdminRoute from './auth/AdminRoute';
+import Forbidden from '@/pages/admin/Forbidden';
+import LoginAdmin from '@/pages/admin/LoginAdmin';
+import UserManagement from '@/pages/admin/UserManagement';
 
 interface AppRoutesProps {
   language: 'vi' | 'en';
@@ -26,7 +33,7 @@ export default function AppRoutes({ language, setLanguage }: AppRoutesProps) {
       <Route path="/signup" element={<SignUpPage language={language} setLanguage={setLanguage} />} />
       <Route path="/change-password" element={<ChangePasswordPage language={language} setLanguage={setLanguage} />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage language={language} setLanguage={setLanguage} />} />
-      <Route path="/check-otp" element={<CheckOtpPage language={language} setLanguage={setLanguage} />} />
+      <Route path="/check-otp" element={<CheckOtpPage language={language} />} />
       <Route path="/reset-password" element={<ResetPasswordPage language={language} setLanguage={setLanguage} />} />
 
       {/* Protected Routes with Layout */}
@@ -48,6 +55,21 @@ export default function AppRoutes({ language, setLanguage }: AppRoutesProps) {
 
       {/* Catch all - redirect to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
+
+      {/* Trang admin */}
+      <Route path="/admin/login" element={<LoginAdmin />} />
+      <Route path="/403" element={<Forbidden />} />
+      {/* ADMIN LOGIN */}
+      <Route path="/admin/login" element={<LoginAdmin />} />
+      <Route path="/403" element={<Forbidden />} />
+      {/*ADMIN PROTECTED */}
+      <Route element={<AdminRoute />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<DashBoard />} />
+          <Route path="dashboard" element={<DashBoard />} />
+          <Route path="users" element={<UserManagement />} />
+        </Route>
+      </Route>
     </Routes>
   );
 }

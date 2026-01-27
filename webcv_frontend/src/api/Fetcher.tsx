@@ -117,7 +117,7 @@ class Fetcher {
         throw new ApiError(401, 'Session expired. Please login again.');
       }
 
-      const data: ApiResponse<T> = await response.json();
+      const data = await response.json();
 
       if (!response.ok) {
         throw new ApiError(
@@ -127,7 +127,11 @@ class Fetcher {
         );
       }
 
-      return data;
+      return {
+        success: response.ok,
+        data: data as T,
+        message: data.message
+      };
     } catch (error) {
       clearTimeout(timeoutId);
 

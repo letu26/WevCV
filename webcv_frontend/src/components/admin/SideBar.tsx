@@ -1,4 +1,5 @@
 import { NavLink } from "react-router";
+import React from "react";
 
 const Sidebar = () => {
   const navClass = ({ isActive }: { isActive: boolean }) =>

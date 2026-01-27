@@ -8,7 +8,8 @@ import { motion } from 'motion/react';
 import { User, Lock, Bell, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import { STORAGE_KEYS } from '@/config';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 interface SettingsProps {
   language: 'vi' | 'en';

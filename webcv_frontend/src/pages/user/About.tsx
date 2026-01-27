@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'motion/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Building2, Users, Target, Award } from 'lucide-react';

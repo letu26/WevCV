@@ -1,4 +1,4 @@
-import { getUsers, type UserPageResponse } from "@/services/adminservices/users";
+import { getUsers, UserPageResponse } from "@/services/adminservices/users";
 import React, { useEffect, useState } from "react";
 
 const UserManagement: React.FC = () => {

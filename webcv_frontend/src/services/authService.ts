@@ -12,11 +12,11 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
-  fullName: string;
+  fullname: string;
   email: string;
   username: string;
   password: string;
-  confirmPassword: string;
+  retypePassword: string;
 }
 
 export interface AuthResponse {
@@ -98,25 +98,13 @@ class AuthService {
    * Register new user
    * POST /auth/register
    */
-  async register(data: RegisterRequest): Promise<ApiResponse<AuthResponse>> {
-    try {
-      const response = await fetcher.post<AuthResponse>(
-        API_CONFIG.ENDPOINTS.AUTH.REGISTER,
-        data
-      );
+  async register(data: RegisterRequest): Promise<ApiResponse<{ code: string; message: string }>> {
+    const response = await fetcher.post<{ code: string; message: string }>(
+      API_CONFIG.ENDPOINTS.AUTH.REGISTER,
+      data
+    );
 
-      if (response.success && response.data) {
-        fetcher.saveAuthTokens(
-          response.data.accessToken,
-          response.data.refreshToken
-        );
-        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.data.user));
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    return response;
   }
 
   /**
@@ -182,13 +170,13 @@ class AuthService {
 
   /**
    * Change password (requires authentication)
-   * POST /users/change-password
+   * POST /auth/changepass
    * Request: { oldPassword: string, newPassword: string, retypeNewPassword: string }
    * Note: After successful password change, all accessTokens and refreshTokens will be disabled
    */
-  async changePassword(data: ChangePasswordRequest): Promise<ApiResponse<{ message: string }>> {
-    const response = await fetcher.post<{ message: string }>(
-      API_CONFIG.ENDPOINTS.USER.CHANGE_PASSWORD,
+  async changePassword(data: ChangePasswordRequest): Promise<ApiResponse<{ code: string; message: string }>> {
+    const response = await fetcher.post<{ code: string; message: string }>(
+      API_CONFIG.ENDPOINTS.AUTH.CHANGE_PASSWORD,
       data,
       { requiresAuth: true }
     );
@@ -296,27 +284,13 @@ class AuthService {
 
   /**
    * Get current user profile (protected API)
-   * GET /auth/me
+   * GET /users/profile
    */
   async getProfile() {
     return fetcher.get(
-      API_CONFIG.ENDPOINTS.AUTH.PROFILE,
+      API_CONFIG.ENDPOINTS.USER.PROFILE,
       { requiresAuth: true }
     );
-  }
-
-  async logout(): Promise<void> {
-    try {
-      await fetcher.post(
-        API_CONFIG.ENDPOINTS.AUTH.LOGOUT,
-        {},
-        { requiresAuth: true }
-      );
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      this.clearTokens();
-    }
   }
 }
 export const authService = new AuthService();

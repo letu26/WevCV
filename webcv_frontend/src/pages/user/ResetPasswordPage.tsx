@@ -6,6 +6,7 @@ import { Label } from '@/app/components/ui/label';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { authService } from '@/services/authService';
+import React from 'react';
 
 interface ResetPasswordPageProps {
   language: 'vi' | 'en';
@@ -72,11 +73,11 @@ export default function ResetPasswordPage({ language }: ResetPasswordPageProps) 
               resetToken: token
             });
 
-            if (response.success) {
-              toast.success(response.message || t.successMessage);
+            if (response.success && response.data?.code === "200") {
+              toast.success(response.data.message || t.successMessage);
               setTimeout(() => navigate('/signin'), 2000);
             } else {
-              toast.error(response.message || t.errorMessage);
+              toast.error(response.data?.message || response.message || t.errorMessage);
             }
 
 /*

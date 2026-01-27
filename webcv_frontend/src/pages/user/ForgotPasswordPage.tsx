@@ -6,6 +6,7 @@ import { Label } from '@/app/components/ui/label';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { authService } from '@/services/authService';
+import React from 'react';
 
 interface ForgotPasswordPageProps {
   language: 'vi' | 'en';
@@ -51,16 +52,19 @@ export default function ForgotPasswordPage({ language }: ForgotPasswordPageProps
     try {
       const response = await authService.checkEmail({ email });
 
-      console.log("API response:", response);
-      console.log("response.data:", response?.data);
+      console.log("response:", response);
+      console.log("response.success:", response.success);
+      console.log("response.data:", response.data);
 
-      if (response?.userId) {
+      if (response.data?.code === "201" && response.data?.userId) {
+        toast.success(response.data.message || t.codeSentMessage);
         console.log("Navigate to /check-otp");
         navigate('/check-otp', {
-          state: { userId: response.userId , email},
+          state: { userId: Number(response.data.userId) , email},
         });
       } else {
-        toast.error(response?.message || t.errorMessage);
+        console.log("Condition failed");
+        toast.error(response.data?.message || response.message || t.errorMessage);
       }
     } catch (error: any) {
       console.error('Check email error:', error);

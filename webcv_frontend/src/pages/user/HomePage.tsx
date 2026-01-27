@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/app/components/ui/dropdown-menu';
 import { useState } from 'react';
 import { motion } from 'motion/react';
+import React from 'react';
 
 interface HomePageProps {
   language: 'vi' | 'en';

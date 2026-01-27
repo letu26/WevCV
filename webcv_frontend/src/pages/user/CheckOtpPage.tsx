@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Button } from '@/app/components/ui/button';
@@ -58,9 +59,9 @@ console.log("userId:", userId);
       console.log("API response:", response);
       console.log("response.data:", response?.data);
 
-      if (response?.resetToken) {
+      if (response?.data?.resetToken) {
         toast.success(response.message);
-        navigate(`/reset-password?token=${response.resetToken}`);
+        navigate(`/reset-password?token=${response.data.resetToken}`);
       } else {
         toast.error('OTP không đúng');
       }

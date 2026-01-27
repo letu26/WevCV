@@ -10,7 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/app/components/ui/ta
 import { motion } from 'motion/react';
 import { Plus, Edit, Eye, X, FileText, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-// import { cvService, type CV, type Project } from '@/services/cvService';
+import React from 'react';
+import { CV, Project } from '@/types/UserType';
 
 interface ProfileProps {
   language: 'vi' | 'en';
@@ -175,6 +176,7 @@ export default function Profile({ language }: ProfileProps) {
       const mockCVs: CV[] = [
         {
           id: '1',
+          userId: '1',
           email: 'user@example.com',
           fullName: 'Nguyễn Văn A',
           phone: '0123456789',
@@ -188,6 +190,7 @@ export default function Profile({ language }: ProfileProps) {
         },
         {
           id: '2',
+          userId: '1',
           email: 'user@example.com',
           fullName: 'Nguyễn Văn A',
           phone: '0123456789',
@@ -359,6 +362,7 @@ export default function Profile({ language }: ProfileProps) {
         const newCV: CV = {
           ...cvData,
           id: Date.now().toString(),
+          userId: '1',
           status: 'draft',
           createdAt: new Date().toISOString().split('T')[0],
         };
@@ -395,6 +399,7 @@ export default function Profile({ language }: ProfileProps) {
         const newCV: CV = {
           ...cvData,
           id: Date.now().toString(),
+          userId: '1',
           status: 'pending',
           createdAt: new Date().toISOString().split('T')[0],
         };

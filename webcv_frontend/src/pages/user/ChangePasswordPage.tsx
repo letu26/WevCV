@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Button } from '@/app/components/ui/button';
@@ -17,6 +18,7 @@ const translations = {
     title: 'VTIT Recruitment Portal',
     resetPasswordTitle: 'Đặt lại mật khẩu',
     resetPasswordSubtitle: 'Nhập mật khẩu mới của bạn',
+    oldPassword: 'Mật khẩu cũ',
     newPassword: 'Mật khẩu mới',
     retypeNewPassword: 'Xác nhận mật khẩu',
     resetButton: 'Đặt lại mật khẩu',
@@ -30,6 +32,7 @@ const translations = {
     title: 'VTIT Recruitment Portal',
     resetPasswordTitle: 'Reset Password',
     resetPasswordSubtitle: 'Enter your new password',
+    oldPassword: 'Old Password',
     newPassword: 'New Password',
     retypeNewPassword: 'Retype New Password',
     resetButton: 'Reset Password',
@@ -41,13 +44,12 @@ const translations = {
   }
 };
 
-export default function ResetPasswordPage({ language }: ResetPasswordPageProps) {
+export default function ChangePasswordPage({ language, setLanguage }: ResetPasswordPageProps) {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get('token') || '';
   const t = translations[language];
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
+    oldPassword: '',
     newPassword: '',
     retypeNewPassword: ''
   });
@@ -63,20 +65,18 @@ export default function ResetPasswordPage({ language }: ResetPasswordPageProps) 
     setIsLoading(true);
 
     try {
-      // Uncomment when backend is ready
-      // STEP 3: Reset password with reset token
-            // POST /forgot/reset-password
+      // POST /auth/changepass
             const response = await authService.changePassword({
               oldPassword: formData.oldPassword,
               newPassword: formData.newPassword,
               retypeNewPassword: formData.retypeNewPassword
             });
 
-            if (response.success) {
+            if (response.success && response.data?.code === "200") {
               toast.success(response.data.message || t.successMessage);
               setTimeout(() => navigate('/signin'), 2000);
             } else {
-              toast.error(response.message || t.errorMessage);
+              toast.error(response.data?.message || response.message || t.errorMessage);
             }
 
 /*

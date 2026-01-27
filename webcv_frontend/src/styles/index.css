@@ -1,3 +1,39 @@
-@import './fonts.css';
-@import './tailwind.css';
+@import "tailwindcss";
+@import 'tw-animate-css';
+
+@plugin 'tailwindcss-animate';
+@source '../**/*.{js,ts,jsx,tsx}';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius: 0.5rem;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --color-background: #ffffff;
+  --color-foreground: #1a1a1a;
+  --color-card: #ffffff;
+  --color-card-foreground: #1a1a1a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #1a1a1a;
+  --color-primary: #DC143C;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f5f5f5;
+  --color-secondary-foreground: #1a1a1a;
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #717182;
+  --color-accent: #FFF5F5;
+  --color-accent-foreground: #DC143C;
+  --color-destructive: #d4183d;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e5e7eb;
+  --color-input: #e5e7eb;
+  --color-ring: #DC143C;
+}
+
 @import './theme.css';

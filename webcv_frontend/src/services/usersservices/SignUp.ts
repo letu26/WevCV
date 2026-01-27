@@ -66,7 +66,7 @@ export class AuthService {
   static async forgotPassword(data: ForgotPasswordRequest): Promise<ApiResponse<void>> {
     try {
       return await fetcher.post<void>(
-        API_CONFIG.ENDPOINTS.AUTH.FORGOT_PASSWORD,
+        API_CONFIG.ENDPOINTS.FORGOT.CHECK_EMAIL,
         data
       );
     } catch (error) {
@@ -80,7 +80,7 @@ export class AuthService {
   static async resetPassword(data: ResetPasswordRequest): Promise<ApiResponse<void>> {
     try {
       return await fetcher.post<void>(
-        API_CONFIG.ENDPOINTS.AUTH.RESET_PASSWORD,
+        API_CONFIG.ENDPOINTS.FORGOT.RESET_PASSWORD,
         data
       );
     } catch (error) {

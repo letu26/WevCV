@@ -12,6 +12,8 @@ export interface User {
 export interface Project {
   name: string;
   description: string;
+  role?: string;
+  technologies?: string[];
 }
 
 export interface CV {
@@ -20,6 +22,9 @@ export interface CV {
   email: string;
   fullName?: string;
   phone?: string;
+  address?: string;
+  education?: string;
+  experience?: string;
   projects: Project[];
   skills: string[];
   status: 'draft' | 'pending' | 'accepted' | 'rejected';
@@ -41,6 +46,7 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
+  fullName: string;
   email: string;
   username: string;
   password: string;
