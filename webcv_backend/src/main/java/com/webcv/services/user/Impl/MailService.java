@@ -1,6 +1,6 @@
-package com.webcv.services.Impl;
+package com.webcv.services.user.Impl;
 
-import com.webcv.services.IMailServices;
+import com.webcv.services.user.IMailServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;

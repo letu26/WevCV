@@ -1,10 +1,10 @@
-package com.webcv.services;
+package com.webcv.services.user;
 
 
 import com.webcv.request.RegisterRequest;
-import com.webcv.response.BaseResponse;
-import com.webcv.response.LoginResponse;
-import com.webcv.response.RefreshTokenResponse;
+import com.webcv.response.user.BaseResponse;
+import com.webcv.response.user.LoginResponse;
+import com.webcv.response.user.RefreshTokenResponse;
 
 public interface IAuthServices {
     BaseResponse createUser(RegisterRequest request);

@@ -1,6 +1,9 @@
-package com.webcv.response;
+package com.webcv.response.user;
 
+import com.webcv.entity.RoleEntity;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -10,4 +13,5 @@ import lombok.*;
 public class LoginResponse {
     private String accessToken;
     private String refreshToken;
+    private List<String> role;
 }

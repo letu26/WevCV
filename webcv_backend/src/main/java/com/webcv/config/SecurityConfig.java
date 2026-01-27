@@ -1,5 +1,6 @@
 package com.webcv.config;
 
+import com.webcv.enums.UserStatus;
 import com.webcv.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository
-                .findByUsername(username)
+                .findByUsernameAndStatus(username, UserStatus.ACTIVE)
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
     }
 

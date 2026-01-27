@@ -1,7 +1,7 @@
 package com.webcv.exception;
 
 import com.webcv.exception.customexception.*;
-import com.webcv.response.BaseResponse;
+import com.webcv.response.user.BaseResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

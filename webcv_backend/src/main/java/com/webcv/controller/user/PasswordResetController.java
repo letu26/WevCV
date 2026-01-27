@@ -1,11 +1,11 @@
-package com.webcv.controller;
+package com.webcv.controller.user;
 
 import com.webcv.request.CheckEmailRequest;
 import com.webcv.request.CheckOTPRequest;
 import com.webcv.request.ResetPasswordRequest;
-import com.webcv.response.BaseResponse;
-import com.webcv.response.CheckOTPResponse;
-import com.webcv.services.Impl.PasswordResetService;
+import com.webcv.response.user.BaseResponse;
+import com.webcv.response.user.CheckOTPResponse;
+import com.webcv.services.user.Impl.PasswordResetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class PasswordResetController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("checkotp")
+    @PostMapping("/checkotp")
     public ResponseEntity<CheckOTPResponse> checkOTP(@Valid @RequestBody CheckOTPRequest request) {
         CheckOTPResponse response = passwordResetService.checkOTP(request);
 

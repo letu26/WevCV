@@ -1,14 +1,14 @@
-package com.webcv.controller;
+package com.webcv.controller.user;
 
 import com.webcv.exception.customexception.PasswordNotMatchException;
 import com.webcv.request.ChangePassRequest;
 import com.webcv.request.LoginRequest;
 import com.webcv.request.RefreshTokenRequest;
 import com.webcv.request.RegisterRequest;
-import com.webcv.response.BaseResponse;
-import com.webcv.response.LoginResponse;
-import com.webcv.response.RefreshTokenResponse;
-import com.webcv.services.IAuthServices;
+import com.webcv.response.user.BaseResponse;
+import com.webcv.response.user.LoginResponse;
+import com.webcv.response.user.RefreshTokenResponse;
+import com.webcv.services.user.IAuthServices;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

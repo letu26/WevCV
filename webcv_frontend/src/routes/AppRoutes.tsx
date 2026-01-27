@@ -1,17 +1,21 @@
 import { Routes, Route } from "react-router";
 
-import HomePage from "@/pages/HomePage";
-import SignInPage from "@/pages/SignInPage";
-import SignUpPage from "@/pages/SignUpPage";
-import About from "@/pages/About";
-import Setting from "@/pages/Setting";
-import Profile from "@/pages/Profile";
-import Contact from "@/pages/Contact";
+import HomePage from "@/pages/user/HomePage";
+import SignInPage from "@/pages/user/SignInPage";
+import SignUpPage from "@/pages/user/SignUpPage";
+import About from "@/pages/user/About";
+import Setting from "@/pages/user/Setting";
+import Profile from "@/pages/user/Profile";
+import Contact from "@/pages/user/Contact";
 import UserLayout from "@/layout/user/UserLayout";
+import AdminLayout from "@/layout/admin/AdminLayout";
+import DashBoard from "@/pages/admin/DashBoard";
+import User from "@/pages/admin/User";
 
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Trang user */}
       <Route element={<UserLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/signin" element={<SignInPage />} />
@@ -21,6 +25,14 @@ const AppRoutes = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/contact" element={<Contact />} />
       </Route>
+      
+      {/* Trang admin */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<DashBoard />} />
+        <Route path="dashboard" element={<DashBoard />} />
+        <Route path="users" element={<User />} />
+      </Route>
+
     </Routes>
   );
 };

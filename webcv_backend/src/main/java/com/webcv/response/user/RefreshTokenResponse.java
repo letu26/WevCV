@@ -1,4 +1,4 @@
-package com.webcv.response;
+package com.webcv.response.user;
 
 import lombok.*;
 

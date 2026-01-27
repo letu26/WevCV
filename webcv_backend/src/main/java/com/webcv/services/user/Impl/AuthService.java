@@ -1,16 +1,17 @@
-package com.webcv.services.Impl;
+package com.webcv.services.user.Impl;
 
 import com.webcv.entity.RoleEntity;
 import com.webcv.entity.UserEntity;
+import com.webcv.enums.UserStatus;
 import com.webcv.exception.customexception.NotFoundException;
 import com.webcv.exception.customexception.UnauthorizedException;
 import com.webcv.repository.RoleRepository;
 import com.webcv.repository.AuthRepository;
 import com.webcv.request.RegisterRequest;
-import com.webcv.response.BaseResponse;
-import com.webcv.response.LoginResponse;
-import com.webcv.response.RefreshTokenResponse;
-import com.webcv.services.IAuthServices;
+import com.webcv.response.user.BaseResponse;
+import com.webcv.response.user.LoginResponse;
+import com.webcv.response.user.RefreshTokenResponse;
+import com.webcv.services.user.IAuthServices;
 import com.webcv.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -69,7 +71,7 @@ public class AuthService implements IAuthServices {
     @Override
     public LoginResponse login(String username, String password){
 
-        Optional<UserEntity> user = userRepository.findByUsername(username);
+        Optional<UserEntity> user = userRepository.findByUsernameAndStatus(username, UserStatus.ACTIVE);
         if(user.isEmpty()){
             throw new NotFoundException("User not found");
         }
@@ -84,16 +86,19 @@ public class AuthService implements IAuthServices {
         String accessToken = jwtTokenUtil.generateAccessToken(userEntity);
         String refreshToken = jwtTokenUtil.generateRefreshToken(userEntity);
 
+        List<String> role = userEntity.getRoles().stream().map(RoleEntity::getName).toList();
+
         return LoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .role(role)
                 .build();
     }
 
     @Override
     public RefreshTokenResponse refreshToken(String refreshToken) {
         String username = jwtTokenUtil.extractUsername(refreshToken,secretRefresh);
-        Optional<UserEntity> user = userRepository.findByUsername(username);
+        Optional<UserEntity> user = userRepository.findByUsernameAndStatus(username, UserStatus.ACTIVE);
         if(user.isEmpty()){
             throw new NotFoundException("User not found");
         }
@@ -119,7 +124,7 @@ public class AuthService implements IAuthServices {
     public BaseResponse changePass(String oldPassword, String newPassword) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        UserEntity user = userRepository.findByUsername(username)
+        UserEntity user = userRepository.findByUsernameAndStatus(username, UserStatus.ACTIVE)
                 .orElseThrow(()-> new NotFoundException("User not found!"));
         String password = user.getPassword();
         if(!passwordEncoder.matches(oldPassword,password)){

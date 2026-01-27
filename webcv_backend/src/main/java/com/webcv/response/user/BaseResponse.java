@@ -1,4 +1,4 @@
-package com.webcv.response;
+package com.webcv.response.user;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class CheckOTPResponse extends BaseResponse {
-    private String resetToken;
+public class BaseResponse {
+    private String code;
+    private String message;
 }

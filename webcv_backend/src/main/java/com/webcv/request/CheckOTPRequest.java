@@ -11,6 +11,6 @@ import lombok.*;
 public class CheckOTPRequest {
     @NotNull(message = "UserID is require!")
     private Long userId;
-    @NotBlank(message = "Opt is require!")
+    @NotBlank(message = "Otp is require!")
     private String otp;
 }

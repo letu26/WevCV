@@ -1,4 +1,4 @@
-package com.webcv.services.Impl;
+package com.webcv.services.user.Impl;
 
 import com.webcv.entity.PasswordResetEntity;
 import com.webcv.entity.UserEntity;
@@ -8,10 +8,10 @@ import com.webcv.repository.PasswordResetRepository;
 import com.webcv.repository.AuthRepository;
 import com.webcv.request.CheckOTPRequest;
 import com.webcv.request.ResetPasswordRequest;
-import com.webcv.response.BaseResponse;
-import com.webcv.response.CheckMailResponse;
-import com.webcv.response.CheckOTPResponse;
-import com.webcv.services.IPasswordResetServices;
+import com.webcv.response.user.BaseResponse;
+import com.webcv.response.user.CheckMailResponse;
+import com.webcv.response.user.CheckOTPResponse;
+import com.webcv.services.user.IPasswordResetServices;
 import com.webcv.util.OtpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
