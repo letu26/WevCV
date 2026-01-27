@@ -1,8 +1,8 @@
 package com.webcv.controller.user;
 
-import com.webcv.request.CheckEmailRequest;
-import com.webcv.request.CheckOTPRequest;
-import com.webcv.request.ResetPasswordRequest;
+import com.webcv.request.user.CheckEmailRequest;
+import com.webcv.request.user.CheckOTPRequest;
+import com.webcv.request.user.ResetPasswordRequest;
 import com.webcv.response.user.BaseResponse;
 import com.webcv.response.user.CheckOTPResponse;
 import com.webcv.services.user.Impl.PasswordResetService;

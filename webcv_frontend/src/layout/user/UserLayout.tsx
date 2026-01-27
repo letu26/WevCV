@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
-import { Header } from '@/components/Header';
-import SideBar from '@/components/SideBar';
+import { Header } from '@/components/user/Header';
+import SideBar from '@/components/user/SideBar';
 import { useState, useEffect } from 'react';
 import { STORAGE_KEYS } from '@/config';
 

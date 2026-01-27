@@ -1,13 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import HomePage from '@/pages/HomePage';
-import SignInPage from '@/pages/SignInPage';
-import SignUpPage from '@/pages/SignUpPage';
+import HomePage from '@/pages/user/HomePage';
+import SignInPage from '@/pages/user/SignInPage';
+import SignUpPage from '@/pages/user/SignUpPage';
 import ChangePasswordPage from '@/pages/ChangePasswordPage';
 import CheckOtpPage from '@/pages/CheckOtpPage';
 import ResetPasswordPage from '@/pages/ResetPasswordPage';
-import Profile from '@/pages/Profile';
-import About from '@/pages/About';
-import Contact from '@/pages/Contact';
+import Profile from '@/pages/user/Profile';
+import About from '@/pages/user/About';
+import Contact from '@/pages/user/Contact';
 import Settings from '@/pages/Settings';
 import UserLayout from '@/layout/user/UserLayout';
 

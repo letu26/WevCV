@@ -3,10 +3,22 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/demo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh
+    url: jdbc:mysql://localhost:3306/cv?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456789
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ldt0226@gmail.com
+    password: cjqvlszkdmijsets
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
   jpa:
     show-sql: true
@@ -28,7 +40,9 @@ app:
       http://localhost:5173
 
 jwt:
-  expiration: 1800000 #30 minutes to millisecond = 30 * 60 * 1000
-  secret: S1TZnHDnQS6ojlPYPI+bjd6CXxYhBP/eYmubZsRSANY=
-refresh:
-  expiration: 1209600000 #14 days to millisecond = 14 * 24 * 60 * 60 * 1000
+  access:
+    expiration: 1800000 #30 minutes to millisecond = 30 * 60 * 1000
+    secret: S1TZnHDnQS6ojlPYPI+bjd6CXxYhBP/eYmubZsRSANY=
+  refresh:
+    expiration: 1209600000 #14 days to millisecond = 14 * 24 * 60 * 60 * 1000
+    secret: TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI=

@@ -1,4 +1,4 @@
-package com.webcv.request;
+package com.webcv.request.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

@@ -1,7 +1,7 @@
 package com.webcv.services.user;
 
 
-import com.webcv.request.RegisterRequest;
+import com.webcv.request.user.RegisterRequest;
 import com.webcv.response.user.BaseResponse;
 import com.webcv.response.user.LoginResponse;
 import com.webcv.response.user.RefreshTokenResponse;
