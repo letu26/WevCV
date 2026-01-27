@@ -205,5 +205,107 @@ class AuthService {
   }
 }
 
+/* Lấy mã token*/
+
+  getAccessToken() {
+    return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+  }
+
+  getRefreshToken() {
+    return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+  }
+
+  saveTokens(accessToken: string, refreshToken: string) {
+    fetcher.saveAuthTokens(accessToken, refreshToken);
+  }
+
+  clearTokens() {
+    fetcher.logout();
+    localStorage.removeItem(STORAGE_KEYS.USER);
+  }
+
+  /* Kiểm tra bảo mật */
+
+  /**
+   * Kiểm tra trạng thái bảo mật
+   * - Thử gọi API hồ sơ
+   * - Nếu không được, thử làm mới token
+   * - Nếu làm mới không được, đăng xuất
+   */
+  async checkAuth(): Promise<boolean> {
+    const accessToken = this.getAccessToken();
+    const refreshToken = this.getRefreshToken();
+
+    if (!accessToken || !refreshToken) {
+      this.clearTokens();
+      return false;
+    }
+
+    try {
+      await this.getProfile();
+      return true;
+    } catch (error: any) {
+      if (error?.status === 401) {
+        return this.refreshAccessToken();
+      }
+      this.clearTokens();
+      return false;
+    }
+  }
+
+  /**
+   * Refresh access token using refresh token
+   * POST /auth/refresh
+   */
+  async refreshAccessToken(): Promise<boolean> {
+    try {
+      const response = await fetcher.post<RefreshTokenResponse>(
+        API_CONFIG.ENDPOINTS.AUTH.REFRESH,
+        {
+          refreshToken: this.getRefreshToken(),
+        }
+      );
+
+      if (response.success && response.data?.accessToken) {
+        fetcher.saveAuthTokens(
+          response.data.accessToken,
+          this.getRefreshToken()!
+        );
+        return true;
+      }
+
+      this.clearTokens();
+      return false;
+    } catch {
+      this.clearTokens();
+      return false;
+    }
+  }
+
+  /**
+   * Get current user profile (protected API)
+   * GET /auth/me
+   */
+  async getProfile() {
+    return fetcher.get(
+      API_CONFIG.ENDPOINTS.AUTH.PROFILE,
+      { requiresAuth: true }
+    );
+  }
+
+  async logout(): Promise<void> {
+    try {
+      await fetcher.post(
+        API_CONFIG.ENDPOINTS.AUTH.LOGOUT,
+        {},
+        { requiresAuth: true }
+      );
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      this.clearTokens();
+    }
+  }
+
 export const authService = new AuthService();
 export default authService;
