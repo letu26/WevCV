@@ -17,11 +17,11 @@ const translations = {
     title: 'VTIT Recruitment Portal',
     registerTitle: 'Đăng ký tài khoản',
     registerSubtitle: 'Tạo tài khoản mới để bắt đầu',
-    fullName: 'Họ và tên',
+    fullname: 'Họ và tên',
     email: 'Email',
-    phone: 'Số điện thoại (không bắt buộc)',
+    username: 'Tên đăng nhập',
     password: 'Mật khẩu',
-    confirmPassword: 'Xác nhận mật khẩu',
+    retypePassword: 'Xác nhận mật khẩu',
     registerButton: 'Đăng ký',
     registering: 'Đang xử lý...',
     haveAccount: 'Đã có tài khoản?',
@@ -35,11 +35,11 @@ const translations = {
     title: 'VTIT Recruitment Portal',
     registerTitle: 'Register Account',
     registerSubtitle: 'Create a new account to get started',
-    fullName: 'Full Name',
+    fullname: 'Full Name',
     email: 'Email',
-    phone: 'Phone Number (optional)',
+    username: 'Username',
     password: 'Password',
-    confirmPassword: 'Confirm Password',
+    retypePassword: 'Confirm Password',
     registerButton: 'Register',
     registering: 'Processing...',
     haveAccount: 'Already have an account?',
@@ -66,7 +66,7 @@ export default function SignUpPage({ language }: SignUpPageProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== formData.retypePassword) {
       toast.error(t.passwordMismatch);
       return;
     }
@@ -74,7 +74,7 @@ export default function SignUpPage({ language }: SignUpPageProps) {
     setIsLoading(true);
 
     try {
-      /** // Xoa comment khi ket noi duoc backend:33
+      // Xoa comment khi ket noi duoc backend:33
 
       // Register with backend API
       // POST /auth/register
@@ -82,10 +82,11 @@ export default function SignUpPage({ language }: SignUpPageProps) {
       // const response = await authService.register(formData);
 
       const response = await authService.register({
-          fullName: formData.fullName,
+          fullname: formData.fullname,
           email: formData.email,
           username: formData.username,
           password: formData.password,
+          retypePassword: formData.retypePassword,
       });
 
       if (response.success) {
@@ -94,14 +95,15 @@ export default function SignUpPage({ language }: SignUpPageProps) {
             } else {
               toast.error(response.message || t.registerError);
             }
-        */
+
 
       // Thu nghiem dang ky cho dev khi chua co backend
+      /*
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       toast.success(t.successMessage);
       setTimeout(() => navigate('/signin'), 1500);
-    } catch (error: any) {
+    */} catch (error: any) {
       console.error('Registration error:', error);
       toast.error(error?.message || t.registerError);
     } finally {
@@ -133,12 +135,12 @@ export default function SignUpPage({ language }: SignUpPageProps) {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="fullName" className="text-gray-700">{t.fullName}</Label>
+              <Label htmlFor="fullname" className="text-gray-700">{t.fullname}</Label>
               <Input
-                id="fullName"
+                id="fullname"
                 type="text"
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                value={formData.fullname}
+                onChange={(e) => setFormData({ ...formData, fullname: e.target.value })}
                 required
                 className="mt-1 bg-input-background border-border focus:border-primary focus:ring-primary"
                 placeholder="Nguyễn Văn A"
@@ -161,12 +163,12 @@ export default function SignUpPage({ language }: SignUpPageProps) {
             </div>
 
             <div>
-              <Label htmlFor="phone" className="text-gray-700">{t.phone}</Label>
+              <Label htmlFor="username" className="text-gray-700">{t.username}</Label>
               <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                id="username"
+                type="username"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 className="mt-1 bg-input-background border-border focus:border-primary focus:ring-primary"
                 placeholder="0123456789"
                 disabled={isLoading}
@@ -188,12 +190,12 @@ export default function SignUpPage({ language }: SignUpPageProps) {
             </div>
 
             <div>
-              <Label htmlFor="confirmPassword" className="text-gray-700">{t.confirmPassword}</Label>
+              <Label htmlFor="retypePassword" className="text-gray-700">{t.retypePassword}</Label>
               <Input
-                id="confirmPassword"
+                id="retypePassword"
                 type="password"
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                value={formData.retypePassword}
+                onChange={(e) => setFormData({ ...formData, retypePassword: e.target.value })}
                 required
                 className="mt-1 bg-input-background border-border focus:border-primary focus:ring-primary"
                 placeholder="••••••••"

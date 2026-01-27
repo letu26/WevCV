@@ -114,7 +114,6 @@ class Fetcher {
 
         // If refresh failed, redirect to login
         this.clearTokens();
-        window.location.href = '/signin';
         throw new ApiError(401, 'Session expired. Please login again.');
       }
 

@@ -61,26 +61,27 @@ export default function SignInPage({ language }: SignInPageProps) {
       navigate('/dashboard'); // Nếu đã có accessToken, chuyển thẳng đến dashboard
     }
   }, [navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-        /** // Xoa comment khi backend san sang :33
+        // Xoa comment khi backend san sang :33
         // Login with backend API
               // POST /auth/login
               const response = await authService.login(formData);
-
+              console.log("Token: " + response.accessToken + " " + response.refreshToken);
               if (response.success) {
                 toast.success(t.loginSuccess);
                 navigate('/dashboard');
               } else {
                 toast.error(response.message || t.loginError);
               }
-          */
+
 
       // Kiem tra login khi chua co backend
-      const mockUser = {
+      /*const mockUser = {
         id: '1',
         username: formData.username,
         fullName: formData.username,
@@ -99,7 +100,7 @@ export default function SignInPage({ language }: SignInPageProps) {
       localStorage.setItem('accessToken', mockTokens.accessToken);
       localStorage.setItem('refreshToken', mockTokens.refreshToken);
       localStorage.setItem('user', JSON.stringify(mockUser));
-
+*/
       toast.success(t.loginSuccess);
       navigate('/dashboard');
     } catch (error: any) {
@@ -178,7 +179,7 @@ export default function SignInPage({ language }: SignInPageProps) {
               </Link>
             </p>
             <p className="text-sm text-center">
-              <Link to="/forgot-password" className="text-primary hover:text-primary/80">
+              <Link to="/change-password" className="text-primary hover:text-primary/80">
                 {t.forgotPassword}
               </Link>
             </p>

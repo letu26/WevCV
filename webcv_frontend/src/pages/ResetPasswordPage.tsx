@@ -18,7 +18,7 @@ const translations = {
     resetPasswordTitle: 'Đặt lại mật khẩu',
     resetPasswordSubtitle: 'Nhập mật khẩu mới của bạn',
     newPassword: 'Mật khẩu mới',
-    confirmPassword: 'Xác nhận mật khẩu',
+    retypeNewPassword: 'Xác nhận mật khẩu',
     resetButton: 'Đặt lại mật khẩu',
     resetting: 'Đang xử lý...',
     backToLogin: '← Quay lại đăng nhập',
@@ -31,7 +31,7 @@ const translations = {
     resetPasswordTitle: 'Reset Password',
     resetPasswordSubtitle: 'Enter your new password',
     newPassword: 'New Password',
-    confirmPassword: 'Confirm Password',
+    retypeNewPassword: 'Retype New Password',
     resetButton: 'Reset Password',
     resetting: 'Processing...',
     backToLogin: '← Back to login',
@@ -49,13 +49,13 @@ export default function ResetPasswordPage({ language }: ResetPasswordPageProps) 
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     newPassword: '',
-    confirmPassword: ''
+    retypeNewPassword: ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (formData.newPassword !== formData.confirmPassword) {
+    if (formData.newPassword !== formData.retypeNewPassword) {
       toast.error(t.passwordMismatch);
       return;
     }
@@ -65,7 +65,7 @@ export default function ResetPasswordPage({ language }: ResetPasswordPageProps) 
     try {
       // Uncomment when backend is ready
       // STEP 3: Reset password with reset token
-            /*// POST /forgot/resetpassword
+            // POST /forgot/reset-password
             const response = await authService.resetPassword({
               newPassword: formData.newPassword,
               retypeNewPassword: formData.retypeNewPassword,
@@ -78,13 +78,13 @@ export default function ResetPasswordPage({ language }: ResetPasswordPageProps) 
             } else {
               toast.error(response.message || t.errorMessage);
             }
-        */
 
+/*
       // Mock API call for development
       await new Promise(resolve => setTimeout(resolve, 1000));
             toast.success(t.successMessage);
             setTimeout(() => navigate('/signin'), 2000);
-    } catch (error: any) {
+    */} catch (error: any) {
       console.error('Reset password error:', error);
       toast.error(error?.message || t.errorMessage);
     } finally {
@@ -130,12 +130,12 @@ export default function ResetPasswordPage({ language }: ResetPasswordPageProps) 
             </div>
 
             <div>
-              <Label htmlFor="confirmPassword" className="text-gray-700">{t.confirmPassword}</Label>
+              <Label htmlFor="retypeNewPassword" className="text-gray-700">{t.retypeNewPassword}</Label>
               <Input
-                id="confirmPassword"
+                id="retypeNewPassword"
                 type="password"
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                value={formData.retypeNewPassword}
+                onChange={(e) => setFormData({ ...formData, retypeNewPassword: e.target.value })}
                 required
                 className="mt-1 bg-input-background border-border focus:border-primary focus:ring-primary"
                 placeholder="••••••••"

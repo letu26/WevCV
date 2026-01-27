@@ -37,6 +37,8 @@ export function Header({ language, setLanguage, userName = 'User' }: HeaderProps
     try {
       await authService.logout();
       toast.success(t.logoutSuccess);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       navigate('/signin');
     } catch (error) {
       console.error('Logout error:', error);

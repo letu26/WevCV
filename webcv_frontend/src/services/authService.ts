@@ -2,6 +2,10 @@ import { fetcher } from '@/api/Fetcher';
 import { API_CONFIG, STORAGE_KEYS } from '@/config';
 import { type ApiResponse } from '@/api/ApiResponse';
 
+export interface RefreshTokenResponse {
+  accessToken: string;
+}
+
 export interface LoginRequest {
   username: string;
   password: string;
@@ -122,6 +126,7 @@ class AuthService {
   async logout(): Promise<void> {
     try {
       await fetcher.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT, {}, { requiresAuth: true });
+
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -136,6 +141,13 @@ class AuthService {
    * Response: { code: string, message: string, userId: number }
    */
   async checkEmail(data: CheckEmailRequest): Promise<ApiResponse<CheckEmailResponse>> {
+    return fetcher.post<CheckEmailResponse>(
+      API_CONFIG.ENDPOINTS.FORGOT.CHECK_EMAIL,
+      data
+    );
+  }
+
+  async resendOtp(data: CheckEmailRequest): Promise<ApiResponse<CheckEmailResponse>> {
     return fetcher.post<CheckEmailResponse>(
       API_CONFIG.ENDPOINTS.FORGOT.CHECK_EMAIL,
       data
@@ -203,7 +215,7 @@ class AuthService {
   isAuthenticated(): boolean {
     return !!localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   }
-}
+
 
 /* Lấy mã token*/
 
@@ -306,6 +318,6 @@ class AuthService {
       this.clearTokens();
     }
   }
-
+}
 export const authService = new AuthService();
 export default authService;

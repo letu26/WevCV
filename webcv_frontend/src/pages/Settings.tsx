@@ -8,6 +8,7 @@ import { motion } from 'motion/react';
 import { User, Lock, Bell, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import { STORAGE_KEYS } from '@/config';
+import { useNavigate, Link } from 'react-router-dom';
 
 interface SettingsProps {
   language: 'vi' | 'en';
@@ -74,6 +75,7 @@ const translations = {
 };
 
 export default function Settings({ language, setLanguage }: SettingsProps) {
+    const navigate = useNavigate();
   const t = translations[language];
   const [isLoading, setIsLoading] = useState(false);
   const [accountData, setAccountData] = useState({
@@ -81,12 +83,18 @@ export default function Settings({ language, setLanguage }: SettingsProps) {
     email: '',
     phone: '',
     username: '',
+
+
+
   });
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
-    confirmPassword: '',
+    reTypePassword: '',
   });
+
+
+
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
     cvStatusUpdates: true,
@@ -128,7 +136,23 @@ export default function Settings({ language, setLanguage }: SettingsProps) {
       setIsLoading(false);
     }, 1000);
   };
+const handlePasswordUpdate = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
 
+  try {
+    /*await AuthService.verifyCurrentPassword({
+      currentPassword: passwordData.currentPassword,
+    });*/
+
+    navigate("/change-password");
+  } catch (error: any) {
+    toast.error(error.message || "Mật khẩu hiện tại không đúng");
+  } finally {
+    setIsLoading(false);
+  }
+};
+/*
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -149,7 +173,7 @@ export default function Settings({ language, setLanguage }: SettingsProps) {
       });
       setIsLoading(false);
     }, 1000);
-  };
+  };*/
 
   const handleLanguageChange = (newLang: 'vi' | 'en') => {
     setLanguage(newLang);
@@ -251,28 +275,8 @@ export default function Settings({ language, setLanguage }: SettingsProps) {
                     disabled={isLoading}
                   />
                 </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="newPassword">{t.newPassword}</Label>
-                    <Input
-                      id="newPassword"
-                      type="password"
-                      value={passwordData.newPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="confirmPassword">{t.confirmPassword}</Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      value={passwordData.confirmPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                      disabled={isLoading}
-                    />
-                  </div>
-                </div>
+
+
                 <Button
                   type="submit"
                   className="bg-red-600 hover:bg-red-700 text-white"

@@ -1,6 +1,6 @@
 package com.webcv.config;
 
-import com.webcv.repository.UserRepository;
+import com.webcv.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,13 +23,13 @@ public class SecurityConfig {
 
     @Value("${app.cors.allowed-origins}")
     private String allowedOrigins;
-    private final UserRepository userRepository;
+    private final AuthRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("username not found = "+ username));
+                .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
     }
 
     @Bean

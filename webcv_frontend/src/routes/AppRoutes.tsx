@@ -2,7 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from '@/pages/HomePage';
 import SignInPage from '@/pages/SignInPage';
 import SignUpPage from '@/pages/SignUpPage';
-import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
+import ChangePasswordPage from '@/pages/ChangePasswordPage';
+import CheckOtpPage from '@/pages/CheckOtpPage';
 import ResetPasswordPage from '@/pages/ResetPasswordPage';
 import Profile from '@/pages/Profile';
 import About from '@/pages/About';
@@ -22,7 +23,8 @@ export default function AppRoutes({ language, setLanguage }: AppRoutesProps) {
       <Route path="/" element={<HomePage language={language} setLanguage={setLanguage} />} />
       <Route path="/signin" element={<SignInPage language={language} setLanguage={setLanguage} />} />
       <Route path="/signup" element={<SignUpPage language={language} setLanguage={setLanguage} />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage language={language} setLanguage={setLanguage} />} />
+      <Route path="/change-password" element={<ChangePasswordPage language={language} setLanguage={setLanguage} />} />
+      <Route path="/check-otp" element={<CheckOtpPage language={language} setLanguage={setLanguage} />} />
       <Route path="/reset-password" element={<ResetPasswordPage language={language} setLanguage={setLanguage} />} />
 
       {/* Protected Routes with Layout */}

@@ -5,10 +5,9 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @SuperBuilder
-public class BaseResponse {
-    private String code;
-    private String message;
+public class CheckMailResponse extends BaseResponse{
+    private Long userId;
 }
