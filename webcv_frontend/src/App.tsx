@@ -15,6 +15,19 @@ function App() {
     }
   }, []);
 
+useEffect(() => {
+  const initAuth = async () => {
+    const isAuth = await authService.checkAuth();
+    if (isAuth) {
+      navigate('/dashboard');
+    } else {
+      navigate('/signin');
+    }
+  };
+
+  initAuth();
+}, []);
+
   const handleSetLanguage = (lang: 'vi' | 'en') => {
     setLanguage(lang);
     localStorage.setItem(STORAGE_KEYS.LANGUAGE, lang);
