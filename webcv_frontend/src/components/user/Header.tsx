@@ -1,76 +1,121 @@
-import React from 'react';
-import { NavLink } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+import { Avatar, AvatarFallback } from '@/app/components/ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/app/components/ui/dropdown-menu';
+import { Button } from '@/app/components/ui/button';
+import { LogOut, Settings as SettingsIcon, User } from 'lucide-react';
+import { authService } from '@/services/authService';
+import { toast } from 'sonner';
 
-const Header: React.FC = () => {
-  const navItemClass = ({ isActive }: { isActive: boolean }) =>
-  `relative text-sm font-medium transition-colors
-   ${isActive ? "text-indigo-600" : "text-gray-600 hover:text-gray-900"}`;
+interface HeaderProps {
+  language: 'vi' | 'en';
+  setLanguage: (lang: 'vi' | 'en') => void;
+  userName?: string;
+}
+
+const translations = {
+  vi: {
+    title: 'VTIT Recruitment portal',
+    profile: 'Hồ sơ',
+    settings: 'Cài đặt',
+    logout: 'Đăng xuất',
+    logoutSuccess: 'Đăng xuất thành công',
+  },
+  en: {
+    title: 'VTIT Recruitment portal',
+    profile: 'Profile',
+    settings: 'Settings',
+    logout: 'Logout',
+    logoutSuccess: 'Logout successful',
+  },
+};
+
+export function Header({ language, setLanguage, userName = 'User' }: HeaderProps) {
+  const navigate = useNavigate();
+  const t = translations[language];
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      toast.success(t.logoutSuccess);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      navigate('/signin');
+    } catch (error) {
+      console.error('Logout error:', error);
+      navigate('/signin');
+    }
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
-    <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="flex h-16 items-center justify-between">
-
-          {/* Logo */}
-          <NavLink
-            to="/"
-            className="text-xl font-bold tracking-tight text-gray-900"
-          >
-            MyApp
-          </NavLink>
-
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <NavLink to="/" className={navItemClass}>
-              Home
-              <span className="absolute left-0 -bottom-1 h-0.5 w-full bg-indigo-600 scale-x-0 transition-transform group-hover:scale-x-100" />
-            </NavLink>
-
-            <NavLink to="/about" className={navItemClass}>
-              About
-            </NavLink>
-
-            <NavLink to="/contact" className={navItemClass}>
-              Contact
-            </NavLink>
-          </nav>
-
-          {/* Actions */}
-          <div className="flex items-center gap-3">
-            <NavLink
-              to="/signin"
-              className={({ isActive }) =>
-                `hidden sm:inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition
-                ${
-                  isActive
-                    ? "text-indigo-600"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`
-              }
-            >
-              Sign in
-            </NavLink>
-
-            <NavLink
-              to="/signup"
-              className={({ isActive }) =>
-                `inline-flex items-center rounded-md px-4 py-2 text-sm font-medium shadow transition
-                ${
-                  isActive
-                    ? "bg-indigo-700 text-white"
-                    : "bg-indigo-600 text-white hover:bg-indigo-500"
-                }`
-              }
-            >
-              Sign up
-            </NavLink>
+    <header className="bg-white border-b border-border sticky top-0 z-50 shadow-sm">
+      <div className="flex items-center justify-between px-6 py-4">
+        {/* Logo */}
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-xl">V</span>
           </div>
+          <h1 className="text-xl font-bold text-gray-900">{t.title}</h1>
+        </div>
+
+        {/* Right Section */}
+        <div className="flex items-center space-x-4">
+          {/* Language Selector */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                {language.toUpperCase()}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setLanguage('vi')}>
+                Tiếng Việt
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('en')}>
+                English
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center space-x-2 hover:bg-accent rounded-lg p-2 transition-colors">
+                <Avatar className="w-8 h-8">
+                  <AvatarFallback className="bg-primary text-white">
+                    {getInitials(userName)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="font-medium text-gray-700">{userName}</span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={() => navigate('/profile')}>
+                <User className="w-4 h-4 mr-2" />
+                {t.profile}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/settings')}>
+                <SettingsIcon className="w-4 h-4 mr-2" />
+                {t.settings}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout} className="text-primary">
+                <LogOut className="w-4 h-4 mr-2" />
+                {t.logout}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
-    </>
   );
-};
+}
 
 export default Header;
