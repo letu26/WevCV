@@ -1,6 +1,5 @@
 import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
-
 const Header: React.FC = () => {
   return (
     <header
