@@ -10,6 +10,7 @@ export const API_CONFIG = {
       REGISTER: '/auth/register',
       LOGOUT: '/auth/logout',
       REFRESH: '/auth/refresh',
+      CHANGE_PASSWORD: '/auth/changepass',
     },
     FORGOT: {
       CHECK_EMAIL: '/forgot/checkmail',
@@ -21,7 +22,6 @@ export const API_CONFIG = {
     USER: {
       PROFILE: '/users/profile',
       UPDATE: '/users/profile',
-      CHANGE_PASSWORD: '/users/change-password',
     },
     CV: {
       LIST: '/cv/list',

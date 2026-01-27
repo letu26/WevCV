@@ -3,6 +3,7 @@ import HomePage from '@/pages/user/HomePage';
 import SignInPage from '@/pages/user/SignInPage';
 import SignUpPage from '@/pages/user/SignUpPage';
 import ChangePasswordPage from '@/pages/ChangePasswordPage';
+import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
 import CheckOtpPage from '@/pages/CheckOtpPage';
 import ResetPasswordPage from '@/pages/ResetPasswordPage';
 import Profile from '@/pages/user/Profile';
@@ -24,6 +25,7 @@ export default function AppRoutes({ language, setLanguage }: AppRoutesProps) {
       <Route path="/signin" element={<SignInPage language={language} setLanguage={setLanguage} />} />
       <Route path="/signup" element={<SignUpPage language={language} setLanguage={setLanguage} />} />
       <Route path="/change-password" element={<ChangePasswordPage language={language} setLanguage={setLanguage} />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage language={language} setLanguage={setLanguage} />} />
       <Route path="/check-otp" element={<CheckOtpPage language={language} setLanguage={setLanguage} />} />
       <Route path="/reset-password" element={<ResetPasswordPage language={language} setLanguage={setLanguage} />} />
 

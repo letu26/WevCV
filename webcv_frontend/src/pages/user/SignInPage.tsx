@@ -179,7 +179,7 @@ export default function SignInPage({ language }: SignInPageProps) {
               </Link>
             </p>
             <p className="text-sm text-center">
-              <Link to="/change-password" className="text-primary hover:text-primary/80">
+              <Link to="/forgot-password" className="text-primary hover:text-primary/80">
                 {t.forgotPassword}
               </Link>
             </p>

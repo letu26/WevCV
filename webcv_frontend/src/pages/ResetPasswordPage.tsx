@@ -72,8 +72,8 @@ export default function ResetPasswordPage({ language }: ResetPasswordPageProps) 
               resetToken: token
             });
 
-            if (response.success && response.data) {
-              toast.success(response.data.message || t.successMessage);
+            if (response.success) {
+              toast.success(response.message || t.successMessage);
               setTimeout(() => navigate('/signin'), 2000);
             } else {
               toast.error(response.message || t.errorMessage);

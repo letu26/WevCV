@@ -27,7 +27,7 @@ console.log("userId:", userId);
 
   // Không có userId thì quay lại
   useEffect(() => {
-    if (!userId) navigate('/change-password');
+    if (!userId) navigate('/forgot-password');
   }, [userId, navigate]);
 
   // Đếm ngược resend OTP
