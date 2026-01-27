@@ -11,7 +11,7 @@ public class ChangePassRequest {
     @NotBlank(message = "OldPassWord is require")
     private String oldPassword;
 
-    @NotBlank(message = "NewPassWork is require")
+    @NotBlank(message = "NewPassWord is require")
     private String newPassword;
 
     @NotBlank(message = "RetypeNewPassword is require")

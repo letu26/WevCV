@@ -1,6 +1,6 @@
 package com.webcv.util;
 
-import com.webcv.response.BaseResponse;
+import com.webcv.response.user.BaseResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
