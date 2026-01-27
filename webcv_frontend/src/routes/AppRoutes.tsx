@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router";
-
 import HomePage from "@/pages/user/HomePage";
 import SignInPage from "@/pages/user/SignInPage";
 import SignUpPage from "@/pages/user/SignUpPage";
@@ -14,7 +13,6 @@ import User from "@/pages/admin/UserManagement";
 import LoginAdmin from "@/pages/admin/LoginAdmin";
 import Forbidden from "@/pages/admin/Forbidden";
 import AdminRoute from "./auth/AdminRoute";
-
 const AppRoutes = () => {
   return (
     <Routes>
@@ -28,11 +26,12 @@ const AppRoutes = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/contact" element={<Contact />} />
       </Route>
-      
       {/* Trang admin */}
       <Route path="/admin/login" element={<LoginAdmin />} />
       <Route path="/403" element={<Forbidden />} />
-
+      {/* ADMIN LOGIN */}
+      <Route path="/admin/login" element={<LoginAdmin />} />
+      <Route path="/403" element={<Forbidden />} />
       {/*ADMIN PROTECTED */}
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminLayout />}>
@@ -44,5 +43,4 @@ const AppRoutes = () => {
     </Routes>
   );
 };
-
 export default AppRoutes;

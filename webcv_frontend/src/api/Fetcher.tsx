@@ -1,13 +1,13 @@
 import axios, { type AxiosRequestConfig } from "axios";
 import { API_URL } from "@/config";
 
-// axios instance chung
+// ===== axios instance =====
 const apiClient = axios.create({
   baseURL: API_URL,
   timeout: 10000,
 });
 
-// request interceptor (gắn token)
+// ===== request interceptor =====
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
 
@@ -18,7 +18,7 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// response interceptor (REFRESH TOKEN)
+// ===== response interceptor (REFRESH TOKEN) =====
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -60,7 +60,7 @@ apiClient.interceptors.response.use(
   }
 );
 
-//fetcher chung
+// ===== fetcher chung =====
 export const fetcher = async <T,>(
   config: AxiosRequestConfig
 ): Promise<T> => {
