@@ -10,7 +10,10 @@ import Contact from "@/pages/user/Contact";
 import UserLayout from "@/layout/user/UserLayout";
 import AdminLayout from "@/layout/admin/AdminLayout";
 import DashBoard from "@/pages/admin/DashBoard";
-import User from "@/pages/admin/User";
+import User from "@/pages/admin/UserManagement";
+import LoginAdmin from "@/pages/admin/LoginAdmin";
+import Forbidden from "@/pages/admin/Forbidden";
+import AdminRoute from "./auth/AdminRoute";
 
 const AppRoutes = () => {
   return (
@@ -27,12 +30,17 @@ const AppRoutes = () => {
       </Route>
       
       {/* Trang admin */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<DashBoard />} />
-        <Route path="dashboard" element={<DashBoard />} />
-        <Route path="users" element={<User />} />
-      </Route>
+      <Route path="/admin/login" element={<LoginAdmin />} />
+      <Route path="/403" element={<Forbidden />} />
 
+      {/*ADMIN PROTECTED */}
+      <Route element={<AdminRoute />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<DashBoard />} />
+          <Route path="dashboard" element={<DashBoard />} />
+          <Route path="users" element={<User />} />
+        </Route>
+      </Route>
     </Routes>
   );
 };

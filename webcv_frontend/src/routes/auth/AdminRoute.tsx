@@ -1,0 +1,18 @@
+import { getAccessToken, hasRole } from "@/util/auth";
+import { Navigate, Outlet } from "react-router";
+
+const AdminRoute = () => {
+  const token = getAccessToken();
+
+  if (!token) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  if (!hasRole(["ADMIN", "LEAD"])) {
+    return <Navigate to="/403" replace />;
+  }
+
+  return <Outlet />;
+};
+
+export default AdminRoute;

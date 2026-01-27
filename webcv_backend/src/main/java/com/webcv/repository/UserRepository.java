@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
                 JOIN u.roles r
                 WHERE (:role IS NULL OR r.name = :role)
                   AND (:status IS NULL OR u.status = :status)
-                  AND (
+                  AND ( 
                        :keyword IS NULL 
                        OR LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%'))
                   )
