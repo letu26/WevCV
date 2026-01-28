@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
                   AND (:status IS NULL OR u.status = :status)
                   AND ( 
                        :keyword IS NULL 
-                       OR LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                       OR LOWER(u.fullname) LIKE LOWER(CONCAT('%', :keyword, '%'))
                   )
             """)
     Page<UserEntity> findAllWithFilter(@Param("role") String role, @Param("status")UserStatus status, @Param("keyword") String keyword, Pageable p);
