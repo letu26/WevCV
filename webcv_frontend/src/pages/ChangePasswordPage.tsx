@@ -17,6 +17,7 @@ const translations = {
     title: 'VTIT Recruitment Portal',
     resetPasswordTitle: 'Đặt lại mật khẩu',
     resetPasswordSubtitle: 'Nhập mật khẩu mới của bạn',
+    oldPassword: 'Nhập lại mật khẩu cũ',
     newPassword: 'Mật khẩu mới',
     retypeNewPassword: 'Xác nhận mật khẩu',
     resetButton: 'Đặt lại mật khẩu',
@@ -30,6 +31,7 @@ const translations = {
     title: 'VTIT Recruitment Portal',
     resetPasswordTitle: 'Reset Password',
     resetPasswordSubtitle: 'Enter your new password',
+    oldPassword: 'Enter old password',
     newPassword: 'New Password',
     retypeNewPassword: 'Retype New Password',
     resetButton: 'Reset Password',
@@ -65,7 +67,7 @@ export default function ResetPasswordPage({ language }: ResetPasswordPageProps) 
     try {
       // Uncomment when backend is ready
       // STEP 3: Reset password with reset token
-            // POST /forgot/reset-password
+            // POST /api/auth/changepass
             const response = await authService.changePassword({
               oldPassword: formData.oldPassword,
               newPassword: formData.newPassword,

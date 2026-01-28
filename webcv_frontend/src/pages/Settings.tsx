@@ -276,7 +276,6 @@ const handlePasswordUpdate = async (e: React.FormEvent) => {
                   />
                 </div>
 
-
                 <Button
                   type="submit"
                   className="bg-red-600 hover:bg-red-700 text-white"

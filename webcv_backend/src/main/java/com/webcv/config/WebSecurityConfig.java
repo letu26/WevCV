@@ -31,7 +31,7 @@ public class WebSecurityConfig {
                     requests
                             .requestMatchers("api/auth/register", "/api/auth/login", "/api/auth/refresh", "/api/forgot/checkmail","/api/forgot/checkotp", "/api/forgot/resetpassword")
                             .permitAll()
-                            .requestMatchers(GET, "/api/products**").hasAnyRole("USER", "ADMIN")
+                            .requestMatchers(GET, "/api/products/**").hasAnyRole("USER", "ADMIN")
 
                             .requestMatchers(POST, "/api/products/**").hasAnyRole("ADMIN")
 
