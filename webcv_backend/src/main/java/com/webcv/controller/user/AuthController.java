@@ -1,10 +1,10 @@
 package com.webcv.controller.user;
 
 import com.webcv.exception.customexception.PasswordNotMatchException;
-import com.webcv.request.ChangePassRequest;
-import com.webcv.request.LoginRequest;
-import com.webcv.request.RefreshTokenRequest;
-import com.webcv.request.RegisterRequest;
+import com.webcv.request.user.ChangePassRequest;
+import com.webcv.request.user.LoginRequest;
+import com.webcv.request.user.RefreshTokenRequest;
+import com.webcv.request.user.RegisterRequest;
 import com.webcv.response.user.BaseResponse;
 import com.webcv.response.user.LoginResponse;
 import com.webcv.response.user.RefreshTokenResponse;

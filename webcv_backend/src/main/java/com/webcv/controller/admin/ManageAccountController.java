@@ -45,7 +45,7 @@ public class ManageAccountController {
 
         if (role != null && !role.isBlank()) {
             if (!role.equalsIgnoreCase("ADMIN")
-                    && !role.equalsIgnoreCase("USER")) {
+                    && !role.equalsIgnoreCase("USER")&& !role.equalsIgnoreCase("LEAD")) {
                 throw new BadRequestException("Invalid role: " + role);
             }
             role = role.toUpperCase();
@@ -53,7 +53,7 @@ public class ManageAccountController {
 
         if (keyword != null) {
             keyword = keyword.trim();
-            if (keyword.length() < 2) {
+            if (keyword.length() < 1) {
                 throw new BadRequestException("Keyword too short");
             }
         }

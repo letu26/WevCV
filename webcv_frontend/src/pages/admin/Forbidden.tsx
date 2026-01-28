@@ -1,3 +1,5 @@
+import React from "react";
+
 const Forbidden = () => {
   return (
     <div className="h-screen flex items-center justify-center">

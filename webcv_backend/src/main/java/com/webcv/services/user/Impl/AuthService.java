@@ -7,7 +7,7 @@ import com.webcv.exception.customexception.NotFoundException;
 import com.webcv.exception.customexception.UnauthorizedException;
 import com.webcv.repository.RoleRepository;
 import com.webcv.repository.AuthRepository;
-import com.webcv.request.RegisterRequest;
+import com.webcv.request.user.RegisterRequest;
 import com.webcv.response.user.BaseResponse;
 import com.webcv.response.user.LoginResponse;
 import com.webcv.response.user.RefreshTokenResponse;

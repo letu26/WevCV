@@ -1,4 +1,4 @@
-import { fetcher } from "./Fetcher";
+import { fetcher } from "./FetcherAdmin";
 
 export const refreshToken = () => {
   return fetcher<{
