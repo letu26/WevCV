@@ -72,7 +72,7 @@ export default function SignInPage({ language }: SignInPageProps) {
         // Login with backend API
               // POST /auth/login
               const response = await authService.login(formData);
-              console.log("Token: " + response.data?.accessToken + " " + response.data?.refreshToken);
+              console.log(response);
               if (response.success) {
                 toast.success(t.loginSuccess);
                 navigate('/dashboard');
@@ -113,7 +113,7 @@ export default function SignInPage({ language }: SignInPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-red-50 via-white to-red-50 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
