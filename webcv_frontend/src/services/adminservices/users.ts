@@ -49,7 +49,8 @@ export const getUsers = (
   page = 0,
   size = 9,
   role?: string,
-  status?: string
+  status?: string,
+  keyword?: string
 ) => {
   return fetcher<UserPageResponse>({
     url: "/admin/account",
@@ -59,6 +60,58 @@ export const getUsers = (
       size,
       ...(role && { role }),
       ...(status && { status }),
+      ...(keyword && {keyword}
+      )
     },
   });
 };
+
+export type Role = "ADMIN" | "LEAD" | "USER";
+export type UserStatus = "ACTIVE" | "INACTIVE";
+
+export type CreateUserRequest = {
+  username: string;
+  password: string;
+  roles: Role[];
+  status: UserStatus;
+  email: string;
+  fullname: string;
+}
+
+type SuccessResponse = {
+  code: string;
+  message: string;
+}
+
+//tạo mới người dùng
+export const createUser = (data: CreateUserRequest) => {
+  return fetcher<SuccessResponse>({
+    url: "/admin/account/create",
+    method: "POST",
+    data,
+  });
+};
+
+export type UpdateRole = {
+  roles: Role[]
+}
+//phân quyền người dùng
+export const editRoles = (data: UpdateRole, id: number) => {
+  return fetcher<SuccessResponse>({
+    url: `/admin/account/${id}/roles`,
+    method: "PUT",
+    data,
+  })
+}
+
+export type UpdateStatus = {
+  status: string
+}
+//cập nhật trạng thái
+export const editStatus = (data: UpdateStatus, id: number) => {
+  return fetcher<SuccessResponse>({
+    url: `/admin/account/${id}/status`,
+    method: "PUT",
+    data
+  })
+}

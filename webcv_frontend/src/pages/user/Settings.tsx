@@ -25,7 +25,7 @@ const translations = {
     fullName: 'Họ và tên',
     email: 'Email',
     phone: 'Số điện thoại',
-    username: 'Tên đăng nhập',
+    address: 'Địa chỉ',
     saveChanges: 'Lưu thay đổi',
     passwordSettings: 'Đổi mật khẩu',
     passwordDesc: 'Cập nhật mật khẩu để bảo mật tài khoản',
@@ -53,7 +53,7 @@ const translations = {
     fullName: 'Full Name',
     email: 'Email',
     phone: 'Phone Number',
-    username: 'Username',
+    address: 'Address',
     saveChanges: 'Save Changes',
     passwordSettings: 'Change Password',
     passwordDesc: 'Update your password to secure your account',
@@ -75,6 +75,9 @@ const translations = {
   },
 };
 
+const fullName = localStorage.getItem("fullname");
+const email = localStorage.getItem("email");
+
 export default function Settings({ language, setLanguage }: SettingsProps) {
     const navigate = useNavigate();
   const t = translations[language];
@@ -83,18 +86,13 @@ export default function Settings({ language, setLanguage }: SettingsProps) {
     fullName: '',
     email: '',
     phone: '',
-    username: '',
-
-
-
+    address: '',
   });
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
     reTypePassword: '',
   });
-
-
 
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
@@ -111,7 +109,7 @@ export default function Settings({ language, setLanguage }: SettingsProps) {
           fullName: user.fullName || '',
           email: user.email || '',
           phone: user.phone || '',
-          username: user.username || '',
+          address: user.address || '',
         });
       } catch (error) {
         console.error('Failed to parse user data:', error);
@@ -210,17 +208,17 @@ const handlePasswordUpdate = async (e: React.FormEvent) => {
                     <Label htmlFor="fullName">{t.fullName}</Label>
                     <Input
                       id="fullName"
-                      value={accountData.fullName}
+                      value={accountData.fullName || fullName}
                       onChange={(e) => setAccountData({ ...accountData, fullName: e.target.value })}
                       disabled={isLoading}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="username">{t.username}</Label>
+                    <Label htmlFor="address">{t.address}</Label>
                     <Input
-                      id="username"
-                      value={accountData.username}
-                      onChange={(e) => setAccountData({ ...accountData, username: e.target.value })}
+                      id="address"
+                      value={accountData.address}
+                      onChange={(e) => setAccountData({ ...accountData, address: e.target.value })}
                       disabled={isLoading}
                     />
                   </div>
@@ -229,7 +227,7 @@ const handlePasswordUpdate = async (e: React.FormEvent) => {
                     <Input
                       id="email"
                       type="email"
-                      value={accountData.email}
+                      value={accountData.email || email}
                       onChange={(e) => setAccountData({ ...accountData, email: e.target.value })}
                       disabled={isLoading}
                     />
@@ -341,7 +339,7 @@ const handlePasswordUpdate = async (e: React.FormEvent) => {
                       onChange={(e) => setNotifications({ ...notifications, emailNotifications: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
                   </label>
                 </div>
               </div>

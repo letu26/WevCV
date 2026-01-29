@@ -5,6 +5,7 @@ import { Button } from '@/app/components/ui/button';
 import { LogOut, Settings as SettingsIcon, User } from 'lucide-react';
 import { authService } from '@/services/authService';
 import { toast } from 'sonner';
+import React from 'react';
 
 interface HeaderProps {
   language: 'vi' | 'en';
@@ -28,8 +29,8 @@ const translations = {
     logoutSuccess: 'Logout successful',
   },
 };
-
-export function Header({ language, setLanguage, userName = 'User' }: HeaderProps) {
+const fullName = localStorage.getItem("fullname");
+export function Header({ language, setLanguage}: HeaderProps) {
   const navigate = useNavigate();
   const t = translations[language];
 
@@ -91,10 +92,10 @@ export function Header({ language, setLanguage, userName = 'User' }: HeaderProps
               <button className="flex items-center space-x-2 hover:bg-accent rounded-lg p-2 transition-colors">
                 <Avatar className="w-8 h-8">
                   <AvatarFallback className="bg-primary text-white">
-                    {getInitials(userName)}
+                    {getInitials(fullName)}
                   </AvatarFallback>
                 </Avatar>
-                <span className="font-medium text-gray-700">{userName}</span>
+                <span className="font-medium text-gray-700">{fullName}</span>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">

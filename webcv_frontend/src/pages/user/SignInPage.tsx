@@ -7,6 +7,7 @@ import { motion } from 'motion/react';
 import { toast } from 'sonner';
 import { authService } from '@/services/authService';
 import React from 'react';
+import { login } from '@/services/adminservices/login';
 
 interface SignInPageProps {
   language: 'vi' | 'en';
@@ -68,52 +69,31 @@ export default function SignInPage({ language }: SignInPageProps) {
     setIsLoading(true);
 
     try {
-        // Xoa comment khi backend san sang :33
-        // Login with backend API
-              // POST /auth/login
-              const response = await authService.login(formData);
-              console.log("Token: " + response.data?.accessToken + " " + response.data?.refreshToken);
-              if (response.success) {
-                toast.success(t.loginSuccess);
-                navigate('/dashboard');
-              } else {
-                toast.error(response.message || t.loginError);
-              }
+      const response = await login(formData);
+      const roles = response.role;
+      localStorage.setItem("accessToken", response.accessToken);
+      localStorage.setItem("refreshToken", response.refreshToken);
+      localStorage.setItem("userId", response.userId.toString());
+      localStorage.setItem("fullname", response.fullName);
+      localStorage.setItem("email", response.email);
+      localStorage.setItem("roles", JSON.stringify(roles));
 
-
-      // Kiem tra login khi chua co backend
-      /*const mockUser = {
-        id: '1',
-        username: formData.username,
-        fullName: formData.username,
-        phone: '',
-      };
-
-      const mockTokens = {
-        accessToken: 'mock_access_token_' + Date.now(),
-        refreshToken: 'mock_refresh_token_' + Date.now(),
-      };
-
-      //
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      //
-      localStorage.setItem('accessToken', mockTokens.accessToken);
-      localStorage.setItem('refreshToken', mockTokens.refreshToken);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-*/
-      toast.success(t.loginSuccess);
-      navigate('/dashboard');
-    } catch (error: any) {
-      console.error('Login error:', error);
-      toast.error(error?.message || t.loginError);
-    } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
+      toast.success("Đăng nhập thành công");
+    }
+    catch (error: any) {
+      if (error.response?.status === 401) {
+        toast.error("Sai username hoặc password");
+      } else {
+        toast.error("Đăng nhập thất bại");
+      }
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-red-50 via-white to-red-50 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

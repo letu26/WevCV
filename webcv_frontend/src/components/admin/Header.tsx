@@ -1,6 +1,23 @@
 import React from "react";
+import { FiLogOut } from "react-icons/fi";
 import { AiOutlineSearch } from "react-icons/ai";
+import { FaBell } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useSearch } from "@/hooks/useSearch";
+
 const Header: React.FC = () => {
+  const { search, setSearch } = useSearch();
+
+  const navigate = useNavigate();
+  const handleClick = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("email");
+    localStorage.removeItem("fullname");
+    localStorage.removeItem("roles");
+    navigate("/admin/login");
+  };
   return (
     <header
       className="
@@ -17,6 +34,8 @@ const Header: React.FC = () => {
           <input
             type="text"
             placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="
               w-64 pl-9 pr-3 py-2 text-sm
               rounded-md border border-gray-300
@@ -24,7 +43,7 @@ const Header: React.FC = () => {
             "
           />
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 text-sm">
-            <AiOutlineSearch size={20}/>
+            <AiOutlineSearch size={20} />
           </span>
         </div>
       </div>
@@ -32,21 +51,21 @@ const Header: React.FC = () => {
       {/* RIGHT */}
       <div className="flex items-center gap-6">
         {/* Language */}
-        <div className="flex items-center gap-1 text-sm text-gray-600 cursor-pointer">
-          <span>US</span>
-          <span>English</span>
+        <div className="flex items-center gap-1 text-xl text-gray-600 cursor-pointer font-bold">
+          <span>VI</span>
+          <span>Việt Nam</span>
         </div>
 
         {/* Notification */}
         <button className="relative text-gray-600 hover:text-gray-800">
-          🔔
+          <FaBell size={20} />
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
         </button>
 
-        {/* Avatar */}
-        <div className="w-9 h-9 rounded-full bg-blue-500 text-white flex items-center justify-center font-semibold cursor-pointer">
-          A
-        </div>
+        {/* Logout */}
+        <button className="text-gray-600 hover:text-gray-800" onClick={handleClick}>
+          <FiLogOut size={25} />
+        </button>
       </div>
     </header>
   );

@@ -24,14 +24,15 @@ const LoginAdmin: React.FC = () => {
       //lưu token và role vào localStorage
       localStorage.setItem("accessToken", res.accessToken);
       localStorage.setItem("refreshToken", res.refreshToken);
+      localStorage.setItem("userId", res.userId.toString());
+      localStorage.setItem("fullname", res.fullName);
+      localStorage.setItem("email",  res.email);
       localStorage.setItem("roles", JSON.stringify(roles));
-
-      toast.success("Đăng nhập thành công 🎉");
 
       setTimeout(() => {
         navigate("/admin/dashboard");
       }, 1000);
-
+      toast.success("Đăng nhập thành công");
     } catch (error: any) {
       if (error.response?.status === 401) {
         toast.error("Sai username hoặc password");
@@ -44,7 +45,7 @@ const LoginAdmin: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center px-4">
-      <Toaster richColors position="top-right" />
+      <Toaster richColors position="bottom-right" />
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
         {/* Header */}
         <div className="text-center mb-8">

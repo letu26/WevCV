@@ -18,6 +18,7 @@ import AdminRoute from './auth/AdminRoute';
 import Forbidden from '@/pages/admin/Forbidden';
 import LoginAdmin from '@/pages/admin/LoginAdmin';
 import UserManagement from '@/pages/admin/UserManagement';
+import UserRoute from './auth/UserPoute';
 
 interface AppRoutesProps {
   language: 'vi' | 'en';
@@ -37,22 +38,24 @@ export default function AppRoutes({ language, setLanguage }: AppRoutesProps) {
       <Route path="/reset-password" element={<ResetPasswordPage language={language} setLanguage={setLanguage} />} />
 
       {/* Protected Routes with Layout */}
-      <Route path="/dashboard" element={<UserLayout language={language} setLanguage={setLanguage} />}>
-        <Route index element={<Profile language={language} />} />
+      <Route element={<UserRoute />}>
+        <Route path="/dashboard" element={<UserLayout language={language} setLanguage={setLanguage} />}>
+          <Route index element={<Profile language={language} />} />
+        </Route>
+        <Route path="/profile" element={<UserLayout language={language} setLanguage={setLanguage} />}>
+          <Route index element={<Profile language={language} />} />
+        </Route>
+        <Route path="/about" element={<UserLayout language={language} setLanguage={setLanguage} />}>
+          <Route index element={<About language={language} />} />
+        </Route>
+        <Route path="/contact" element={<UserLayout language={language} setLanguage={setLanguage} />}>
+          <Route index element={<Contact language={language} />} />
+        </Route>
+        <Route path="/settings" element={<UserLayout language={language} setLanguage={setLanguage} />}>
+          <Route index element={<Settings language={language} setLanguage={setLanguage} />} />
+        </Route>
       </Route>
-      <Route path="/profile" element={<UserLayout language={language} setLanguage={setLanguage} />}>
-        <Route index element={<Profile language={language} />} />
-      </Route>
-      <Route path="/about" element={<UserLayout language={language} setLanguage={setLanguage} />}>
-        <Route index element={<About language={language} />} />
-      </Route>
-      <Route path="/contact" element={<UserLayout language={language} setLanguage={setLanguage} />}>
-        <Route index element={<Contact language={language} />} />
-      </Route>
-      <Route path="/settings" element={<UserLayout language={language} setLanguage={setLanguage} />}>
-        <Route index element={<Settings language={language} setLanguage={setLanguage} />} />
-      </Route>
-
+      
       {/* Catch all - redirect to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
 
