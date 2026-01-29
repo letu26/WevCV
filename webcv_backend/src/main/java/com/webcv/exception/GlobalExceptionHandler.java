@@ -61,8 +61,13 @@ public class GlobalExceptionHandler {
     };
 
     @ExceptionHandler(DataExpiredException.class)
-    ResponseEntity<BaseResponse> invalidParamException(DataExpiredException ex){
+    ResponseEntity<BaseResponse> dataExpriedException(DataExpiredException ex){
         return buildErrorResponse(HttpStatus.GONE,"DATA_EXPIRED", ex.getMessage());
+    };
+
+    @ExceptionHandler(BadRequestException.class)
+    ResponseEntity<BaseResponse> badRequestException(BadRequestException ex){
+        return buildErrorResponse(HttpStatus.BAD_REQUEST,"BAD_REQUEST", ex.getMessage());
     };
 
     @ExceptionHandler(PasswordNotMatchException.class)

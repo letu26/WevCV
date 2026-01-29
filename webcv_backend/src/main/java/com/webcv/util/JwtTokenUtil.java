@@ -2,7 +2,9 @@ package com.webcv.util;
 
 import com.webcv.exception.customexception.JwtGenerationException;
 import com.webcv.entity.UserEntity;
+import com.webcv.exception.customexception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -72,11 +74,18 @@ public class JwtTokenUtil {
 
     //dùng để đọc và xác thực jwt rồi lấy toàn bộ thông tin
     private Claims extractAllClaims(String token, String secret) {
-        return Jwts.parser()
-                .verifyWith((SecretKey) getSignInKey(secret))
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try{
+            return Jwts.parser()
+                    .verifyWith((SecretKey) getSignInKey(secret))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        }catch(ExpiredJwtException e){
+            throw new UnauthorizedException("RefreshToken is expired or not valid!");
+        }catch (JwtException e){
+            throw new UnauthorizedException("Invalid JWT token!");
+        }
+
     }
 
     //áp dụng T class dùng để lấy thông tin trong token 1 cách linh động

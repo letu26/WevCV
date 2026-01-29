@@ -77,7 +77,7 @@ public class AuthService implements IAuthServices {
         }
         UserEntity userEntity = user.get();
         if(!passwordEncoder.matches(password,userEntity.getPassword())){
-            throw new UnauthorizedException("Wrong password or username!");
+            throw new NotFoundException("Wrong password or username!");
         }
 
         UsernamePasswordAuthenticationToken authenticationToken =new UsernamePasswordAuthenticationToken(username, password
@@ -86,11 +86,17 @@ public class AuthService implements IAuthServices {
         String accessToken = jwtTokenUtil.generateAccessToken(userEntity);
         String refreshToken = jwtTokenUtil.generateRefreshToken(userEntity);
 
+        Long userId = userEntity.getId();
+        String fullName = userEntity.getFullname();
+        String email = userEntity.getEmail();
         List<String> role = userEntity.getRoles().stream().map(RoleEntity::getName).toList();
 
         return LoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .userId(userId)
+                .fullName(fullName)
+                .email(email)
                 .role(role)
                 .build();
     }
