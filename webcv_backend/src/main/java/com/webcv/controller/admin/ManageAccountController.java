@@ -1,6 +1,5 @@
 package com.webcv.controller.admin;
 
-
 import com.webcv.enums.UserStatus;
 import com.webcv.request.admin.CreateUserRequest;
 import com.webcv.request.admin.UpdateUserRoleRequest;
@@ -25,6 +24,12 @@ public class ManageAccountController {
         this.manageAccountService = manageAccountService;
     }
 
+    /**
+     * 8. Admin xem tất cả tài khoản
+     * GET /api/admin/account
+     *
+     * @AccountResponse: String username, Long id, String status, List<String> roles, String email, String fullname
+     * */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/account")
     public Page<AccountResponse> getAllAccount(
@@ -61,6 +66,12 @@ public class ManageAccountController {
         return manageAccountService.getAllAccount(userStatus, role, keyword, p);
     }
 
+    /**
+     * 9. Admin chỉnh sửa vai trò
+     * PUT /api/admin/account/{userId}/roles
+     *
+     * @UpdateUserRoleRequest: List<String> roles
+     * */
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/account/{userId}/roles")
     public void updateUserRoles(
@@ -69,6 +80,13 @@ public class ManageAccountController {
     ) {
         manageAccountService.updateUserRoles(userId, request.getRoles());
     }
+
+    /**
+     * 10. Admin chỉnh sửa trạng thái
+     * PUT /api/admin/account/{userId}/status
+     *
+     * @UpdateUserStatusRequest: List<String> status
+     * */
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/account/{userId}/status")
     public void updateUserStatus(
@@ -78,6 +96,12 @@ public class ManageAccountController {
         manageAccountService.updateUserStatus(userId, request.getStatus());
     }
 
+    /**
+     * 11. Admin tạo tài khoản
+     * POST /api/admin/account/create
+     *
+     * @CreateUserRequest: String username, String password, List<String> roles, String status, String email, String fullname
+     * */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/account/create")
     public void createUser(@RequestBody CreateUserRequest request){

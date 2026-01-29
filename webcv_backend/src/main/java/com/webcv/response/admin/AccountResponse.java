@@ -13,7 +13,12 @@ public class AccountResponse {
     public AccountResponse() {
     }
 
-    public AccountResponse(String username, Long id, String status, List<String> roles, String email, String fullname) {
+    public AccountResponse(String username,
+                           Long id,
+                           String status,
+                           List<String> roles,
+                           String email,
+                           String fullname) {
         this.username = username;
         this.id = id;
         this.status = status;
