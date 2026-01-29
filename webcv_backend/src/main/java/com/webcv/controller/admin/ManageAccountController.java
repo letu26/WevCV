@@ -8,6 +8,7 @@ import com.webcv.request.admin.UpdateUserStatusRequest;
 import com.webcv.response.admin.AccountResponse;
 import com.webcv.entity.UserEntity;
 import com.webcv.exception.customexception.BadRequestException;
+import com.webcv.response.user.BaseResponse;
 import com.webcv.services.admin.ManageAccountService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,25 +63,25 @@ public class ManageAccountController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/account/{userId}/roles")
-    public void updateUserRoles(
+    public BaseResponse updateUserRoles(
             @PathVariable Long userId,
             @RequestBody UpdateUserRoleRequest request
     ) {
-        manageAccountService.updateUserRoles(userId, request.getRoles());
+        return manageAccountService.updateUserRoles(userId, request.getRoles());
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/account/{userId}/status")
-    public void updateUserStatus(
+    public BaseResponse updateUserStatus(
             @PathVariable Long userId,
             @RequestBody UpdateUserStatusRequest request
     ) {
-        manageAccountService.updateUserStatus(userId, request.getStatus());
+        return manageAccountService.updateUserStatus(userId, request.getStatus());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/account/create")
-    public void createUser(@RequestBody CreateUserRequest request){
-        manageAccountService.createUser(request);
+    public BaseResponse createUser(@RequestBody CreateUserRequest request){
+        return manageAccountService.createUser(request);
     }
 
 

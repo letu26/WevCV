@@ -15,6 +15,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByUsername(String intput);
 
     boolean existsByUsername(String input);
+    boolean existsByEmail(String email);
 
     @Query("""
                 SELECT DISTINCT u FROM UserEntity u

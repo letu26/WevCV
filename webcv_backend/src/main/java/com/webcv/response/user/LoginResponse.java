@@ -13,5 +13,8 @@ import java.util.List;
 public class LoginResponse {
     private String accessToken;
     private String refreshToken;
+    private Long userId;
+    private String fullName;
+    private String email;
     private List<String> role;
 }

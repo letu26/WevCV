@@ -73,26 +73,7 @@ class AuthService {
    * Login user with username and password
    * POST /auth/login
    */
-  async login(data: LoginRequest): Promise<ApiResponse<AuthResponse>> {
-    try {
-      const response = await fetcher.post<AuthResponse>(
-        API_CONFIG.ENDPOINTS.AUTH.LOGIN,
-        data
-      );
-
-      if (response.success && response.data) {
-        fetcher.saveAuthTokens(
-          response.data.accessToken,
-          response.data.refreshToken
-        );
-        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.data.user));
-      }
-
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  }
+ 
 
   /**
    * Register new user

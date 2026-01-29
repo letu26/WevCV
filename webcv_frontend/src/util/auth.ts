@@ -19,3 +19,13 @@ export const clearAuth = () => {
   localStorage.removeItem("refreshToken");
   localStorage.removeItem("roles");
 };
+
+export const getLoginRedirectPath = () => {
+  const path = window.location.pathname;
+
+  if (path.startsWith("/admin")) {
+    return "/admin/login";
+  }
+
+  return "/siginin";
+};

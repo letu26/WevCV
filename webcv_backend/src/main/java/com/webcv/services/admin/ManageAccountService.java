@@ -3,12 +3,15 @@ package com.webcv.services.admin;
 
 import com.webcv.enums.UserStatus;
 import com.webcv.exception.customexception.BadRequestException;
+import com.webcv.exception.customexception.NotFoundException;
 import com.webcv.request.admin.CreateUserRequest;
 import com.webcv.response.admin.AccountResponse;
 import com.webcv.entity.RoleEntity;
 import com.webcv.entity.UserEntity;
 import com.webcv.repository.RoleRepository;
 import com.webcv.repository.UserRepository;
+import com.webcv.response.user.BaseResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -85,10 +88,10 @@ public class ManageAccountService {
     }
 
     @Transactional
-    public void updateUserRoles(Long userId, List<String> roleNames) {
+    public BaseResponse updateUserRoles(Long userId, List<String> roleNames) {
 
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found!"));
 
         boolean isAdmin = user.getRoles()
                 .stream()
@@ -117,13 +120,18 @@ public class ManageAccountService {
         user.setRoles(new ArrayList<>(roles));
 
         userRepository.save(user);
+
+        return BaseResponse.builder()
+                .code("200")
+                .message("Successfully updated roles!")
+                .build();
     }
 
     @Transactional
-    public void updateUserStatus(Long userId, String statusStr) {
+    public BaseResponse updateUserStatus(Long userId, String statusStr) {
 
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         boolean isAdmin = user.getRoles()
                 .stream()
@@ -146,15 +154,20 @@ public class ManageAccountService {
         }
 
         if (user.getStatus() == newStatus) {
-            return;
+            throw new BadRequestException("Status is already " + newStatus);
         }
 
         user.setStatus(newStatus);
         userRepository.save(user);
+
+        return BaseResponse.builder()
+                .code("200")
+                .message("Successfully updated status!")
+                .build();
     }
 
     @Transactional
-    public void createUser(CreateUserRequest req) {
+    public BaseResponse createUser(CreateUserRequest req) {
 
         // ===== 1. Validate basic =====
         if (req.getUsername() == null || req.getUsername()
@@ -171,8 +184,10 @@ public class ManageAccountService {
 
         // ===== 2. Unique check =====
         if (userRepository.existsByUsername(req.getUsername()))
-            throw new BadRequestException("Username already exists");
-
+            throw new DataIntegrityViolationException("Username already exists");
+        if(userRepository.existsByEmail(req.getEmail())){
+            throw new DataIntegrityViolationException("Email already exists");
+        }
         UserStatus status;
         try {
             status = UserStatus.valueOf(req.getStatus()
@@ -211,6 +226,11 @@ public class ManageAccountService {
 //        user.setProfile(profile);
 
         userRepository.save(user);
+
+        return BaseResponse.builder()
+                .code("201")
+                .message("Successfully created user!")
+                .build();
     }
 
 
