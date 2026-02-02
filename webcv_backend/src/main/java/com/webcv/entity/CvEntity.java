@@ -1,5 +1,6 @@
 package com.webcv.entity;
 
+import com.webcv.enums.FormStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,8 +36,9 @@ public class CvEntity extends BaseEntity {
     /**
      * Trạng thái CV (ACTIVE / INACTIVE / ARCHIVED ...)
      */
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    private FormStatus status;
 
     /**
      * Giá trị các field trong CV
