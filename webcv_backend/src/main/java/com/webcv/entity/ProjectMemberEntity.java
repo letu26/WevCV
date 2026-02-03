@@ -1,5 +1,6 @@
 package com.webcv.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "project_members",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"project_id", "user_id"})

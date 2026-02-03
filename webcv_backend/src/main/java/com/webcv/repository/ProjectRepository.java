@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ProjectRepository extends JpaRepository<ProjectEntity,Long> {
+import java.util.Optional;
+
+public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
 
     boolean existsByName(String name);
 
@@ -24,4 +26,10 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity,Long> {
             """)
     Page<ProjectEntity> findAllWithFilter(@Param("status") String status, @Param("keyword") String keyword, Pageable p);
 
+
+    @Query("SELECT p FROM ProjectEntity p " +
+            "LEFT JOIN FETCH p.members m " +
+            "LEFT JOIN FETCH m. user " +
+            "WHERE p.id = :projectId")
+    Optional<ProjectEntity> findProjectDetailById(@Param("projectId") Long projectId);
 }
