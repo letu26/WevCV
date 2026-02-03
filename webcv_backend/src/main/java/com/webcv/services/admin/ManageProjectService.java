@@ -70,7 +70,7 @@ public class ManageProjectService {
     }
 
     public ProjectDetailResponse getProjectDetail(Long id) {
-        ProjectEntity pro = new ProjectEntity();
+        ProjectEntity pro ;
         pro = project.findProjectDetailById(id)
                 .orElseThrow();
         ProjectDetailResponse p = new ProjectDetailResponse();
@@ -90,7 +90,8 @@ public class ManageProjectService {
                                     .getEmail());
                             mr.setFullname(m.getUser()
                                     .getFullname());
-
+                            mr.setId(m.getUser().getId());
+                            mr.setRole(m.getRole());
                             return mr;
                         })
                 .collect(Collectors.toList());
