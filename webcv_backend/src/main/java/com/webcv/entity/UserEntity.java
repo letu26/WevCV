@@ -1,6 +1,7 @@
 package com.webcv.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.webcv.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "users")
 public class UserEntity extends BaseEntity implements UserDetails {
 

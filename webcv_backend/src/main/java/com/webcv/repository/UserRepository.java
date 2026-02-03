@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
@@ -28,4 +29,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
                   )
             """)
     Page<UserEntity> findAllWithFilter(@Param("role") String role, @Param("status")UserStatus status, @Param("keyword") String keyword, Pageable p);
+
+    //tim nhung user co role la LEAD va khong thuoc project nao
+    @Query("SELECT u FROM UserEntity u " +
+            "JOIN u.roles r " +
+            "WHERE r.name = 'LEAD' " +
+            "AND u.id NOT IN (SELECT pm.user.id FROM ProjectMemberEntity pm)")
+    List<UserEntity> findLeadsWithoutProject();
 }
