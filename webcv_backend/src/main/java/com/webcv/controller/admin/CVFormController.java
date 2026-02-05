@@ -3,14 +3,15 @@ package com.webcv.controller.admin;
 import com.webcv.enums.UserStatus;
 import com.webcv.request.admin.CreateCVFormRequest;
 import com.webcv.request.admin.UpdateCVFormRequest;
+import com.webcv.request.admin.UpdateFormStatusRequest;
 import com.webcv.response.admin.CVFormResponse;
+import com.webcv.services.admin.CVFormService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.webcv.exception.customexception.BadRequestException;
 import jakarta.validation.Valid;
-import com.webcv.response.user.BaseResponse;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -61,7 +62,7 @@ public class AdminCVFormController {
             @RequestParam(required = false) String keyword,
             Pageable pageable
     ) {
-        UserStatus userStatus = null;
+        /*UserStatus userStatus = null;
         if (status != null && !status.isBlank()) {
             try {
                 userStatus = UserStatus.valueOf(status.toUpperCase());
@@ -84,7 +85,7 @@ public class AdminCVFormController {
             if (keyword.length() < 2) {
                 throw new BadRequestException("Keyword too short");
             }
-        }
+        }*/
 
         return cvFormService.getAllForms(status, keyword, pageable);
     }
