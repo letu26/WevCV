@@ -46,9 +46,12 @@ public class UserEntity extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
     @Builder.Default
     private List<RoleEntity> roles = new ArrayList<>();
-    
+
     @OneToMany(mappedBy = "user")
     private List<PasswordResetEntity> resetTokens;
+
+    @ManyToMany(mappedBy = "users")
+    private List<CvEntity> cv;
 
     @Column(name = "change_password_at", nullable = true)
     private Instant changePasswordAt;
@@ -71,75 +74,5 @@ public class UserEntity extends BaseEntity implements UserDetails {
         }
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<RoleEntity> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<RoleEntity> roles) {
-        this.roles = roles;
-    }
-
-    public List<PasswordResetEntity> getResetTokens() {
-        return resetTokens;
-    }
-
-    public void setResetTokens(List<PasswordResetEntity> resetTokens) {
-        this.resetTokens = resetTokens;
-    }
-
-    public Instant getChangePasswordAt() {
-        return changePasswordAt;
-    }
-
-    public void setChangePasswordAt(Instant changePasswordAt) {
-        this.changePasswordAt = changePasswordAt;
-    }
-
-    public UserStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(UserStatus status) {
-        this.status = status;
-    }
 }

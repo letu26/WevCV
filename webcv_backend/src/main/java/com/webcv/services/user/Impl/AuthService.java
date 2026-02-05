@@ -41,7 +41,7 @@ public class AuthService implements IAuthServices {
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
-    public BaseResponse createUser(RegisterRequest registerRequest) {
+    public BaseResponse<Void> createUser(RegisterRequest registerRequest) {
         String username = registerRequest.getUsername();
         //check username
         if(userRepository.existsByUsername(username)){
@@ -62,7 +62,7 @@ public class AuthService implements IAuthServices {
         newUser.getRoles().add(role);
         userRepository.save(newUser);
 
-        return BaseResponse.builder()
+        return BaseResponse.<Void>builder()
                 .code("200")
                 .message("Successfully created user!")
                 .build();
@@ -127,7 +127,7 @@ public class AuthService implements IAuthServices {
     }
 
     @Override
-    public BaseResponse changePass(String oldPassword, String newPassword) {
+    public BaseResponse<Void> changePass(String oldPassword, String newPassword) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         UserEntity user = userRepository.findByUsernameAndStatus(username, UserStatus.ACTIVE)
@@ -139,7 +139,7 @@ public class AuthService implements IAuthServices {
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setChangePasswordAt(Instant.now());
         userRepository.save(user);
-        return BaseResponse.builder()
+        return BaseResponse.<Void>builder()
                 .code("200")
                 .message("Successfully changed password!")
                 .build();

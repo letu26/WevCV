@@ -8,7 +8,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class BaseResponse {
+public class BaseResponse<T> {
     private String code;
     private String message;
+    private T data;
 }

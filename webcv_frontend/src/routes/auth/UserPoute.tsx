@@ -1,4 +1,4 @@
-import { getAccessToken, hasRole } from "@/util/auth";
+import { getAccessToken } from "@/util/auth";
 import React from "react";
 import { Navigate, Outlet } from "react-router";
 

@@ -8,6 +8,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class CheckMailResponse extends BaseResponse{
+public class CheckMailResponse extends BaseResponse<Void>{
     private Long userId;
 }

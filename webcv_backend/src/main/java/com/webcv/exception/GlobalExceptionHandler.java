@@ -18,27 +18,32 @@ import static com.webcv.util.ExceptionUtil.buildErrorResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<BaseResponse> handleException(Exception ex) {
+    public ResponseEntity<BaseResponse<Void>> handleException(Exception ex) {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"INTERNAL_SERVER_ERROR", ex.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<BaseResponse> handleException(RuntimeException ex) {
+    public ResponseEntity<BaseResponse<Void>> handleException(RuntimeException ex) {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"INTERNAL_SERVER_ERROR", ex.getMessage());
     }
 
     @ExceptionHandler(NotFoundException.class)
-    ResponseEntity<BaseResponse> notFoundException(NotFoundException ex){
+    ResponseEntity<BaseResponse<Void>> notFoundException(NotFoundException ex){
         return buildErrorResponse(HttpStatus.NOT_FOUND,"NOT_FOUND", ex.getMessage());
     };
 
+    @ExceptionHandler(ForbiddenException.class)
+    ResponseEntity<BaseResponse<Void>> forbiddenException(ForbiddenException ex){
+        return buildErrorResponse(HttpStatus.FORBIDDEN,"FORBIDDEN", ex.getMessage());
+    };
+
     @ExceptionHandler(DataIntegrityViolationException.class)
-    ResponseEntity<BaseResponse> dataExists(DataIntegrityViolationException ex){
+    ResponseEntity<BaseResponse<Void>> dataExists(DataIntegrityViolationException ex){
         return buildErrorResponse(HttpStatus.CONFLICT,"CONFLICT", ex.getMessage());
     };
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<BaseResponse> handleValidation(
+    public ResponseEntity<BaseResponse<Void>> handleValidation(
             MethodArgumentNotValidException ex) {
 
         String error = ex.getBindingResult()
@@ -51,27 +56,27 @@ public class GlobalExceptionHandler {
     };
 
     @ExceptionHandler(UnauthorizedException.class)
-    ResponseEntity<BaseResponse> unauthorized(UnauthorizedException ex){
+    ResponseEntity<BaseResponse<Void>> unauthorized(UnauthorizedException ex){
         return buildErrorResponse(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED", ex.getMessage());
     };
 
     @ExceptionHandler(JwtGenerationException.class)
-    ResponseEntity<BaseResponse> invalidParamException(JwtGenerationException ex){
+    ResponseEntity<BaseResponse<Void>> invalidParamException(JwtGenerationException ex){
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"JWT_NOT_CREATE", ex.getMessage());
     };
 
     @ExceptionHandler(DataExpiredException.class)
-    ResponseEntity<BaseResponse> dataExpriedException(DataExpiredException ex){
+    ResponseEntity<BaseResponse<Void>> dataExpriedException(DataExpiredException ex){
         return buildErrorResponse(HttpStatus.GONE,"DATA_EXPIRED", ex.getMessage());
     };
 
     @ExceptionHandler(BadRequestException.class)
-    ResponseEntity<BaseResponse> badRequestException(BadRequestException ex){
+    ResponseEntity<BaseResponse<Void>> badRequestException(BadRequestException ex){
         return buildErrorResponse(HttpStatus.BAD_REQUEST,"BAD_REQUEST", ex.getMessage());
     };
 
     @ExceptionHandler(PasswordNotMatchException.class)
-    ResponseEntity<BaseResponse> invalidParamException(PasswordNotMatchException ex){
+    ResponseEntity<BaseResponse<Void>> invalidParamException(PasswordNotMatchException ex){
         return buildErrorResponse(HttpStatus.BAD_REQUEST,"DATA_NOT_MATCH", ex.getMessage());
     };
 }

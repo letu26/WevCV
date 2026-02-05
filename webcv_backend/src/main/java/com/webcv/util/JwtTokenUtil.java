@@ -42,6 +42,7 @@ public class JwtTokenUtil {
     public String generateToken(UserEntity user, Long expirationTime, String secret){
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
+        claims.put("user_id", user.getId());
         try {
             return Jwts.builder()
                     .claims(claims)
@@ -104,6 +105,17 @@ public class JwtTokenUtil {
     public String extractUsername(String token, String secret) {
         return extractClaim(token, Claims::getSubject, secret);
     }
+    //lấy user_id
+    public Long extractUserId(String token, String secret) {
+        return extractClaim(token, claims -> {
+            Object userId = claims.get("user_id");
+            if (userId instanceof Integer) {
+                return ((Integer) userId).longValue();
+            }
+            return (Long) userId;
+        }, secret);
+    }
+
     //lấy token id
     public String tokenId(String token, String secret) {
         return extractClaim(token, Claims::getId, secret);

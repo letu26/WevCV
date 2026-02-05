@@ -1,13 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Label } from '@/app/components/ui/label';
-import { motion } from 'motion/react';
-import { toast } from 'sonner';
-import { authService } from '@/services/authService';
-import React from 'react';
 import { login } from '@/services/adminservices/login';
+import { motion } from 'motion/react';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface SignInPageProps {
   language: 'vi' | 'en';
@@ -60,7 +58,7 @@ export default function SignInPage({ language }: SignInPageProps) {
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
-      navigate('/dashboard'); // Nếu đã có accessToken, chuyển thẳng đến dashboard
+      navigate('/'); // Nếu đã có accessToken, chuyển thẳng đến dashboard
     }
   }, [navigate]);
 
@@ -79,7 +77,8 @@ export default function SignInPage({ language }: SignInPageProps) {
       localStorage.setItem("roles", JSON.stringify(roles));
 
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/", { replace: true });
+
       }, 1000);
       toast.success("Đăng nhập thành công");
     }
@@ -89,6 +88,9 @@ export default function SignInPage({ language }: SignInPageProps) {
       } else {
         toast.error("Đăng nhập thất bại");
       }
+    }
+    finally {
+      setIsLoading(false);
     }
   };
 

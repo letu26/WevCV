@@ -218,7 +218,7 @@ export default function Contact({ language }: ContactProps) {
                       transition={{ delay: index * 0.1 }}
                       className="flex items-start space-x-4"
                     >
-                      <div className={`w-12 h-12 ${item.bgColor} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                      <div className={`w-12 h-12 ${item.bgColor} rounded-lg flex items-center justify-center shrink-0`}>
                         <Icon className={`w-6 h-6 ${item.color}`} />
                       </div>
                       <div>
@@ -235,7 +235,7 @@ export default function Contact({ language }: ContactProps) {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center shrink-0">
                     <span className="text-2xl">🕐</span>
                   </div>
                   <div>

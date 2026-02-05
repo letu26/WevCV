@@ -41,6 +41,9 @@ public class WebSecurityConfig {
 
                             .requestMatchers(POST, "/api/users/changepass").hasAnyRole("USER", "ADMIN")
                             .requestMatchers(POST, "/api/admin/account/**").hasRole( "ADMIN")
+
+                            .requestMatchers(POST, "/api/cvs").hasRole( "USER")
+                            .requestMatchers(GET, "/api/cvs").hasRole( "USER")
                             .anyRequest().authenticated();
                 });
         return http.build();

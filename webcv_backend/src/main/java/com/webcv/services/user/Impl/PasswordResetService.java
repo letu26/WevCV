@@ -82,7 +82,7 @@ public class PasswordResetService implements IPasswordResetServices {
     }
 
     @Override
-    public BaseResponse resetPassword(ResetPasswordRequest request) {
+    public BaseResponse<Void> resetPassword(ResetPasswordRequest request) {
         if(!request.getNewPassword().equals(request.getRetypeNewPassword())){
             throw new DataIntegrityViolationException("Passwords don't match!");
         }
@@ -96,7 +96,7 @@ public class PasswordResetService implements IPasswordResetServices {
         user.setChangePasswordAt(Instant.now());
         authRepository.save(user);
 
-        return BaseResponse.builder()
+        return BaseResponse.<Void>builder()
                 .code("200")
                 .message("Successfully reset your password.")
                 .build();

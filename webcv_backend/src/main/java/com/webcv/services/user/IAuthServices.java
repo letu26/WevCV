@@ -7,8 +7,8 @@ import com.webcv.response.user.LoginResponse;
 import com.webcv.response.user.RefreshTokenResponse;
 
 public interface IAuthServices {
-    BaseResponse createUser(RegisterRequest request);
+    BaseResponse<Void> createUser(RegisterRequest request);
     LoginResponse login(String username, String password);
     RefreshTokenResponse refreshToken(String refreshToken);
-    BaseResponse changePass(String oldPassword, String newPassword);
+    BaseResponse<Void> changePass(String oldPassword, String newPassword);
 }
