@@ -81,4 +81,9 @@ public class CvsService implements ICvServices {
                 .build();
     }
 
+    public CvEntity getCvForUser(Long cvId, Long userId) {
+        return cvsRepository.findByIdAndUsers_IdAndDeletedFalse(cvId, userId)
+                .orElseThrow(() -> new NotFoundException("CV not found"));
+    }
+
 }

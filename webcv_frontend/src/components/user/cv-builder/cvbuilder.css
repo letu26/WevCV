@@ -311,6 +311,7 @@
   background: rgb(255, 246, 235);
   border-radius: 6px;
   padding: 8px;
+  text-align: justify;
 }
 
 /* Personal info */

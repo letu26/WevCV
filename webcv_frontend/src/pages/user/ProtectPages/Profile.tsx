@@ -1,13 +1,12 @@
 import { Button } from '@/app/components/ui/button';
 import Preview from '@/components/user/cvpreview/Preview';
-import { getCvList } from '@/services/usersservices/CvsServices';
+import { exportCvPdf, getCvList } from '@/services/usersservices/CvsServices';
 import { useCVLayoutStore } from '@/store/cvLayoutStore';
 import { CVBlock, CVLayout, CVSavePayload } from '@/types/cv';
 import { Plus } from 'lucide-react';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface ProfileProps {
   language: 'vi' | 'en';
@@ -27,6 +26,7 @@ const translations = {
     createCVTitle: 'Tạo CV mới',
     editCVTitle: 'Chỉnh sửa CV',
     viewCVTitle: 'Xem CV',
+    exportPdf: 'Xuất PDF',
     personalInfo: 'Thông tin cá nhân',
     email: 'Email',
     fullName: 'Họ và tên',
@@ -76,6 +76,7 @@ const translations = {
     createCVTitle: 'Create New CV',
     editCVTitle: 'Edit CV',
     viewCVTitle: 'View CV',
+    exportPdf: 'Export PDF',
     personalInfo: 'Personal Information',
     email: 'Email',
     fullName: 'Full Name',
@@ -182,6 +183,36 @@ export default function Profile({ language }: ProfileProps) {
   const closeViewModal = () => {
     setViewingCv(null);
     resetLayout();
+  };
+
+  const handleExportPdf = async () => {
+    if (!viewingCv?.id) {
+      toast.error("Không tìm thấy CV để xuất.");
+      return;
+    }
+    try {
+      const blob = await exportCvPdf(String(viewingCv.id));
+      if (!blob || blob.size === 0) {
+        toast.error("Xuất PDF thất bại (file rỗng).");
+        return;
+      }
+      const pdfBlob = new Blob([blob], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const safeTitle = (viewingCv.title || `cv-${viewingCv.id}`)
+        .trim()
+        .replace(/\s+/g, "-");
+      link.href = url;
+      link.download = `${safeTitle || `cv-${viewingCv.id}`}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("Đã xuất PDF.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Xuất PDF thất bại.");
+    }
   };
 
 useEffect(() => {
@@ -298,12 +329,14 @@ useEffect(() => {
           >
             <div className="flex items-center justify-between px-6 py-4 border-b">
               <div className="text-gray-900 font-semibold">{t.viewCV}</div>
-            </div>
-
-            <div className="absolute top-3 right-3 flex items-center gap-2">
-              <Button variant="outline" onClick={closeViewModal}>
-                {t.close}
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" onClick={handleExportPdf}>
+                  {t.exportPdf}
+                </Button>
+                <Button variant="outline" onClick={closeViewModal}>
+                  {t.close}
+                </Button>
+              </div>
             </div>
 
             <div className="p-6 pointer-events-none select-none cv-preview-readonly">

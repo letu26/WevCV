@@ -127,6 +127,7 @@ export default function ExperienceBlock({
                 onChange={(e) => update(job.id, "end", e.target.value)}
                 readOnly={readOnly}
                 className="cv-input cv-input-italic cv-input-date"
+                 style={{textAlign: "left"}}
               />
             </div>
           </div>

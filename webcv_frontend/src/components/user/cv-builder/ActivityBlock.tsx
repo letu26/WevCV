@@ -165,7 +165,7 @@ export default function ActivityBlock({
                 value={act.start}
                 onChange={(e) => updateActivity(act.id, "start", e.target.value)}
                 readOnly={readOnly}
-                className="cv-input cv-input-italic cv-input-date--short"
+                className="cv-input cv-input-italic cv-input-date"
               />
               <span className="cv-muted">-</span>
               <input
@@ -175,6 +175,7 @@ export default function ActivityBlock({
                 onChange={(e) => updateActivity(act.id, "end", e.target.value)}
                 readOnly={readOnly}
                 className="cv-input cv-input-italic cv-input-date--short"
+                style={{ textAlign: "left" }}
               />
             </div>
           </div>

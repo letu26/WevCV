@@ -129,6 +129,7 @@ export default function EducationBlock({
                 onChange={(e) => update(edu.id, "end", e.target.value)}
                 readOnly={readOnly}
                 className="cv-input cv-input-italic cv-input-date"
+                style={{textAlign: "left"}}
               />
             </div>
           </div>

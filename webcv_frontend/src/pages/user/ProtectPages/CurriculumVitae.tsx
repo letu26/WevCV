@@ -7,21 +7,21 @@ import {
 } from "@dnd-kit/core";
 import { useCVLayoutStore } from "@/store/cvLayoutStore";
 import { CVBlock, CVLayout, CVSavePayload, DropZone } from "@/types/cv";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { use, useEffect, useMemo, useRef, useState } from "react";
 import { Save } from "lucide-react";
 import LayoutEditor from "@/components/user/cvpreview/layout-editor/LayoutEditor";
 import Preview from "@/components/user/cvpreview/Preview";
 import { createAndUpdateCv } from "@/services/usersservices/CvsServices";
 import { toast } from "sonner";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const isDropZone = (value: unknown): value is DropZone => {
   return value === "left" || value === "right" || value === "unused";
 };
 
 export default function CurriculumVitae() {
-  const { layout, moveBlock, reorderBlock, setLayout, resetLayout } =
-    useCVLayoutStore();
+  const { layout, moveBlock, reorderBlock, setLayout, resetLayout } = useCVLayoutStore();
+  const navigate = useNavigate();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [cvTitle, setCvTitle] = useState("");
   const [cvId, setCvId] = useState<string | null>(null);
@@ -380,9 +380,11 @@ export default function CurriculumVitae() {
       const res = await createAndUpdateCv(savePayload);
       if (res.code === "200") {
         toast.success("Lưu cv thành công!");
+        navigate("/profile");
       }
       else {
         toast.success("Cập nhật cv thành công!");
+        navigate("/profile");
       }
       setLastSavedPayload(payloadString);
     } catch (error: any) {
@@ -393,6 +395,7 @@ export default function CurriculumVitae() {
       toast.error(message);
     }
   };
+
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);

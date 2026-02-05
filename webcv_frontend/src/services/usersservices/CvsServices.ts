@@ -1,4 +1,4 @@
-import {fetcher} from "@/api/FetcherAdmin";
+import { apiClient, fetcher } from "@/api/FetcherAdmin";
 import { CVFetcher, CVSavePayload } from "@/types/cv";
 import { SuccessResponse } from "../adminservices/users";
 
@@ -22,6 +22,14 @@ export const getCvList = () => {
     url: "/cvs",
     method: "GET",
   });
+};
+
+export const exportCvPdf = async (id: string) => {
+  const response = await apiClient.get(`/cvs/${id}/export-pdf`, {
+    responseType: "blob",
+    timeout: 60000,
+  });
+  return response.data as Blob;
 };
 
 
