@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
 import { Header } from '@/components/user/Header';
-import SideBar from '@/components/user/SideBar';
 import { useState, useEffect } from 'react';
 import { STORAGE_KEYS } from '@/config';
+import React from 'react';
 
 interface UserLayoutProps {
   language: 'vi' | 'en';
@@ -27,9 +27,8 @@ export function UserLayout({ language, setLanguage }: UserLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header language={language} setLanguage={setLanguage} userName={userName} />
-      <div className="flex">
-        <SideBar language={language} />
+      <Header language={language} setLanguage={setLanguage} />
+      <div className="container mx-auto">
         <main className="flex-1 p-6">
           <Outlet />
         </main>

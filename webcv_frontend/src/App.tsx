@@ -3,6 +3,7 @@ import { Toaster } from 'sonner';
 import { useState, useEffect } from 'react';
 import AppRoutes from '@/routes/AppRoutes';
 import { STORAGE_KEYS, APP_CONFIG } from '@/config';
+import React from 'react';
 
 function App() {
   const [language, setLanguage] = useState<'vi' | 'en'>(APP_CONFIG.DEFAULT_LANGUAGE);

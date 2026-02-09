@@ -5,4 +5,12 @@ export default {
     extend: {},
   },
   plugins: ["prettier-plugin-tailwindcss"],
+  
+  theme: {
+    extend: {
+      fontFamily: {
+        bevietnam: ['"Be Vietnam Pro"', 'sans-serif'],
+      },
+    },
+  },
 };

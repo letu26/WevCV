@@ -1,0 +1,538 @@
+/* Preview + Layout Editor (Phase 1) */
+
+.cv-preview-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0;
+  flex: 1;
+  background: rgb(243, 244, 246);
+  margin-left: 25rem;
+}
+
+.cv-preview-wrapper--modal {
+  margin-left: 0;
+  background: transparent;
+}
+
+.cv-preview {
+  background: rgb(255, 255, 255);
+  width: 198.5mm;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.cv-preview-body {
+  display: flex;
+  padding: 10px;
+}
+
+.cv-preview-column-left {
+  width: 300px;
+  flex-shrink: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: rgb(252, 236, 215);
+}
+
+.cv-preview-column-right {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cv-preview-block-title {
+  font-family: "Be Vietnam", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgb(234, 88, 12);
+  margin-bottom: 4px;
+}
+
+/* CVPreview standalone */
+.cv-preview-page {
+  background: rgb(255, 255, 255);
+  width: 198.5mm;
+  height: 280.75mm;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+/* Layout editor */
+.layout-editor {
+  width: 280px;
+  padding: 16px;
+  border: 1px solid rgb(59, 130, 246);
+  border-radius: 12px;
+  position: fixed;
+  left: 136px;
+  height: 545px;
+  background: rgb(255, 255, 255);
+}
+
+.layout-editor-scroll {
+  height: 100%;
+  overflow: auto;
+}
+
+.layout-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.layout-column-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.layout-column-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.drop-column {
+  min-height: 100px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid rgb(229, 231, 235);
+  background: rgb(255, 255, 255);
+}
+
+.drop-column--over {
+  background: rgb(255, 247, 237);
+}
+
+.sortable-block {
+  padding: 8px;
+  background: rgb(255, 255, 255);
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.sortable-block:hover,
+.sortable-block:active {
+  transform: translateY(-2px);
+  border-color: rgb(59, 130, 246);
+}
+
+.sortable-block--selected {
+  border-color: rgb(59, 130, 246);
+}
+
+.cv-column {
+  min-height: 200px;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 8px;
+  padding: 12px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  background: rgb(255, 255, 255);
+}
+
+.cv-column--over {
+  border-color: rgb(96, 165, 250);
+  background: rgb(239, 246, 255);
+}
+
+.cv-column-title {
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: rgb(55, 65, 81);
+}
+
+.cv-column-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cv-column-item {
+  cursor: move;
+  border-radius: 6px;
+  border: 1px solid rgb(229, 231, 235);
+  background: rgb(255, 255, 255);
+  padding: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.cv-builder {
+  display: flex;
+  height: 100vh;
+  background: rgb(243, 244, 246);
+}
+
+.cv-builder-sidebar {
+  width: 360px;
+  border-right: 1px solid rgb(229, 231, 235);
+  background: rgb(255, 255, 255);
+}
+
+.cv-builder-preview {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.block-item {
+  padding: 8px;
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 6px;
+  background: rgb(255, 255, 255);
+  cursor: move;
+}
+
+/* cv-builder blocks (Phase 2) */
+
+.cv-block {
+  font-family: "Be Vietnam", sans-serif;
+  font-size: 13px;
+}
+
+.cv-block-divider {
+  border-bottom: 3px solid rgb(241, 152, 97);
+}
+
+.cv-action-buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.cv-action-buttons--top1 {
+  top: 4px;
+}
+
+.cv-action-button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cv-action-button--remove {
+  color: rgb(248, 113, 113);
+}
+
+.cv-action-button--remove:hover {
+  color: rgb(239, 68, 68);
+}
+
+.cv-action-button--add {
+  color: rgb(34, 197, 94);
+}
+
+.cv-action-button--add:hover {
+  color: rgb(22, 163, 74);
+}
+
+.cv-item {
+  position: relative;
+}
+
+.cv-item:hover .cv-action-buttons {
+  opacity: 1;
+}
+
+.cv-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-right: 40px;
+}
+
+.cv-row--start {
+  align-items: flex-start;
+}
+
+.cv-input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: none;
+  font-size: 13px;
+  color: rgb(55, 65, 81);
+}
+
+.cv-input::placeholder {
+  color: rgb(156, 163, 175);
+}
+
+.cv-input-bold {
+  font-weight: 700;
+}
+
+.cv-input-italic {
+  font-style: italic;
+}
+
+.cv-input-date {
+  width: 64px;
+  text-align: right;
+}
+
+.cv-input-date--short {
+  width: 56px;
+}
+
+.cv-input-inline {
+  width: auto;
+}
+
+.cv-textarea {
+  width: 100%;
+  border: 0;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  font-size: 13px;
+  color: rgb(55, 65, 81);
+  padding: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.cv-textarea::placeholder {
+  color: rgb(156, 163, 175);
+}
+
+.cv-textarea-box {
+  background: rgb(255, 246, 235);
+  border-radius: 6px;
+  padding: 8px;
+  text-align: justify;
+}
+
+/* Personal info */
+.cv-personal {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cv-personal-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-bottom: 1px solid rgb(229, 231, 235);
+  height: 29px;
+  transition: border-color 0.2s ease;
+}
+
+.cv-personal-row:hover {
+  border-color: rgb(251, 146, 60);
+}
+
+.cv-personal-row:focus-within {
+  border-color: rgb(249, 115, 22);
+}
+
+.cv-personal-row--address {
+  align-items: flex-start;
+  padding: 4px 0;
+  height: auto;
+}
+
+.cv-personal-icon {
+  width: 14px;
+  height: 14px;
+  color: rgb(249, 115, 22);
+  flex-shrink: 0;
+}
+
+/* Activity/Education/Experience blocks */
+.cv-activity,
+.cv-education,
+.cv-experience {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cv-activity .cv-item,
+.cv-education .cv-item,
+.cv-experience .cv-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cv-section-input {
+  color: rgb(55, 65, 81);
+}
+
+/* Skill */
+.cv-skill {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cv-skill-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Award/Certificate */
+.cv-award,
+.cv-certificate {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cv-award-item,
+.cv-certificate-item {
+  position: relative;
+}
+
+/* Career objective */
+.cv-career {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cv-career-title {
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* Business card */
+.cv-business-card {
+  text-align: center;
+}
+
+.cv-business-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgb(251, 146, 60);
+  border-radius: 5px;
+  transition: border-color 0.2s ease;
+}
+
+.cv-business-name--empty {
+  border: 1px dashed rgb(251, 146, 60);
+}
+
+.cv-business-name--filled {
+  border: 1px solid transparent;
+}
+
+.cv-business-position {
+  margin-top: 4px;
+  font-size: 16px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+
+.cv-business-position:hover {
+  border-style: dashed;
+  border-color: rgb(156, 163, 175);
+}
+
+.cv-business-position:focus {
+  border-style: solid;
+  border-color: rgb(21, 128, 61);
+}
+
+/* Avatar */
+.cv-avatar-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.cv-avatar {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 9999px;
+  border: 3px solid rgb(251, 146, 60);
+  overflow: hidden;
+  background: rgb(255, 255, 255);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+
+.cv-avatar:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.cv-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9999px;
+}
+
+.cv-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(243, 244, 246);
+}
+
+.cv-avatar-icon {
+  width: 120px;
+  height: 120px;
+  color: rgb(156, 163, 175);
+}
+
+.cv-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cv-avatar:hover .cv-avatar-overlay {
+  opacity: 1;
+}
+
+.cv-avatar-overlay-text {
+  color: rgb(255, 255, 255);
+  font-size: 12px;
+}
+
+/* Textarea wrapper base */
+.cv-textarea-boxed {
+  background: rgb(255, 246, 235);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.cv-muted {
+  color: rgb(156, 163, 175);
+}
+
+.cv-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cv-hidden {
+  display: none;
+}
+
+.cv-text-white {
+  color: rgb(255, 255, 255);
+}

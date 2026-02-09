@@ -33,7 +33,7 @@ public class CvEntity extends BaseEntity{
     private UserStatus status;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "cv_users",
+    @JoinTable(name = "user_cvs",
             joinColumns = @JoinColumn(name = "cv_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "user_id", nullable = false))
     private List<UserEntity> users;

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class ProjectDetailResponse {
     private Long id;
+
     private String name;
     private String description;
     private String status;
