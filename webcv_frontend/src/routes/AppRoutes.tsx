@@ -23,6 +23,8 @@ import ProjectManagement from '@/pages/admin/ProjectManagement';
 import ProjectDetailPage from '@/pages/admin/ProjectDetailPage';
 import CurriculumVitae from '@/pages/user/ProtectPages/CurriculumVitae';
 import Project from '@/pages/user/ProtectPages/Project';
+import LeadRoute from './auth/LeadRoute';
+import LeadLayout from '@/layout/lead/LeadLayout';
 
 interface AppRoutesProps {
   language: 'vi' | 'en';
@@ -70,6 +72,10 @@ export default function AppRoutes({ language, setLanguage }: AppRoutesProps) {
           <Route path='projects' element={<ProjectManagement/>}/>
           <Route path="projects/:id" element={<ProjectDetailPage/>} />
         </Route>
+      </Route>
+
+      <Route element={<LeadRoute/>}>
+          <Route path='/lead' element={<LeadLayout></LeadLayout>} ></Route>
       </Route>
     </Routes>
   );
