@@ -1,24 +1,37 @@
 package com.webcv.controller.admin;
 
-import com.webcv.enums.UserStatus;
-import com.webcv.request.admin.CreateCVFormRequest;
-import com.webcv.request.admin.UpdateCVFormRequest;
+import com.webcv.request.admin.CreateCvFormFieldRequest;
+import com.webcv.request.admin.CreateCvFormRequest;
+import com.webcv.request.admin.UpdateCvFormRequest;
 import com.webcv.request.admin.UpdateFormStatusRequest;
-import com.webcv.response.admin.CVFormResponse;
-import com.webcv.services.admin.CVFormService;
+
+import com.webcv.response.admin.CvFormFieldResponse;
+import com.webcv.response.admin.CvFormResponse;
+
+import com.webcv.services.admin.CvFormFieldService;
+import com.webcv.services.admin.CvFormService;
+
+import jakarta.validation.Valid;
+
+import lombok.AllArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
+
+import org.springframework.security.core.Authentication;
+
 import org.springframework.web.bind.annotation.*;
-import com.webcv.exception.customexception.BadRequestException;
-import jakarta.validation.Valid;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
-@PreAuthorize("hasRole('ADMIN')")
-public class AdminCVFormController {
+@AllArgsConstructor
+//@PreAuthorize("hasRole('ADMIN')")
+public class CvFormController {
 
-    private final CVFormService cvFormService;
+    private final CvFormService cvFormService;
+    private final CvFormFieldService fieldService;
 
     /**
      * Request and Response
@@ -41,9 +54,6 @@ public class AdminCVFormController {
      * @UpdateFormStatusRequest (String status)
      *
      * */
-    public AdminCVFormController(CVFormService cvFormService) {
-        this.cvFormService = cvFormService;
-    }
 
     /**
      * 12. Admin xem tất cả danh sách CV form
@@ -57,12 +67,12 @@ public class AdminCVFormController {
      *                  LocalDateTime createdAt)
      * */
     @GetMapping("/cv-forms")
-    public Page<CVFormResponse> getAllForms(
+    public Page<CvFormResponse> getAllForms(
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String keyword,
             Pageable pageable
     ) {
-        /*UserStatus userStatus = null;
+ /*      UserStatus userStatus = null;
         if (status != null && !status.isBlank()) {
             try {
                 userStatus = UserStatus.valueOf(status.toUpperCase());
@@ -85,9 +95,9 @@ public class AdminCVFormController {
             if (keyword.length() < 2) {
                 throw new BadRequestException("Keyword too short");
             }
-        }*/
-
-        return cvFormService.getAllForms(status, keyword, pageable);
+        }
+*/
+        return cvFormService.getAllCVForms(status, keyword, pageable);
     }
 
     /**
@@ -99,12 +109,19 @@ public class AdminCVFormController {
      *                       String status)
      * */
     @PostMapping("/cv-forms")
-    public CVFormResponse createForm(
-            @RequestBody @Valid CreateCVFormRequest request,
-            @AuthenticationPrincipal UserPrincipal admin
+    public CvFormResponse createForm(
+            @RequestBody @Valid CreateCvFormRequest request,
+            Authentication authentication
     ) {
-        return cvFormService.createForm(request, admin.getId());
+  /*      Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof UserPrincipal user)) {
+            throw new RuntimeException("Principal is not UserPrincipal");
+        }
+*/
+        return cvFormService.createForm(request/*, user.getId()*/);
     }
+
 
     /**
      * 14. Admin chỉnh sửa CV form
@@ -115,9 +132,9 @@ public class AdminCVFormController {
      *                       String status)
      * */
     @PutMapping("/cv-forms/{id}")
-    public CVFormResponse updateForm(
+    public CvFormResponse updateForm(
             @PathVariable Long id,
-            @RequestBody @Valid UpdateCVFormRequest request
+            @RequestBody @Valid UpdateCvFormRequest request
     ) {
         return cvFormService.updateForm(id, request);
     }
@@ -148,10 +165,62 @@ public class AdminCVFormController {
 
     /**
      * 17. Admin xem trước form
-     * GET /cv-forms/{id}/preview
+     * GET /api/admin/cv-forms/{id}/preview
      * */
     @GetMapping("/cv-forms/{id}/preview")
-    public CVFormPreviewResponse previewForm(@PathVariable Long id) {
+    public CvFormResponse previewForm(@PathVariable Long id) {
         return cvFormService.previewForm(id);
     }
+
+    /**
+     * 18. Admin xem các trường trong cv form
+     * GET /api/admin/cv-forms/{id}/fields
+     * */
+    @GetMapping("/cv-forms/{id}/fields")
+    public List<CvFormFieldResponse> getFields(@PathVariable Long id) {
+        return fieldService.getCvFormFieldsByCvForm(id);
+    }
+
+    /**
+     * 19. Admin thêm trường trong cv form
+     * POST /api/admin/cv-forms/{id}/fields
+     * */
+    @PostMapping("/cv-forms/{id}/fields")
+    public void addField(
+            @PathVariable Long id,
+            @RequestBody CreateCvFormFieldRequest request
+    ) {
+        fieldService.addCvFormField(id, request);
+    }
+
+    /**
+     *
+     *
+     *     CvFormEntity
+     *     private Long id;
+     *     private String name;
+     *     private String description;
+     *     private FormStatus status;
+     *     private UserEntity createdBy;
+     *     private List<CvFormFieldEntity> fields;
+     *
+     *     CvFormFieldEntity
+     *     private Long id;
+     *     private CvFormEntity cvForm;
+     *     private String label;
+     *     private String fieldKey;
+     *     private String fieldType;
+     *     private Boolean required;
+     *     private Integer orderIndex;
+     *     TO-DO:
+     * CreateCvFormFieldRequest
+     * UpdateCvFormFieldRequest
+     *
+     * CvFormFieldResponse
+     *
+     * CvFormFieldService
+     *
+     * CvFormFieldRepository
+     * */
+
 }
