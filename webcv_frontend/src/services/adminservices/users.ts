@@ -78,7 +78,7 @@ export type CreateUserRequest = {
   fullname: string;
 }
 
-type SuccessResponse = {
+export type SuccessResponse = {
   code: string;
   message: string;
 }

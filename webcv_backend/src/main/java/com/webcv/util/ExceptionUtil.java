@@ -11,9 +11,9 @@ public class ExceptionUtil {
     private ExceptionUtil() {
     }
 
-    public static ResponseEntity<BaseResponse> buildErrorResponse(HttpStatus status, String code, String message){
+    public static ResponseEntity<BaseResponse<Void>> buildErrorResponse(HttpStatus status, String code, String message){
         return ResponseEntity.status(status).body(
-                BaseResponse.builder()
+                BaseResponse.<Void>builder()
                         .code(code)
                         .message(message)
                         .build()

@@ -1,16 +1,16 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import HomePage from '@/pages/user/HomePage';
-import SignInPage from '@/pages/user/SignInPage';
-import SignUpPage from '@/pages/user/SignUpPage';
-import ChangePasswordPage from '@/pages/user/ChangePasswordPage';
-import ForgotPasswordPage from '@/pages/user/ForgotPasswordPage';
-import CheckOtpPage from '@/pages/user/CheckOtpPage';
-import ResetPasswordPage from '@/pages/user/ResetPasswordPage';
-import Profile from '@/pages/user/Profile';
-import About from '@/pages/user/About';
-import Contact from '@/pages/user/Contact';
-import Settings from '@/pages/user/Settings';
+import HomePage from '@/pages/user/ProtectPages/HomePage';
+import SignInPage from '@/pages/user/ProtectPages/SignInPage';
+import SignUpPage from '@/pages/user/ProtectPages/SignUpPage';
+import ChangePasswordPage from '@/pages/user/PublicPages/ChangePasswordPage';
+import ForgotPasswordPage from '@/pages/user/PublicPages/ForgotPasswordPage';
+import CheckOtpPage from '@/pages/user/PublicPages/CheckOtpPage';
+import ResetPasswordPage from '@/pages/user/PublicPages/ResetPasswordPage';
+import Profile from '@/pages/user/ProtectPages/Profile';
+import About from '@/pages/user/PublicPages/About';
+import Contact from '@/pages/user/ProtectPages/Contact';
+import Settings from '@/pages/user/ProtectPages/Settings';
 import UserLayout from '@/layout/user/UserLayout';
 import DashBoard from '@/pages/admin/DashBoard';
 import AdminLayout from '@/layout/admin/AdminLayout';
@@ -19,6 +19,8 @@ import Forbidden from '@/pages/admin/Forbidden';
 import LoginAdmin from '@/pages/admin/LoginAdmin';
 import UserManagement from '@/pages/admin/UserManagement';
 import UserRoute from './auth/UserPoute';
+import CurriculumVitae from '@/pages/user/ProtectPages/CurriculumVitae';
+import Project from '@/pages/user/ProtectPages/Project';
 
 interface AppRoutesProps {
   language: 'vi' | 'en';
@@ -39,32 +41,24 @@ export default function AppRoutes({ language, setLanguage }: AppRoutesProps) {
 
       {/* Protected Routes with Layout */}
       <Route element={<UserRoute />}>
-        <Route path="/dashboard" element={<UserLayout language={language} setLanguage={setLanguage} />}>
-          <Route index element={<Profile language={language} />} />
-        </Route>
-        <Route path="/profile" element={<UserLayout language={language} setLanguage={setLanguage} />}>
-          <Route index element={<Profile language={language} />} />
-        </Route>
-        <Route path="/about" element={<UserLayout language={language} setLanguage={setLanguage} />}>
-          <Route index element={<About language={language} />} />
-        </Route>
-        <Route path="/contact" element={<UserLayout language={language} setLanguage={setLanguage} />}>
-          <Route index element={<Contact language={language} />} />
-        </Route>
-        <Route path="/settings" element={<UserLayout language={language} setLanguage={setLanguage} />}>
-          <Route index element={<Settings language={language} setLanguage={setLanguage} />} />
+        <Route element={<UserLayout language={language} setLanguage={setLanguage} />}>
+          <Route path="/dashboard" element={<Profile language={language} />} />
+          <Route path="/profile" element={<Profile language={language} />} />
+          <Route path="/about" element={<About language={language} />} />
+          <Route path="/contact" element={<Contact language={language} />} />
+          <Route path="/settings" element={<Settings language={language} setLanguage={setLanguage} />} />
+          <Route path="/cvs-edit" element={<CurriculumVitae />} />
+          <Route path="/project" element={<Project />}/>
         </Route>
       </Route>
-      
+
       {/* Catch all - redirect to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
 
-      {/* Trang admin */}
-      <Route path="/admin/login" element={<LoginAdmin />} />
-      <Route path="/403" element={<Forbidden />} />
       {/* ADMIN LOGIN */}
       <Route path="/admin/login" element={<LoginAdmin />} />
       <Route path="/403" element={<Forbidden />} />
+
       {/*ADMIN PROTECTED */}
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminLayout />}>

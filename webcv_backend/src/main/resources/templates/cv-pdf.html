@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CV</title>
+    <style>
+        @page {
+          size: A4;
+          margin: 12mm;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          font-family: "Be Vietnam", "Segoe UI", Arial, sans-serif;
+          color: #111827;
+          background: #ffffff;
+          font-size: 12px;
+          line-height: 1.4;
+        }
+
+        .page {
+          width: 100%;
+        }
+
+        .cv-preview {
+          background: #ffffff;
+          width: 100%;
+        }
+
+        .header {
+          text-align: center;
+          margin-bottom: 12px;
+        }
+
+        .header-title {
+          font-size: 22px;
+          font-weight: 700;
+          letter-spacing: 0.2px;
+        }
+
+        .columns {
+          display: flex;
+          gap: 0;
+        }
+
+        .col-left {
+          width: 300px;
+          flex-shrink: 0;
+          padding: 10px;
+          background: #fcecd7;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+
+        .col-right {
+          flex: 1;
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+
+        .block {
+          font-size: 13px;
+        }
+
+        .block-title {
+          font-weight: 700;
+          text-transform: uppercase;
+          font-size: 16px;
+          margin-bottom: 6px;
+          color: #ea580c;
+        }
+
+        .row {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+        }
+        .row-spread {
+          justify-content: space-between;
+        }
+        .date-range {
+          margin-left: auto;
+          text-align: right;
+          white-space: nowrap;
+        }
+
+        .muted {
+          color: #9ca3af;
+          font-style: italic;
+        }
+
+        .item {
+          margin-bottom: 8px;
+        }
+
+        .item-title {
+          font-weight: 700;
+        }
+
+        .item-sub {
+          color: #374151;
+        }
+
+        .avatar {
+          width: 160px;
+          height: 160px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 3px solid #fb923c;
+          display: block;
+          margin: 0 auto 12px;
+        }
+
+        .business-name {
+          font-size: 24px;
+          font-weight: 700;
+          text-align: center;
+          color: #fb923c;
+        }
+
+        .business-position {
+          text-align: center;
+          font-size: 16px;
+          color: #4b5563;
+          margin-top: 2px;
+        }
+
+        .grid {
+          display: grid;
+          grid-template-columns: auto 1fr;
+          gap: 4px 10px;
+        }
+
+        .label {
+          color: #6b7280;
+          white-space: nowrap;
+        }
+
+        .text-box {
+          background: #fff6eb;
+          border-radius: 6px;
+          padding: 8px;
+          text-align: justify;
+        }
+
+        .block-divider {
+          border-bottom: 3px solid #f19861;
+          margin-top: 8px;
+        }
+
+        .fallback {
+          white-space: pre-wrap;
+          font-family: "Consolas", "Courier New", monospace;
+          font-size: 10px;
+          color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <div class="cv-preview">
+        <div class="columns">
+            <div class="col-left">
+                <div class="block" th:each="block : ${cv.leftBlocks}">
+                    <div class="block-title" th:if="${block.type != 'businesscard' and block.type != 'avatar'}"
+                         th:text="${block.title}">Block</div>
+
+                    <div th:if="${block.type == 'avatar'}">
+                        <img class="avatar" th:if="${block.data['image']}" th:src="${block.data['image']}" alt="Avatar" />
+                    </div>
+
+                    <div th:if="${block.type == 'businesscard'}">
+                        <div class="business-name" th:text="${block.data['fullName']}">Họ tên</div>
+                        <div class="business-position" th:text="${block.data['position']}">Vị trí</div>
+                    </div>
+
+                    <div th:if="${block.type == 'profile'}" class="grid">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="4" width="18" height="18" rx="2" stroke="rgb(249,115,22)" stroke-width="2" />
+                            <line x1="3" y1="10" x2="21" y2="10" stroke="rgb(249,115,22)" stroke-width="2" />
+                            <line x1="8" y1="2" x2="8" y2="6" stroke="rgb(249,115,22)" stroke-width="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" stroke="rgb(249,115,22)" stroke-width="2" />
+                        </svg>
+                        <div th:text="${block.data['dob']}">-</div>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="8" r="4" stroke="rgb(249,115,22)" stroke-width="2" />
+                            <path d="M4 22c0-4 4-6 8-6s8 2 8 6" stroke="rgb(249,115,22)" stroke-width="2" />
+                        </svg>
+                        <div th:text="${block.data['gender']}">-</div>
+                        <div class="label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                    d="M22 16.92v3a2 2 0 0 1-2.18 2 A19.8 19.8 0 0 1 3 5.18 2 2 0 0 1 5 3h3 a2 2 0 0 1 2 1.72 13 13 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L9.91 11.91 a16 16 0 0 0 6.18 6.18l1.27-1.27 a2 2 0 0 1 2.11-.45 13 13 0 0 0 2.81.7 A2 2 0 0 1 22 16.92z"
+                                    stroke="rgb(249,115,22)" stroke-width="2" />
+                        </svg>
+                        </div>
+                        <div th:text="${block.data['phone']}">-</div>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="5" width="18" height="14" rx="2" stroke="rgb(249,115,22)" stroke-width="2" />
+                            <path d="M3 7l9 6 9-6" stroke="rgb(249,115,22)" stroke-width="2" />
+                        </svg>
+                        <div th:text="${block.data['email']}">-</div>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 21s7-7 7-11a7 7 0 1 0-14 0 c0 4 7 11 7 11z" stroke="rgb(249,115,22)" stroke-width="2" />
+                            <circle cx="12" cy="10" r="3" stroke="rgb(249,115,22)" stroke-width="2" />
+                        </svg>
+                        <div th:text="${block.data['address']}">-</div>
+                    </div>
+
+                    <div th:if="${block.type == 'skill'}">
+                        <div class="item" th:each="skill : ${block.data['skills']}">
+                            <div class="item-title" th:text="${skill['name']}">Tên kỹ năng</div>
+                            <div class="item-sub" th:text="${skill['description']}">Mô tả</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'career'}">
+                        <div class="item">
+                            <div class="item-title">Mục tiêu ngắn hạn</div>
+                            <div class="text-box" th:text="${block.data['shortTerm']}">-</div>
+                        </div>
+                        <div class="item">
+                            <div class="item-title">Mục tiêu dài hạn</div>
+                            <div class="text-box" th:text="${block.data['longTerm']}">-</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'education'}">
+                        <div class="item" th:each="edu : ${block.data['educations']}">
+                            <div class="row row-spread">
+                                <div class="item-title" th:text="${edu['school']}">Trường</div>
+                                <div class="muted date-range" th:text="${edu['start']} + ' - ' + ${edu['end']}">Thời gian</div>
+                            </div>
+                            <div class="item-sub" th:text="${edu['major']}">Ngành</div>
+                            <div class="text-box" th:text="${edu['description']}">Mô tả</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'experience'}">
+                        <div class="item" th:each="job : ${block.data['jobs']}">
+                            <div class="row row-spread">
+                                <div class="item-title" th:text="${job['position']}">Vị trí</div>
+                                <div class="muted date-range" th:text="${job['start']} + ' - ' + ${job['end']}">Thời gian</div>
+                            </div>
+                            <div class="item-sub" th:text="${job['company']}">Công ty</div>
+                            <div class="text-box" th:text="${job['description']}">Mô tả</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'activity'}">
+                        <div class="item" th:each="act : ${block.data['activities']}">
+                            <div class="row row-spread">
+                                <div class="item-title" th:text="${act['role']}">Vai trò</div>
+                                <div class="muted date-range" th:text="${act['start']} + ' - ' + ${act['end']}">Thời gian</div>
+                            </div>
+                            <div class="item-sub" th:text="${act['organization']}">Tổ chức</div>
+                            <div class="text-box" th:text="${act['description']}">Mô tả</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'award'}">
+                        <div class="item" th:each="award : ${block.data['awards']}">
+                            <div class="row row-spread">
+                                <div class="item-title" th:text="${award['name']}">Giải thưởng</div>
+                                <div class="muted date-range" th:text="${award['time']}">Thời gian</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'certificate'}">
+                        <div class="item" th:each="cert : ${block.data['certificates']}">
+                            <div class="row row-spread">
+                                <div class="item-title" th:text="${cert['name']}">Chứng chỉ</div>
+                                <div class="muted date-range" th:text="${cert['time']}">Thời gian</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type != 'avatar' and block.type != 'businesscard' and block.type != 'profile'
+              and block.type != 'skill' and block.type != 'career' and block.type != 'education'
+              and block.type != 'experience' and block.type != 'activity' and block.type != 'award'
+              and block.type != 'certificate'}" class="fallback" th:text="${block.dataJson}">
+                        {}
+                    </div>
+
+                    <div class="block-divider"
+                         th:if="${block.type != 'businesscard' and block.type != 'avatar'}"></div>
+                </div>
+            </div>
+
+            <div class="col-right">
+                <div class="block" th:each="block : ${cv.rightBlocks}">
+                    <div class="block-title" th:if="${block.type != 'businesscard' and block.type != 'avatar'}"
+                         th:text="${block.title}">Block</div>
+
+                    <div th:if="${block.type == 'avatar'}">
+                        <img class="avatar" th:if="${block.data['image']}" th:src="${block.data['image']}" alt="Avatar" />
+                    </div>
+
+                    <div th:if="${block.type == 'businesscard'}">
+                        <div class="business-name" th:text="${block.data['fullName']}">Họ tên</div>
+                        <div class="business-position" th:text="${block.data['position']}">Vị trí</div>
+                    </div>
+
+                    <div th:if="${block.type == 'profile'}" class="grid">
+                        <div class="label">Ngày sinh</div>
+                        <div th:text="${block.data['dob']}">-</div>
+                        <div class="label">Giới tính</div>
+                        <div th:text="${block.data['gender']}">-</div>
+                        <div class="label">Điện thoại</div>
+                        <div th:text="${block.data['phone']}">-</div>
+                        <div class="label">Email</div>
+                        <div th:text="${block.data['email']}">-</div>
+                        <div class="label">Địa chỉ</div>
+                        <div th:text="${block.data['address']}">-</div>
+                    </div>
+
+                    <div th:if="${block.type == 'skill'}">
+                        <div class="item" th:each="skill : ${block.data['skills']}">
+                            <div class="item-title" th:text="${skill['name']}">Tên kỹ năng</div>
+                            <div class="item-sub" th:text="${skill['description']}">Mô tả</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'career'}">
+                        <div class="item">
+                            <div class="item-title">Mục tiêu ngắn hạn</div>
+                            <div class="text-box" th:text="${block.data['shortTerm']}">-</div>
+                        </div>
+                        <div class="item">
+                            <div class="item-title">Mục tiêu dài hạn</div>
+                            <div class="text-box" th:text="${block.data['longTerm']}">-</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'education'}">
+                        <div class="item" th:each="edu : ${block.data['educations']}">
+                            <div class="row row-spread">
+                                <div class="item-title" th:text="${edu['school']}">Trường</div>
+                                <div class="muted date-range" th:text="${edu['start']} + ' - ' + ${edu['end']}">Thời gian</div>
+                            </div>
+                            <div class="item-sub" th:text="${edu['major']}">Ngành</div>
+                            <div class="text-box" th:text="${edu['description']}">Mô tả</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'experience'}">
+                        <div class="item" th:each="job : ${block.data['jobs']}">
+                            <div class="row row-spread">
+                                <div class="item-title" th:text="${job['position']}">Vị trí</div>
+                                <div class="muted date-range" th:text="${job['start']} + ' - ' + ${job['end']}">Thời gian</div>
+                            </div>
+                            <div class="item-sub" th:text="${job['company']}">Công ty</div>
+                            <div class="text-box" th:text="${job['description']}">Mô tả</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'activity'}">
+                        <div class="item" th:each="act : ${block.data['activities']}">
+                            <div class="row row-spread">
+                                <div class="item-title" th:text="${act['role']}">Vai trò</div>
+                                <div class="muted date-range" th:text="${act['start']} + ' - ' + ${act['end']}">Thời gian</div>
+                            </div>
+                            <div class="item-sub" th:text="${act['organization']}">Tổ chức</div>
+                            <div class="text-box" th:text="${act['description']}">Mô tả</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'award'}">
+                        <div class="item" th:each="award : ${block.data['awards']}">
+                            <div class="row row-spread">
+                                <div class="item-title" th:text="${award['name']}">Giải thưởng</div>
+                                <div class="muted date-range" th:text="${award['time']}">Thời gian</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type == 'certificate'}">
+                        <div class="item" th:each="cert : ${block.data['certificates']}">
+                            <div class="row row-spread">
+                                <div class="item-title" th:text="${cert['name']}">Chứng chỉ</div>
+                                <div class="muted date-range" th:text="${cert['time']}">Thời gian</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${block.type != 'avatar' and block.type != 'businesscard' and block.type != 'profile'
+              and block.type != 'skill' and block.type != 'career' and block.type != 'education'
+              and block.type != 'experience' and block.type != 'activity' and block.type != 'award'
+              and block.type != 'certificate'}" class="fallback" th:text="${block.dataJson}">
+                        {}
+                    </div>
+
+                    <div class="block-divider"
+                         th:if="${block.type != 'businesscard' and block.type != 'avatar'}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
