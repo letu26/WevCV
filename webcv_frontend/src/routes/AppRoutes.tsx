@@ -19,6 +19,8 @@ import Forbidden from '@/pages/admin/Forbidden';
 import LoginAdmin from '@/pages/admin/LoginAdmin';
 import UserManagement from '@/pages/admin/UserManagement';
 import UserRoute from './auth/UserPoute';
+import ProjectManagement from '@/pages/admin/ProjectManagement';
+import ProjectDetailPage from '@/pages/admin/ProjectDetailPage';
 import CurriculumVitae from '@/pages/user/ProtectPages/CurriculumVitae';
 import Project from '@/pages/user/ProtectPages/Project';
 
@@ -65,6 +67,8 @@ export default function AppRoutes({ language, setLanguage }: AppRoutesProps) {
           <Route index element={<DashBoard />} />
           <Route path="dashboard" element={<DashBoard />} />
           <Route path="users" element={<UserManagement />} />
+          <Route path='projects' element={<ProjectManagement/>}/>
+          <Route path="projects/:id" element={<ProjectDetailPage/>} />
         </Route>
       </Route>
     </Routes>

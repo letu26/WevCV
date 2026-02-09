@@ -59,6 +59,9 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(name = "status", nullable = false)
     private UserStatus status;
 
+    @ManyToMany(mappedBy = "users")
+    private List<CvEntity> cv;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()

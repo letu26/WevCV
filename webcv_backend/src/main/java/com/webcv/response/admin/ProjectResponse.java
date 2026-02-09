@@ -3,6 +3,7 @@ package com.webcv.response.admin;
 import java.util.Date;
 
 public class ProjectResponse {
+    private Long id;
     private String name;
     private String description;
     private String status;
@@ -16,6 +17,14 @@ public class ProjectResponse {
         this.description = description;
         this.status = status;
         this.create_by = create_by;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

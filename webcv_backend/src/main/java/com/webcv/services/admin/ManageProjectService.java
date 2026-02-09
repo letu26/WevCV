@@ -59,6 +59,7 @@ public class ManageProjectService {
 
         return projectPage.map(pj -> {
             ProjectResponse pro = new ProjectResponse();
+            pro.setId(pj.getId());
             pro.setName(pj.getName());
             pro.setDescription(pj.getDescription());
             pro.setStatus(pj.getStatus());
@@ -74,6 +75,7 @@ public class ManageProjectService {
         pro = project.findProjectDetailById(id)
                 .orElseThrow();
         ProjectDetailResponse p = new ProjectDetailResponse();
+        p.setId(pro.getId());
         p.setName(pro.getName());
         p.setDescription(pro.getDescription());
         p.setStatus(pro.getStatus());
