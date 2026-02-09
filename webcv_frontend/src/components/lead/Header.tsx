@@ -17,7 +17,7 @@ const Header: React.FC = () => {
     localStorage.removeItem("email");
     localStorage.removeItem("fullname");
     localStorage.removeItem("roles");
-    navigate("/admin/login");
+    navigate("/lead/login");
   };
 
   const fullname = localStorage.getItem("fullname");
@@ -36,7 +36,7 @@ const Header: React.FC = () => {
       <div className="flex items-center gap-4">
         <div className="w-50 flex items-center justify-around">
           <FaRegUserCircle size={35} />
-          <span className="font-bold ml-3 ">Xin chào, Admin {lastName}!</span>
+          <span className="font-bold ml-3 ">Xin chào, Lead {lastName}!</span>
         </div>
         {/* Search */}
         <div className="relative">
@@ -59,11 +59,6 @@ const Header: React.FC = () => {
 
       {/* RIGHT */}
       <div className="flex items-center gap-6">
-        {/* Language */}
-        <div className="flex items-center gap-1 text-xl text-gray-600 cursor-pointer font-bold">
-          <span>VI</span>
-          <span>Việt Nam</span>
-        </div>
 
         {/* Notification */}
         <button className="relative text-gray-600 hover:text-gray-800">
