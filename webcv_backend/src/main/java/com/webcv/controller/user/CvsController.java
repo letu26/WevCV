@@ -6,6 +6,7 @@ import com.webcv.response.user.CvsResponse;
 import com.webcv.services.user.Impl.CvsService;
 import com.webcv.services.user.Impl.PdfService;
 import com.webcv.util.JwtTokenUtil;
+import io.micrometer.common.lang.NonNull;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,5 +71,11 @@ public class CvsController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                 .body(pdf);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<Void>> deleteCvById(@PathVariable Long id){
+        BaseResponse<Void> response = cvsService.deleteCvById(id);
+        return ResponseEntity.ok().body(response);
     }
 }

@@ -24,6 +24,15 @@ export const getCvList = () => {
   });
 };
 
+//xóa cv
+export const deleteCv = (id: number) => {
+  return fetcher<SuccessResponse>({
+    url: `/cvs/${id}`,
+    method: "DELETE",
+  });
+}
+
+//xuất pdf
 export const exportCvPdf = async (id: string) => {
   const response = await apiClient.get(`/cvs/${id}/export-pdf`, {
     responseType: "blob",

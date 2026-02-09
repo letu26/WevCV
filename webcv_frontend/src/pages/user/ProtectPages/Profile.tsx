@@ -1,12 +1,14 @@
 import { Button } from '@/app/components/ui/button';
 import Preview from '@/components/user/cvpreview/Preview';
-import { exportCvPdf, getCvList } from '@/services/usersservices/CvsServices';
+import { deleteCv, exportCvPdf, getCvList } from '@/services/usersservices/CvsServices';
 import { useCVLayoutStore } from '@/store/cvLayoutStore';
 import { CVBlock, CVLayout, CVSavePayload } from '@/types/cv';
-import { Plus } from 'lucide-react';
+import axios from 'axios';
+import { Edit, Eye, Plus, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import Swal from "sweetalert2";
 
 interface ProfileProps {
   language: 'vi' | 'en';
@@ -136,6 +138,24 @@ export default function Profile({ language }: ProfileProps) {
       return undefined;
     }
   };
+  void blocksLabel;
+  const statusNotReviewed = language === "vi" ? "Chưa duyệt" : "Not reviewed";
+  const labelId = language === "vi" ? "Mã" : "ID";
+  const labelLayout = language === "vi" ? "Bố cục" : "Layout";
+  const labelLeft = language === "vi" ? "Trái" : "Left";
+  const labelRight = language === "vi" ? "Phải" : "Right";
+  const labelAvatar = language === "vi" ? "Ảnh" : "Avatar";
+  const labelAvatarYes = language === "vi" ? "Có" : "Yes";
+  const labelAvatarNo = language === "vi" ? "Chưa" : "No";
+
+  const getBlockDataByType = (
+    blocks: CVSavePayload["blocks"] | undefined,
+    type: string
+  ): Record<string, unknown> | undefined => {
+    if (!blocks) return undefined;
+    const found = blocks.find((b) => b?.type === type);
+    return (found?.data as Record<string, unknown> | undefined) ?? undefined;
+  };
   const buildLayoutFromPayload = (payload: CVSavePayload): CVLayout => {
     const parsedLayout = parseMaybeJson<CVSavePayload["layout"]>(payload.layout);
     const parsedBlocks =
@@ -215,7 +235,7 @@ export default function Profile({ language }: ProfileProps) {
     }
   };
 
-useEffect(() => {
+  useEffect(() => {
     if (!viewingCv) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -251,6 +271,53 @@ useEffect(() => {
     fetchCvs();
   }, [loadErrorText])
 
+  const handleDeleteCv = async (id) => {
+    const result = await Swal.fire({
+      title: "Bạn chắc chắn muốn xóa?",
+      text: "CV sẽ bị xóa vĩnh viễn và không thể khôi phục!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const response = await deleteCv(id);
+
+      if (response.code === "200") {
+        Swal.fire({
+          icon: "success",
+          title: "Đã xóa!",
+          text: t.cvDeleted,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        setCvs((prev) => prev.filter((cv) => cv.id !== id));
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi",
+          text:
+            error.response?.data?.message ||
+            "Có lỗi xảy ra, vui lòng thử lại",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi không xác định",
+          text: "Vui lòng thử lại sau",
+        });
+      }
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -278,37 +345,121 @@ useEffect(() => {
           <div className="space-y-3">
             {cvs.map((cv, index) => {
               const title = cv.title?.trim() || `CV ${index + 1}`;
-              const parsedBlocks = parseMaybeJson<CVSavePayload["blocks"]>(
-                cv.blocks
+              const parsedLayout = parseMaybeJson<CVSavePayload["layout"]>(
+                cv.layout
               );
-              const totalBlocks = parsedBlocks?.length ?? 0;
+              const parsedBlocks =
+                parseMaybeJson<CVSavePayload["blocks"]>(cv.blocks) ?? [];
+
+              const leftCount = parsedLayout?.left?.length ?? 0;
+              const rightCount = parsedLayout?.right?.length ?? 0;
+
+              const business = getBlockDataByType(parsedBlocks, "businesscard");
+              const fullName = String(business?.fullName ?? "").trim();
+              const position = String(business?.position ?? "").trim();
+
+              const avatar = getBlockDataByType(parsedBlocks, "avatar");
+              const avatarUrl = String(avatar?.image ?? "").trim();
+              const hasAvatar = Boolean(avatarUrl);
               return (
                 <div
                   key={cv.id ?? index}
-                  className="flex items-center justify-between border rounded-lg p-4"
+                  className="flex items-start justify-between border rounded-xl p-4 bg-white hover:shadow-sm hover:border-gray-300 transition"
                 >
                   <div>
-                    <div className="text-gray-900 font-semibold">{title}</div>
-                    <div className="text-sm text-gray-500">
-                      {totalBlocks} {blocksLabel}
+                    <div className="flex items-center gap-3">
+                      {avatarUrl ? (
+                        <img
+                          src={avatarUrl}
+                          alt="Avatar"
+                          className="w-10 h-10 rounded-full object-cover border"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gray-100 border flex items-center justify-center text-xs font-semibold text-gray-500">
+                          CV
+                        </div>
+                      )}
+
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <div className="text-gray-900 font-semibold">
+                            {title}
+                          </div>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200">
+                            {statusNotReviewed}
+                          </span>
+                        </div>
+
+                        {(fullName || position) && (
+                          <div className="text-sm text-gray-700 mt-1">
+                            <span className="font-medium">
+                              {fullName || "-"}
+                            </span>
+                            {position ? (
+                              <span className="text-gray-500">
+                                {" "}
+                                · {position}
+                              </span>
+                            ) : null}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                      <span className="px-2 py-1 rounded-md bg-gray-50 border">
+                        {labelId}: {cv.id ?? "-"}
+                      </span>
+                      <span className="px-2 py-1 rounded-md bg-gray-50 border">
+                        {labelLayout}: {labelLeft} {leftCount} / {labelRight}{" "}
+                        {rightCount}
+                      </span>
+                      <span
+                        className={`px-2 py-1 rounded-md border ${hasAvatar
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : "bg-gray-50"
+                          }`}
+                      >
+                        {labelAvatar}: {hasAvatar ? labelAvatarYes : labelAvatarNo}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     <Button
                       variant="outline"
+                      size="icon"
                       onClick={() => openViewModal(cv)}
+                      title={t.viewCV}
+                      aria-label={t.viewCV}
                     >
-                      {t.viewCV}
+                      <Eye className="w-4 h-4" />
+                      <span className="sr-only">{t.viewCV}</span>
                     </Button>
                     <Button
                       variant="secondary"
+                      size="icon"
+                      className="transition-colors duration-500 hover:bg-yellow-100"
                       onClick={() =>
                         navigate("/cvs-edit", {
                           state: { mode: "edit", cv },
                         })
                       }
+                      title={t.editCV}
+                      aria-label={t.editCV}
                     >
-                      {t.editCV}
+                      <Edit className="w-4 h-4" />
+                      <span className="sr-only">{t.editCV}</span>
+                    </Button>
+                    <Button
+                      onClick={() => handleDeleteCv(cv.id)}
+                      variant="destructive"
+                      size="icon"
+                      className="transition-colors duration-500 hover:bg-destructive/80"
+                      title={t.deleteCV}
+                      aria-label={t.deleteCV}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span className="sr-only">{t.deleteCV}</span>
                     </Button>
                   </div>
                 </div>

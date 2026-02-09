@@ -44,6 +44,7 @@ public class WebSecurityConfig {
 
                             .requestMatchers(POST, "/api/cvs").hasRole( "USER")
                             .requestMatchers(GET, "/api/cvs").hasRole( "USER")
+                            .requestMatchers(DELETE, "/api/cvs").hasRole( "USER")
                             .anyRequest().authenticated();
                 });
         return http.build();

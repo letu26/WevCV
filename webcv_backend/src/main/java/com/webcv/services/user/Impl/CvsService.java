@@ -81,6 +81,19 @@ public class CvsService implements ICvServices {
                 .build();
     }
 
+    @Override
+    public BaseResponse<Void> deleteCvById(Long id) {
+        CvEntity cv = cvsRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("CV not found!"));
+        cv.setDeleted(true);
+        cvsRepository.save(cv);
+
+        return BaseResponse.<Void>builder()
+                .code("200")
+                .message("Xóa Cv thành công!")
+                .build();
+    }
+
     public CvEntity getCvForUser(Long cvId, Long userId) {
         return cvsRepository.findByIdAndUsers_IdAndDeletedFalse(cvId, userId)
                 .orElseThrow(() -> new NotFoundException("CV not found"));

@@ -1,7 +1,7 @@
 import { useNavigate, NavLink } from 'react-router-dom';
 import { Button } from '@/app/components/ui/button';
-import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,} from '@/app/components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/app/components/ui/dropdown-menu';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, } from '@/app/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/app/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/app/components/ui/avatar';
 import { useState } from 'react';
 import { motion } from 'motion/react';
@@ -68,11 +68,11 @@ export default function HomePage({ language, setLanguage }: HomePageProps) {
   const isLoggedIn = !!userId;
 
   const navItems = [
-    { label: 'Home', path: '/', end: true },
-    { label: 'CV Manager', path: '/cvs-edit' },
-    { label: 'Projects', path: '/projects' },
-    { label: 'Profile', path: '/profile' },
-    { label: 'Setting', path: '/settings' },
+    { label: 'Trang chủ', path: '/', end: true },
+    { label: 'Dự án', path: '/projects' },
+    { label: 'Hồ sơ', path: '/profile' },
+    { label: 'Tạo CV', path: '/cvs-edit' },
+    { label: 'Cài đặt', path: '/settings' },
   ];
 
   const handleLogout = async () => {
@@ -93,7 +93,7 @@ export default function HomePage({ language, setLanguage }: HomePageProps) {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
-      
+
       {/* HEADER */}
       <header className="bg-white/95 backdrop-blur border-b shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto grid grid-cols-3 items-center px-6 py-4">

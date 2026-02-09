@@ -41,11 +41,11 @@ export function Header({ language, setLanguage }: HeaderProps) {
   const fullName = localStorage.getItem("fullname") || "User";
 
   const navItems = [
-    { label: "Home", path: "/", end: true },
-    { label: "CV Manager", path: "/cvs-edit" },
-    { label: "Projects", path: "/projects" },
-    { label: 'Profile', path: '/profile' },
-    { label: 'Setting', path: '/settings' },
+    { label: "Trang chủ", path: "/", end: true },
+    { label: "Dự án", path: "/projects" },
+    { label: "Hồ sơ", path: '/profile' },
+    { label: "Tạo CV", path: "/cvs-edit" },
+    { label: 'Cài đặt', path: '/settings' },
   ];
 
   const handleLogout = async () => {
@@ -74,7 +74,7 @@ export function Header({ language, setLanguage }: HeaderProps) {
 
   return (
     <header className="bg-white/95 backdrop-blur border-b border-border sticky top-0 z-50 shadow-sm">
-      
+
       {/* GRID keeps center perfectly aligned */}
       <div className="grid grid-cols-3 items-center px-6 py-4">
 
@@ -102,8 +102,8 @@ export function Header({ language, setLanguage }: HeaderProps) {
               className={({ isActive }) => `
                 relative font-medium transition-colors duration-200
                 
-                ${isActive 
-                  ? "text-primary" 
+                ${isActive
+                  ? "text-primary"
                   : "text-gray-600 hover:text-primary"
                 }
 
@@ -111,8 +111,8 @@ export function Header({ language, setLanguage }: HeaderProps) {
                 after:h-0.5 after:bg-primary
                 after:transition-all after:duration-300
                 
-                ${isActive 
-                  ? "after:w-full" 
+                ${isActive
+                  ? "after:w-full"
                   : "after:w-0 hover:after:w-full"
                 }
               `}

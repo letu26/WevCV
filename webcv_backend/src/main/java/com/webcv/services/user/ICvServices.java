@@ -9,4 +9,5 @@ import java.util.List;
 public interface ICvServices {
     BaseResponse<Void> createAndUpdateCv(CvsRequest request, Long userId);
     BaseResponse<List<CvsResponse>> getCvbyUserId(Long userId);
+    BaseResponse<Void> deleteCvById(Long id);
 }

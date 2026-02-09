@@ -1,5 +1,6 @@
 package com.webcv.util;
 
+import com.webcv.entity.RoleEntity;
 import com.webcv.exception.customexception.JwtGenerationException;
 import com.webcv.entity.UserEntity;
 import com.webcv.exception.customexception.UnauthorizedException;
@@ -17,10 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 @Component
@@ -43,6 +41,7 @@ public class JwtTokenUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
         claims.put("user_id", user.getId());
+        claims.put("roles", user.getRoles().stream().map(RoleEntity::getName).toList());
         try {
             return Jwts.builder()
                     .claims(claims)
@@ -115,6 +114,23 @@ public class JwtTokenUtil {
             return (Long) userId;
         }, secret);
     }
+    //lấy roles
+    public List<String> extractRoles(String token, String secret) {
+        return extractClaim(token, claims -> {
+            Object roles = claims.get("roles");
+
+            if (roles instanceof List<?>) {
+                return ((List<?>) roles)
+                        .stream()
+                        .map(Object::toString)
+                        .toList();
+            }
+
+            return List.of();
+        }, secret);
+    }
+
+
 
     //lấy token id
     public String tokenId(String token, String secret) {

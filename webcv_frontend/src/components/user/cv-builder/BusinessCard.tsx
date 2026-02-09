@@ -38,7 +38,7 @@ export default function BusinessCard({
 
       <AutoTextarea
         spellCheck={false}
-        placeholder="Vị trí phỏng vấn"
+        placeholder="Vị trí ứng tuyển"
         value={position}
         onChange={(e) =>
           updateBlockData(blockId, { position: e.target.value })

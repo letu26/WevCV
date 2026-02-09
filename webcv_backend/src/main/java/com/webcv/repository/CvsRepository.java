@@ -1,6 +1,7 @@
 package com.webcv.repository;
 
 import com.webcv.entity.CvEntity;
+import com.webcv.response.user.BaseResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

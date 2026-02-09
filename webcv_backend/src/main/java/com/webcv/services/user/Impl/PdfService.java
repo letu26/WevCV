@@ -8,7 +8,6 @@ import com.webcv.cvpdf.model.Layout;
 import com.webcv.cvpdf.model.PdfBlock;
 import com.webcv.util.CvUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -19,7 +18,6 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class PdfService {
 
     private final TemplateEngine templateEngine;
@@ -30,21 +28,8 @@ public class PdfService {
 
     // Xuất PDF cho 1 CV: parse blocks/layout -> render HTML bằng Thymeleaf -> dùng Headless Chrome (Playwright) in ra PDF bytes.
     public byte[] renderCvPdf(CvEntity cv) {
-        // Log thông tin cơ bản để debug luồng xuất PDF.
-        log.info("PDF render CV id={}, title={}", cv.getId(), cv.getTitle());
-        log.info("PDF raw layout length={}, raw blocks length={}",
-                cv.getLayout() == null ? 0 : cv.getLayout().length(),
-                cv.getBlocks() == null ? 0 : cv.getBlocks().length());
-
         // Parse + chuẩn hóa blocks JSON thành danh sách PdfBlock.
         List<PdfBlock> blocks = cvBlockParser.parseBlocks(cv.getBlocks());
-        log.info("PDF parsed blocks count={}", blocks.size());
-
-        // Log block đầu tiên để dễ kiểm tra dữ liệu parse ra đúng chưa.
-        if (!blocks.isEmpty()) {
-            PdfBlock first = blocks.get(0);
-            log.info("PDF first block id={}, type={}, title={}", first.getId(), first.getType(), first.getTitle());
-        }
 
         // Tạo map id -> block để lookup nhanh khi sắp xếp theo layout.
         Map<String, PdfBlock> blocksById = new LinkedHashMap<>();
@@ -53,10 +38,8 @@ public class PdfService {
                 blocksById.put(block.getId(), block);
             }
         }
-
         // Parse layout JSON để lấy thứ tự block theo 2 cột trái/phải.
         Layout layout = cvLayoutParser.parseLayout(cv.getLayout());
-        log.info("PDF layout left count={}, right count={}", layout.getLeft().size(), layout.getRight().size());
 
         // Sắp xếp các block theo đúng thứ tự id trong layout.
         List<PdfBlock> leftBlocks = cvUtil.orderBlocks(layout.getLeft(), blocksById);
