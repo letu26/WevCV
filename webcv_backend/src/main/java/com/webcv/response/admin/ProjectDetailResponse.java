@@ -6,7 +6,7 @@ import com.webcv.entity.UserEntity;
 import java.util.List;
 
 public class ProjectDetailResponse {
-
+    private Long id;
     private String name;
     private String description;
     private String status;
@@ -22,6 +22,14 @@ public class ProjectDetailResponse {
         this.description = description;
         this.create_by = create_by;
         this.members = members;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -1,6 +1,6 @@
 package com.webcv.entity;
 
-import com.webcv.enums.FormStatus;
+import com.webcv.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,39 +10,31 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
+@Builder
 @Table(name = "cvs")
-public class CvEntity extends BaseEntity {
-
+public class CvEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * User sở hữu CV
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    private String title;
 
-    /**
-     * CV form dùng để tạo CV
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cv_form_id", nullable = false)
-    private CvFormEntity cvForm;
+    @Column(columnDefinition = "json")
+    private String layout;
 
-    /**
-     * Trạng thái CV (ACTIVE / INACTIVE / ARCHIVED ...)
-     */
+    @Column(columnDefinition = "json")
+    private String blocks;
+
+    private Boolean deleted;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 20)
-    private FormStatus status;
+    @Column(name = "status", nullable = false)
+    private UserStatus status;
 
-    /**
-     * Giá trị các field trong CV
-     */
-    @OneToMany(mappedBy = "cv", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CvFieldValueEntity> fieldValues;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "cv_users",
+            joinColumns = @JoinColumn(name = "cv_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "user_id", nullable = false))
+    private List<UserEntity> users;
 }
