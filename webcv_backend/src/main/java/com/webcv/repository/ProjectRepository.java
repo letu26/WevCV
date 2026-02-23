@@ -1,8 +1,6 @@
 package com.webcv.repository;
 
 import com.webcv.entity.ProjectEntity;
-import com.webcv.entity.UserEntity;
-import com.webcv.enums.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,4 +30,21 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
             "LEFT JOIN FETCH m. user " +
             "WHERE p.id = :projectId")
     Optional<ProjectEntity> findProjectDetailById(@Param("projectId") Long projectId);
+
+
+    @Query("""
+                SELECT DISTINCT u FROM ProjectEntity u
+            """)
+    Page<ProjectEntity> findAllWithPagi(Pageable p);
+
+
+    @Query("""
+        SELECT p
+        FROM ProjectEntity p
+        JOIN ProjectMemberEntity pm ON pm.project.id = p.id
+        WHERE pm.user.id = :userId
+        AND pm.role = 'LEAD'
+    """)
+    Page<ProjectEntity> findProjectsByLead(@Param("userId") Long userId,Pageable p);
+
 }
