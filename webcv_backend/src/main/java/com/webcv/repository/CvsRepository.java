@@ -17,6 +17,7 @@ public interface CvsRepository extends JpaRepository<CvEntity, Long> {
 
     List<CvEntity> findAllByUsers_IdAndDeletedFalse(Long id);
 
+    Optional<CvEntity> findByUsers_IdAndDeletedFalse(Long userId);
     Optional<CvEntity> findByIdAndUsers_IdAndDeletedFalse(Long cvId, Long userId);
 
     Optional<CvEntity> findByIdAndStatusAndDeletedFalse(
@@ -26,15 +27,35 @@ public interface CvsRepository extends JpaRepository<CvEntity, Long> {
 
     Page<CvEntity> findAll(Pageable pageable);
 
+    //list all cac cv ke ca da co trong project noa do
+//    @Query("""
+//        SELECT c
+//        FROM CvEntity c
+//        WHERE c.deleted = false
+//        AND (:status IS NULL OR c.status = :status)
+//        AND (:keyword IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+//    """)
+//    Page<CvEntity> findAllWithFilter(
+//            @Param("status") UserStatus status,
+//            @Param("keyword") String keyword,
+//            Pageable pageable
+//    );
+
+//    khong cho hien cv da co project
     @Query("""
-                SELECT c
-                FROM CvEntity c
-                WHERE c.deleted = false
-                AND (:status IS NULL OR c.status = :status)
-                AND (:keyword IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
-            """)
+    SELECT c
+    FROM CvEntity c
+    WHERE c.deleted = false
+    AND (:status IS NULL OR c.status = :status)
+    AND (:keyword IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+    AND NOT EXISTS (
+        SELECT 1
+        FROM ProjectApplicationEntity pa
+        WHERE pa.cv.id = c.id
+    )
+""")
     Page<CvEntity> findAllWithFilter(
-            @Param("status") String status,
+            @Param("status") UserStatus status,
             @Param("keyword") String keyword,
             Pageable pageable
     );

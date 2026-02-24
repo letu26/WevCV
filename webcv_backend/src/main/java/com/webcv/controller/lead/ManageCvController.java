@@ -1,12 +1,12 @@
 package com.webcv.controller.lead;
 
 import com.webcv.entity.UserEntity;
+import com.webcv.enums.UserStatus;
 import com.webcv.exception.customexception.BadRequestException;
 import com.webcv.request.lead.ApplyCvRequest;
 import com.webcv.response.lead.CvDetailResponse;
 import com.webcv.response.lead.CvResponse;
 import com.webcv.response.user.BaseResponse;
-import com.webcv.response.user.CvsResponse;
 import com.webcv.services.lead.ManageCvService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,18 +30,18 @@ public class ManageCvController {
     @PreAuthorize("hasRole('LEAD')")
     @GetMapping("/cvs")
     public Page<CvResponse> getAllCvs(
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) UserStatus status,
             @RequestParam(required = false) String keyword,
             Pageable pageable
     ) {
 
-        if (status != null && !status.isBlank()) {
-            if (!status.equalsIgnoreCase("ACTIVE")
-                    && !status.equalsIgnoreCase("INACTIVE")
-                    && !status.equalsIgnoreCase("BLOCKED")) {
-                throw new BadRequestException("Invalid status: " + status);
-            }
-        }
+//        if (status != null && !status.isBlank()) {
+//            if (!status.equalsIgnoreCase("ACTIVE")
+//                    && !status.equalsIgnoreCase("INACTIVE")
+//                    && !status.equalsIgnoreCase("BLOCKED")) {
+//                throw new BadRequestException("Invalid status: " + status);
+//            }
+//        }
 
         if (keyword != null) {
             keyword = keyword.trim();
@@ -54,11 +54,19 @@ public class ManageCvController {
     }
 
     @PreAuthorize("hasRole('LEAD')")
+//    @GetMapping("cvs/{userId}")
+//    public ResponseEntity<BaseResponse<List<CvDetailResponse>>> getCvbyUserId(@PathVariable Long userId){
+//        BaseResponse<List<CvDetailResponse>> response = manageCvService.getCvbyUserId(userId);
+//
+//        return ResponseEntity.ok().body(response);
+//    }
     @GetMapping("cvs/{userId}")
-    public ResponseEntity<BaseResponse<List<CvDetailResponse>>> getCvbyUserId(@PathVariable Long userId){
-        BaseResponse<List<CvDetailResponse>> response = manageCvService.getCvbyUserId(userId);
+    public ResponseEntity<BaseResponse<CvDetailResponse>> getCvbyUserId(
+            @PathVariable Long userId) {
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(
+                manageCvService.getCvbyUserId(userId)
+        );
     }
 
     @PreAuthorize("hasRole('LEAD')")
@@ -77,13 +85,13 @@ public class ManageCvController {
     }
 
     @PreAuthorize("hasRole('LEAD')")
-    @DeleteMapping("/projects/{projectId}/members/{cvId}")
+    @DeleteMapping("/projects/{projectId}/members/{userId}")
     public ResponseEntity<?> removeMember(
             @AuthenticationPrincipal UserEntity User,
             @PathVariable Long projectId,
-            @PathVariable Long cvId) {
+            @PathVariable Long userId) {
 
-        manageCvService.removeMember(User, projectId, cvId);
+        manageCvService.removeMember(User, projectId, userId);
 
         return ResponseEntity.ok("Đã xoá member khỏi project");
     }
