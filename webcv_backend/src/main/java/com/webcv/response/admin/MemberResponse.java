@@ -4,7 +4,16 @@ public class MemberResponse {
     private String fullname;
     private String email;
     private Long id;
+    private String status;
     private String role;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public Long getId() {
         return id;
