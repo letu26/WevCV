@@ -26,11 +26,15 @@ const LoginAdmin: React.FC = () => {
       localStorage.setItem("refreshToken", res.refreshToken);
       localStorage.setItem("userId", res.userId.toString());
       localStorage.setItem("fullname", res.fullName);
-      localStorage.setItem("email",  res.email);
+      localStorage.setItem("email", res.email);
       localStorage.setItem("roles", JSON.stringify(roles));
 
       setTimeout(() => {
-        navigate("/admin/dashboard");
+        if (roles.includes("ADMIN")) {
+          navigate("/admin/dashboard");
+        } else if (roles.includes("LEAD")) {
+          navigate("/lead");
+        }
       }, 1000);
       toast.success("Đăng nhập thành công");
     } catch (error: any) {
@@ -42,19 +46,14 @@ const LoginAdmin: React.FC = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center px-4">
       <Toaster richColors position="bottom-right" />
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800">
-            Admin Login
-          </h2>
-          <p className="text-gray-500 mt-2">
-            Đăng nhập hệ thống quản trị
-          </p>
+          <h2 className="text-3xl font-bold text-gray-800">Admin Login</h2>
+          <p className="text-gray-500 mt-2">Đăng nhập hệ thống quản trị</p>
         </div>
 
         {/* Form */}
@@ -85,10 +84,7 @@ const LoginAdmin: React.FC = () => {
 
           {/* Remember & Forgot */}
           <div className="flex justify-end items-center text-sm">
-            <a
-              href="#"
-              className="text-indigo-600 hover:underline text-right"
-            >
+            <a href="#" className="text-indigo-600 hover:underline text-right">
               Quên mật khẩu?
             </a>
           </div>

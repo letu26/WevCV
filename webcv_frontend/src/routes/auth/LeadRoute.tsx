@@ -6,7 +6,7 @@ const LeadRoute = () => {
   const token = getAccessToken();
 
   if (!token) {
-    return <Navigate to="/lead/login" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
 
   if (!hasRole(["ADMIN", "LEAD"])) {

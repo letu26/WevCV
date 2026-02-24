@@ -36,19 +36,6 @@ public class CvsMapper {
         return objectMapper.readValue(json, Object.class);
     }
 
-    public CvDetailResponse toResponseDetail(CvEntity cv) {
-        try {
-            return CvDetailResponse.builder()
-                    .id(cv.getId())
-                    .title(cv.getTitle())
-                    .layout(parseJson(cv.getLayout()))
-                    .blocks(parseJson(cv.getBlocks()))
-                    .build();
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(
-                    "JSON parse error for CV id: " + cv.getId(), e
-            );
-        }
-    }
+
 
 }
