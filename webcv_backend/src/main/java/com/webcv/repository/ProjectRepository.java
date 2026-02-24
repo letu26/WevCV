@@ -47,4 +47,17 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
     """)
     Page<ProjectEntity> findProjectsByLead(@Param("userId") Long userId,Pageable p);
 
+
+    @Query("""
+    SELECT p
+    FROM ProjectEntity p
+    JOIN ProjectMemberEntity pm ON pm.project.id = p.id
+    WHERE p.id = :projectId
+      AND pm.user.id = :leadId
+      AND pm.role = 'LEAD'
+""")
+    Optional<ProjectEntity> findByIdAndLeadId(
+            @Param("projectId") Long projectId,
+            @Param("leadId") Long leadId
+    );
 }

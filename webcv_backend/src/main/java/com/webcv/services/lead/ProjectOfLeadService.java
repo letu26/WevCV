@@ -55,7 +55,6 @@ public class ProjectOfLeadService {
                 .map(
                         m -> {
                             MemberResponse mr = new MemberResponse();
-
                             mr.setEmail(m.getUser()
                                     .getEmail());
                             mr.setFullname(m.getUser()
