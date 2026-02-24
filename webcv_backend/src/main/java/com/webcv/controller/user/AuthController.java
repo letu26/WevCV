@@ -25,12 +25,12 @@ public class AuthController {
     private final IAuthServices userServices;
     //
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse> createUser(
+    public ResponseEntity<BaseResponse<Void>> createUser(
             @Valid @RequestBody RegisterRequest userRequest) {
         if(!userRequest.getPassword().equals(userRequest.getRetypePassword())){
             throw new PasswordNotMatchException("Passwords don't match");
         }
-        BaseResponse response = userServices.createUser(userRequest);
+        BaseResponse<Void> response = userServices.createUser(userRequest);
         return ResponseEntity.ok().body(response);
     }
 
@@ -56,13 +56,13 @@ public class AuthController {
     }
 
     @PostMapping("/changepass")
-    public ResponseEntity<BaseResponse> changePassword(
+    public ResponseEntity<BaseResponse<Void>> changePassword(
             @Valid @RequestBody ChangePassRequest request
     ){
         if(!request.getNewPassword().equals(request.getRetypeNewPassword())){
             throw new PasswordNotMatchException("Passwords don't match");
         }
-        BaseResponse response = userServices.changePass(request.getOldPassword(), request.getNewPassword());
+        BaseResponse<Void> response = userServices.changePass(request.getOldPassword(), request.getNewPassword());
         return ResponseEntity.ok().body(response);
     }
 }

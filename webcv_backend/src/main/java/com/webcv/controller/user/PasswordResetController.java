@@ -21,8 +21,8 @@ public class PasswordResetController {
     private final PasswordResetService passwordResetService;
 
     @PostMapping("/checkmail")
-    public ResponseEntity<BaseResponse> checkEmail(@Valid @RequestBody CheckEmailRequest request) {
-        BaseResponse response = passwordResetService.checkMail(request.getEmail());
+    public ResponseEntity<BaseResponse<Void>> checkEmail(@Valid @RequestBody CheckEmailRequest request) {
+        BaseResponse<Void> response = passwordResetService.checkMail(request.getEmail());
 
         return ResponseEntity.ok().body(response);
     }
@@ -35,8 +35,8 @@ public class PasswordResetController {
     }
 
     @PostMapping("/resetpassword")
-    public ResponseEntity<BaseResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-        BaseResponse response = passwordResetService.resetPassword(request);
+    public ResponseEntity<BaseResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        BaseResponse<Void> response = passwordResetService.resetPassword(request);
         return ResponseEntity.ok().body(response);
     }
 }

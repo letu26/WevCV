@@ -9,5 +9,5 @@ import com.webcv.response.user.CheckOTPResponse;
 public interface IPasswordResetServices {
     CheckMailResponse checkMail(String emailRequest);
     CheckOTPResponse checkOTP(CheckOTPRequest request);
-    BaseResponse resetPassword(ResetPasswordRequest request);
+    BaseResponse<Void> resetPassword(ResetPasswordRequest request);
 }
