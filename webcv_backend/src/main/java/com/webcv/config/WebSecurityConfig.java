@@ -4,6 +4,7 @@ import com.webcv.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -33,7 +34,8 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
                     requests
-                            .requestMatchers("api/auth/register", "/api/auth/login", "/api/auth/refresh", "/api/forgot/checkmail","/api/forgot/checkotp", "/api/forgot/resetpassword")
+                            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                            .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/refresh", "/api/forgot/checkmail","/api/forgot/checkotp", "/api/forgot/resetpassword")
                             .permitAll()
                             .requestMatchers(GET, "/api/products**").hasAnyRole("USER", "ADMIN")
 
