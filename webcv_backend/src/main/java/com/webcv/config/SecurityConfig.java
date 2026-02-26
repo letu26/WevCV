@@ -58,7 +58,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
-                "https://fe-cv-alpha.vercel.app"
+                "https://fe-cv-alpha.vercel.app",
+                "http://localhost:5173"
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
