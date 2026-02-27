@@ -354,6 +354,8 @@ public class ManageCvService {
 
             projectMemberRepository.save(member);
         }
+        cv.setStatus(UserStatus.APPROVED);
+        cvsRepository.save(cv);
         projectApplicationRepository.save(application);
 
         return BaseResponse.builder()
