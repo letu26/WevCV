@@ -3,7 +3,6 @@ package com.webcv.mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webcv.entity.CvEntity;
-import com.webcv.response.lead.CvDetailResponse;
 import com.webcv.response.user.CvsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
