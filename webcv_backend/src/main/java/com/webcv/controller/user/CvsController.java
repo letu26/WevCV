@@ -28,6 +28,15 @@ public class CvsController {
     private final JwtTokenUtil jwtTokenUtil;
     private final PdfService pdfService;
 
+    /**
+     * 8. Tạo và cập nhật CV
+     * POST /api/cvs
+     *
+     * @CvsRequest: long id
+     *              String title
+     *              String layout
+     *              String blocks
+     */
     @PostMapping
     public ResponseEntity<BaseResponse<Void>> createAndUpdateCv(
             @Valid

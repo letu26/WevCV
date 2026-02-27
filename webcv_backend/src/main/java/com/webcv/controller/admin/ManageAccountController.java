@@ -1,20 +1,17 @@
 package com.webcv.controller.admin;
 
-
 import com.webcv.enums.UserStatus;
+import com.webcv.exception.customexception.BadRequestException;
 import com.webcv.request.admin.CreateUserRequest;
 import com.webcv.request.admin.UpdateUserRoleRequest;
 import com.webcv.request.admin.UpdateUserStatusRequest;
 import com.webcv.response.admin.AccountResponse;
-import com.webcv.entity.UserEntity;
-import com.webcv.exception.customexception.BadRequestException;
 import com.webcv.response.user.BaseResponse;
 import com.webcv.services.admin.ManageAccountService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/api/admin")
@@ -83,7 +80,5 @@ public class ManageAccountController {
     public BaseResponse createUser(@RequestBody CreateUserRequest request){
         return manageAccountService.createUser(request);
     }
-
-
 
 }

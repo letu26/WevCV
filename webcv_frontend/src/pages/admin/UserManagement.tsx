@@ -26,7 +26,7 @@ const UserManagement: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const data = await getUsers(currentPage - 1, 8, role, status, debouncedSearch); // page=0, size=9, không filter
+      const data = await getUsers(currentPage - 1, 8, role, status, debouncedSearch || undefined); // page=0, size=9, không filter
       setUser(data);
     } catch (error) {
       console.error(error);
@@ -35,6 +35,7 @@ const UserManagement: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
+    setCurrentPage(1);
   }, [status, role, currentPage, debouncedSearch]);
 
   const handleCreateUser = async (e: React.FormEvent<HTMLFormElement>) => {

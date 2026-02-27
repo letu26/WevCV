@@ -1,7 +1,5 @@
 package com.webcv.response.admin;
 
-import java.util.Date;
-
 public class ProjectResponse {
     private String name;
     private String description;

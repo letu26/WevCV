@@ -9,14 +9,22 @@ const Sidebar = () => {
     px-4 py-2 rounded-lg
     font-semibold
     transition-all duration-300
-    ${isActive
-      ? "bg-indigo-50 text-indigo-600"
-      : "text-gray-600 hover:bg-indigo-50 hover:text-indigo-600"
+    ${
+      isActive
+        ? "bg-indigo-100 dark:bg-indigo-600 text-indigo-600 dark:text-white"
+        : "text-gray-600 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-800"
     }
   `;
 
   return (
-    <aside className="fixed top-0 left-0 w-65 h-screen bg-white border-r border-gray-200 flex flex-col">
+    <aside className="
+      fixed top-0 left-0 w-65 h-screen
+      bg-white dark:bg-gray-900
+      border-r border-gray-200 dark:border-gray-800
+      flex flex-col
+      text-gray-700 dark:text-gray-200
+      transition
+    ">
       <div className="h-20 flex items-center justify-center border-b border-gray-200">
         <span className="text-lg font-bold bg-linear-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
           CV Admin

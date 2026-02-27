@@ -23,7 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final IAuthServices userServices;
-    //
+
+    /**
+     * 1. Đăng ký tài khoàn
+     * POST /api/auth/register
+     *
+     * @RegisterRequest: String username, String password, List<String> roles, String status, String email, String fullname
+     */
     @PostMapping("/register")
     public ResponseEntity<BaseResponse> createUser(
             @Valid @RequestBody RegisterRequest userRequest) {
@@ -35,6 +41,14 @@ public class AuthController {
     }
 
 
+    /**
+     * 2. Đăng nhập tài khoản
+     * POST /api/auth/login
+     *
+     * @LoginRequest: String username, String password
+     *
+     * @LoginResponse: String accessToken, String refreshToken, List<String> role
+     * */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest loginRequest) {
@@ -47,6 +61,14 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * 3. Làm mới mã truy cập
+     * POST /api/auth/refresh
+     *
+     * @RefreshTokenRequest: String refreshToken
+     *
+     * @RefreshTokenResponse: String accessToken
+     * */
     @PostMapping("/refresh")
     public ResponseEntity<RefreshTokenResponse> refreshToken(
             @Valid @RequestBody RefreshTokenRequest refreshTokenRequest
@@ -55,6 +77,12 @@ public class AuthController {
         return ResponseEntity.ok().body(response);
     }
 
+    /**
+     * 4. Thay đổi mật khẩu
+     * POST /api/auth/changepass
+     *
+     * @ChangePassRequest: String oldPassword, String newPassword, String retypeNewPassword
+     * */
     @PostMapping("/changepass")
     public ResponseEntity<BaseResponse> changePassword(
             @Valid @RequestBody ChangePassRequest request

@@ -1,168 +1,273 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { useNavigate } from "react-router-dom";
+
+import {
+  getDashboard,
+  getRecentActivities,
+  getSystemStatus,
+  RangeType,
+} from "@/services/adminservices/dashboard";
+
+import { DashboardResponse } from "@/types/admin/dashboard";
 
 const DashBoard: React.FC = () => {
+  const navigate = useNavigate();
+
+  const [activities, setActivities] = useState<any[]>([]);
+  const [range, setRange] = useState<RangeType>("DAY");
+  const [systemStatus, setSystemStatus] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [dashboard, setDashboard] =
+    useState<DashboardResponse | null>(null);
+
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("theme") === "dark"
+  );
+
+  const summary = dashboard?.summary;
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  useEffect(() => {
+    fetchAll();
+  }, [range]);
+
+  const fetchAll = async () => {
+    try {
+      setLoading(true);
+
+      const [dashboardRes, activityRes, systemRes] =
+        await Promise.all([
+          getDashboard(range),
+          getRecentActivities(5),
+          getSystemStatus(),
+        ]);
+
+      setDashboard(dashboardRes.data);
+      setActivities(activityRes.data);
+      setSystemStatus(systemRes.data);
+    } catch (err) {
+      console.error("Dashboard error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatActivityType = (type: string) => {
+    switch (type) {
+      case "CV_CREATED":
+        return "CV mới được tạo";
+      case "CV_APPROVED":
+        return "Admin duyệt CV";
+      case "USER_REGISTERED":
+        return "User đăng ký mới";
+      case "PROJECT_CREATED":
+        return "Project được tạo";
+      default:
+        return "Hoạt động";
+    }
+  };
+
+  const formatTimeAgo = (minutes: number) => {
+    if (minutes < 60) return `${minutes} phút trước`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} giờ trước`;
+    const days = Math.floor(hours / 24);
+    return `${days} ngày trước`;
+  };
+
+  if (loading) return <div className="p-8">Loading...</div>;
+  if (!dashboard) return null;
+
   return (
-    <div className="min-h-screen bg-gray-100 p-6 space-y-5">
+    <div className="min-h-screen p-8 space-y-8
+      bg-gradient-to-br from-gray-50 to-gray-100
+      dark:from-gray-900 dark:to-gray-950 transition">
 
-      {/* Title */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-        <p className="text-sm text-gray-500">
-          Tổng quan hệ thống quản lý CV & User
+      {/* HEADER */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="px-4 py-2 rounded-full bg-indigo-600 text-white text-sm"
+        >
+          {darkMode ? "🌞 Light" : "🌙 Dark"}
+        </button>
+      </div>
+
+      {/* RANGE TOGGLE */}
+      <div className="inline-flex bg-gray-200 dark:bg-gray-800 rounded-full p-1">
+        {["DAY", "WEEK", "MONTH"].map((r) => (
+          <button
+            key={r}
+            onClick={() => setRange(r as RangeType)}
+            className={`px-4 py-1 text-sm rounded-full transition ${
+              range === r
+                ? "bg-white dark:bg-gray-700 shadow"
+                : "text-gray-500"
+            }`}
+          >
+            {r}
+          </button>
+        ))}
+      </div>
+
+      {/* STAT CARDS */}
+      <div className="grid grid-cols-4 gap-6">
+        <StatCard
+          title="Tổng CV"
+          value={summary?.totalCvs ?? 0}
+          growth={summary?.cvsGrowthPercent}
+        />
+        <StatCard
+          title="Project"
+          value={summary?.totalProjects ?? 0}
+          growth={summary?.projectsGrowth}
+        />
+        <StatCard
+          title="Người dùng"
+          value={summary?.totalUsers ?? 0}
+          growth={summary?.usersGrowth}
+        />
+        <StatCard
+          title="CV hôm nay"
+          value={summary?.newCvsToday ?? 0}
+        />
+      </div>
+
+      {/* CHART + ACTIVITY */}
+      <div className="grid grid-cols-3 gap-6">
+
+        {/* CHART */}
+        <div className="col-span-2 bg-white/70 dark:bg-gray-800/70
+          backdrop-blur-md rounded-3xl p-6 shadow-lg border
+          border-gray-200 dark:border-gray-700 h-[380px]">
+
+          <h2 className="font-semibold mb-4">Biểu đồ CV</h2>
+
+          <ResponsiveContainer width="100%" height="90%">
+            <LineChart data={dashboard.cvChart}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: "12px",
+                  border: "none",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                }}
+              />
+              <Line
+                type="monotone"
+                dataKey="count"
+                stroke="#6366f1"
+                strokeWidth={3}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* ACTIVITY */}
+        <div className="bg-white/70 dark:bg-gray-800/70
+          backdrop-blur-md rounded-3xl p-6 shadow-lg border
+          border-gray-200 dark:border-gray-700 h-[380px] overflow-y-auto">
+
+          <h2 className="font-semibold mb-4">Hoạt động gần đây</h2>
+
+          {activities.map((activity, index) => (
+            <div
+              key={index}
+              className="mb-3 p-3 rounded-xl hover:bg-gray-100
+              dark:hover:bg-gray-700 cursor-pointer transition"
+            >
+              <p className="text-sm font-medium">
+                • {formatActivityType(activity.type)}
+              </p>
+              <p className="text-xs text-gray-500">
+                → {activity.title} –{" "}
+                {formatTimeAgo(activity.minutesAgo)}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* SYSTEM STATUS */}
+      <div className="grid grid-cols-2 gap-6">
+        <StatusCard title="API" status={systemStatus.api} />
+        <StatusCard title="Database" status={systemStatus.database} />
+      </div>
+    </div>
+  );
+};
+
+const StatCard = ({
+  title,
+  value,
+  growth,
+}: {
+  title: string;
+  value: number;
+  growth?: number;
+}) => {
+  const isUp = growth && growth >= 0;
+
+  return (
+    <div className="bg-white/70 dark:bg-gray-800/70
+      backdrop-blur-md rounded-3xl p-6 shadow-lg border
+      border-gray-200 dark:border-gray-700">
+
+      <p className="text-sm text-gray-500">{title}</p>
+
+      <p className="mt-2 text-3xl font-bold text-indigo-600">
+        {value}
+      </p>
+
+      {growth !== undefined && (
+        <p
+          className={`text-xs mt-2 font-medium ${
+            isUp ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {isUp ? "↑" : "↓"} {Math.abs(growth)}% so với hôm qua
         </p>
-      </div>
+      )}
+    </div>
+  );
+};
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl shadow p-5">
-          <p className="text-sm text-gray-500">Tổng CV</p>
-          <p className="mt-2 text-3xl font-bold text-indigo-600">1,248</p>
-        </div>
+const StatusCard = ({ title, status }: any) => {
+  const isOnline =
+    status === "ONLINE" || status === "CONNECTED";
 
-        <div className="bg-white rounded-xl shadow p-5">
-          <p className="text-sm text-gray-500">Project</p>
-          <p className="mt-2 text-3xl font-bold text-green-600">312</p>
-        </div>
+  return (
+    <div className="bg-white/70 dark:bg-gray-800/70
+      backdrop-blur-md rounded-3xl p-6 shadow-lg border
+      border-gray-200 dark:border-gray-700 flex justify-between">
 
-        <div className="bg-white rounded-xl shadow p-5">
-          <p className="text-sm text-gray-500">Người dùng</p>
-          <p className="mt-2 text-3xl font-bold text-orange-500">528</p>
-        </div>
-
-        <div className="bg-white rounded-xl shadow p-5">
-          <p className="text-sm text-gray-500">CV hôm nay</p>
-          <p className="mt-2 text-3xl font-bold text-purple-600">36</p>
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-        {/* Table */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            CV mới cập nhật
-          </h2>
-
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-gray-500 border-b">
-                <th className="py-2 text-left">Ứng viên</th>
-                <th className="text-left">Vị trí</th>
-                <th className="text-left">Trạng thái</th>
-                <th className="text-left">Ngày</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b hover:bg-gray-50">
-                <td className="py-3 font-medium">Nguyễn Văn A</td>
-                <td>Frontend Dev</td>
-                <td className="text-green-600 font-semibold">Approved</td>
-                <td>Hôm nay</td>
-              </tr>
-
-              <tr className="border-b hover:bg-gray-50">
-                <td className="py-3 font-medium">Trần Thị B</td>
-                <td>Backend Dev</td>
-                <td className="text-yellow-500 font-semibold">Pending</td>
-                <td>Hôm qua</td>
-              </tr>
-
-              <tr className="hover:bg-gray-50">
-                <td className="py-3 font-medium">Lê Văn C</td>
-                <td>UI/UX</td>
-                <td className="text-red-500 font-semibold">Rejected</td>
-                <td>22/01</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        {/* Activity */}
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Hoạt động gần đây
-          </h2>
-
-          <ul className="space-y-3 text-sm">
-            <li>
-              <p className="font-medium">Admin duyệt CV</p>
-              <p className="text-gray-500">Nguyễn Văn A – 5 phút trước</p>
-            </li>
-
-            <li>
-              <p className="font-medium">User đăng ký mới</p>
-              <p className="text-gray-500">email@gmail.com – 30 phút trước</p>
-            </li>
-
-            <li>
-              <p className="font-medium">Project được tạo</p>
-              <p className="text-gray-500">HR System – 2 giờ trước</p>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Bottom Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-        {/* Chart */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Thống kê CV theo trạng thái
-          </h2>
-
-          <div className="flex items-end gap-4 h-40">
-            {[
-              { label: "Mon", value: 24, color: "bg-green-500" },
-              { label: "Tue", value: 18, color: "bg-green-500" },
-              { label: "Wed", value: 30, color: "bg-green-500" },
-              { label: "Thu", value: 14, color: "bg-yellow-400" },
-              { label: "Fri", value: 22, color: "bg-yellow-400" },
-              { label: "Sat", value: 10, color: "bg-red-500" },
-              { label: "Sun", value: 6, color: "bg-red-500" },
-            ].map((item, index) => (
-              <div key={index} className="flex-1 text-center">
-                <div
-                  className={`w-full ${item.color} rounded-lg mb-2`}
-                  style={{ height: `${item.value * 4}px` }}
-                ></div>
-                <p className="text-xs font-medium text-gray-600">{item.label}</p>
-              </div>
-            ))}
-          </div>
-
-        </div>
-
-        {/* System Status */}
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Trạng thái hệ thống
-          </h2>
-
-          <ul className="space-y-3 text-sm">
-            <li className="flex justify-between">
-              <span>API Server</span>
-              <span className="text-green-600 font-semibold">Online</span>
-            </li>
-
-            <li className="flex justify-between">
-              <span>Database</span>
-              <span className="text-green-600 font-semibold">Connected</span>
-            </li>
-
-            <li className="flex justify-between">
-              <span>CV Processing</span>
-              <span className="text-yellow-500 font-semibold">Busy</span>
-            </li>
-
-            <li className="flex justify-between">
-              <span>Email Service</span>
-              <span className="text-green-600 font-semibold">Running</span>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <span>{title}</span>
+      <span
+        className={`px-3 py-1 rounded-full text-sm font-semibold ${
+          isOnline
+            ? "bg-green-100 text-green-600"
+            : "bg-red-100 text-red-600"
+        }`}
+      >
+        {status}
+      </span>
     </div>
   );
 };

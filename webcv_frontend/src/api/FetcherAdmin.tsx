@@ -6,11 +6,19 @@ import axios, {
 import { API_URL } from "@/config";
 import { getLoginRedirectPath } from "@/util/auth";
 
+const apiClient = axios.create({
+  baseURL: API_URL,
+  timeout: 10000,
+  // withCredentials: true,
+});
+
+export default apiClient;
+/*FetcherAdmin
 export const apiClient = axios.create({
   baseURL: API_URL,
   timeout: 10000,
 });
-
+*/
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
 

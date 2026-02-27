@@ -27,9 +27,12 @@ const Header: React.FC = () => {
     <header
       className="
         fixed top-0 left-65 right-0 h-20 z-50
-        bg-white border-b border-gray-200
+        bg-white dark:bg-gray-900
+        border-b border-gray-200 dark:border-gray-800
         flex items-center justify-between
         px-6
+        text-gray-800 dark:text-gray-100
+        transition
       "
     >
       {/* LEFT */}
@@ -47,11 +50,15 @@ const Header: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
             className="
               w-64 pl-9 pr-3 py-2 text-sm
-              rounded-md border border-gray-300
-              focus:outline-none focus:ring-2 focus:ring-blue-500
+              rounded-md
+              bg-white dark:bg-gray-800
+              border border-gray-300 dark:border-gray-700
+              text-gray-800 dark:text-gray-100
+              placeholder-gray-400
+              focus:outline-none focus:ring-2 focus:ring-indigo-500
             "
           />
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 text-sm">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300 text-sm">
             <AiOutlineSearch size={20} />
           </span>
         </div>
@@ -60,19 +67,19 @@ const Header: React.FC = () => {
       {/* RIGHT */}
       <div className="flex items-center gap-6">
         {/* Language */}
-        <div className="flex items-center gap-1 text-xl text-gray-600 cursor-pointer font-bold">
+        <div className="flex items-center gap-1 text-xl text-gray-600 dark:text-gray-300 cursor-pointer font-bold">
           <span>VI</span>
           <span>Việt Nam</span>
         </div>
 
         {/* Notification */}
-        <button className="relative text-gray-600 hover:text-gray-800">
+        <button className="relative text-gray-600 dark:text-gray-300 hover:text-gray-800">
           <FaBell size={20} />
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
         </button>
 
         {/* Logout */}
-        <button className="text-gray-600 hover:text-gray-800" onClick={handleClick}>
+        <button className="text-gray-600 dark:text-gray-300 hover:text-gray-800" onClick={handleClick}>
           <FiLogOut size={25} />
         </button>
       </div>

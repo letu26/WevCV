@@ -1,7 +1,7 @@
-import { apiClient, fetcher } from "@/api/FetcherAdmin";
+import apiClient from "@/api/FetcherAdmin";
+import fetcher from "@/api/FetcherAdmin";
 import { CVFetcher, CVSavePayload } from "@/types/cv";
 import { SuccessResponse } from "../adminservices/users";
-
 
 //tạo mới và cập nhật cvs
 export const createAndUpdateCv = (data : CVSavePayload) => {

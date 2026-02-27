@@ -23,6 +23,12 @@ export const API_CONFIG = {
       PROFILE: '/users/profile',
       UPDATE: '/users/profile',
     },
+    ADMIN: {
+        DASH_BOARD: '/admin/dashboard',
+        RECENT_ACTIVITIES: '/admin/dashboard/recent-activities',
+        STATUS: '/admin/system/status',
+        EXPORT_CV_INFO: '/admin/export/cvs',
+    },
     CV: {
       LIST: '/cv/list',
       CREATE: '/cv/create',
