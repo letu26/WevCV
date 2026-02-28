@@ -42,11 +42,11 @@ public interface CvsRepository extends JpaRepository<CvEntity, Long> {
 //    );
 
 //    khong cho hien cv da co project
-    @Query("""
+@Query("""
     SELECT c
     FROM CvEntity c
     WHERE c.deleted = false
-    AND (:status IS NULL OR c.status = :status)
+    AND c.status = com.webcv.enums.UserStatus.ACTIVE
     AND (:keyword IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
     AND NOT EXISTS (
         SELECT 1

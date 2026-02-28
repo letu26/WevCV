@@ -60,4 +60,15 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
             @Param("projectId") Long projectId,
             @Param("leadId") Long leadId
     );
+
+    /**
+     * Lấy danh sách dự án mà một User tham gia dựa trên userId
+     */
+    @Query("""
+        SELECT p
+        FROM ProjectEntity p
+        JOIN ProjectMemberEntity pm ON pm.project.id = p.id
+        WHERE pm.user.id = :userId
+    """)
+    Optional<ProjectEntity> findProjectsByUserId(@Param("userId") Long userId);
 }
