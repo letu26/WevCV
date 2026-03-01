@@ -3,12 +3,13 @@ package com.webcv.services.lead;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webcv.entity.*;
+import com.webcv.enums.FormStatus;
 import com.webcv.enums.UserStatus;
 import com.webcv.exception.customexception.BadRequestException;
 import com.webcv.exception.customexception.NotFoundException;
 import com.webcv.mapper.CvsMapper;
 import com.webcv.repository.*;
-import com.webcv.response.lead.CvDetailResponse;
+import com.webcv.response.lead.cvResponse.*;
 import com.webcv.response.lead.CvResponse;
 import com.webcv.response.lead.ProjectResponse;
 import com.webcv.response.user.BaseResponse;
@@ -102,71 +103,191 @@ public class ManageCvService {
     private CvDetailResponse mapToDetailResponse(CvEntity cv) {
 
         try {
-            Map<String, Object> blocks =
+
+            List<Map<String, Object>> blocks =
                     objectMapper.readValue(
                             cv.getBlocks(),
-                            new TypeReference<Map<String, Object>>() {}
+                            new TypeReference<List<Map<String, Object>>>() {}
                     );
 
-            Map<String, Object> profile =
-                    (Map<String, Object>) blocks.get("profile");
+            CvDetailResponse.CvDetailResponseBuilder builder =
+                    CvDetailResponse.builder()
+                            .id(cv.getId())
+                            .title(cv.getTitle());
 
-            // ===== PARSE PROJECTS =====
-            List<Map<String, Object>> projectsRaw =
-                    (List<Map<String, Object>>) blocks.get("projects");
+            List<SkillResponse> skills = new ArrayList<>();
+            List<EducationResponse> educations = new ArrayList<>();
+            List<JobResponse> jobs = new ArrayList<>();
+            List<CertificateResponse> certificates = new ArrayList<>();
+            List<AwardResponse> awards = new ArrayList<>();
+            List<ActivityResponse> activities = new ArrayList<>();
 
-            List<ProjectResponse> projects = new ArrayList<>();
+            for (Map<String, Object> block : blocks) {
 
-            if (projectsRaw != null) {
-                for (Map<String, Object> p : projectsRaw) {
+                String type = (String) block.get("type");
+                Map<String, Object> data =
+                        (Map<String, Object>) block.get("data");
 
-                    ProjectResponse project = new ProjectResponse();
+                if (type == null || data == null) continue;
 
-                    project.setName((String) p.get("name"));
-                    project.setDescription((String) p.get("description"));
+                switch (type) {
 
-                    // dùng role làm status tạm
-                    project.setStatus((String) p.get("role"));
+                    // ===== BUSINESS CARD =====
+                    case "businesscard":
+                        builder.fullName((String) data.get("fullName"));
+                        builder.position((String) data.get("position"));
+                        break;
 
-                    // lấy fullName làm create_by
-                    if (profile != null) {
-                        project.setCreate_by((String) profile.get("fullName"));
-                    }
+                    // ===== AVATAR =====
+                    case "avatar":
+                        builder.avatar((String) data.get("image"));
+                        break;
 
-                    projects.add(project);
+                    // ===== PROFILE =====
+                    case "profile":
+                        builder.email((String) data.get("email"));
+                        builder.phone((String) data.get("phone"));
+                        builder.address((String) data.get("address"));
+                        builder.dob((String) data.get("dob"));
+                        builder.gender((String) data.get("gender"));
+                        break;
+
+                    // ===== CAREER =====
+                    case "career":
+                        builder.longTerm((String) data.get("longTerm"));
+                        builder.shortTerm((String) data.get("shortTerm"));
+                        break;
+
+                    // ===== SKILL =====
+                    case "skill":
+                        List<Map<String, Object>> skillList =
+                                (List<Map<String, Object>>) data.get("skills");
+
+                        if (skillList != null) {
+                            for (Map<String, Object> s : skillList) {
+                                skills.add(
+                                        SkillResponse.builder()
+                                                .id((String) s.get("id"))
+                                                .name((String) s.get("name"))
+                                                .description((String) s.get("description"))
+                                                .build()
+                                );
+                            }
+                        }
+                        break;
+
+                    // ===== EDUCATION =====
+                    case "education":
+                        List<Map<String, Object>> eduList =
+                                (List<Map<String, Object>>) data.get("educations");
+
+                        if (eduList != null) {
+                            for (Map<String, Object> e : eduList) {
+                                educations.add(
+                                        EducationResponse.builder()
+                                                .id((String) e.get("id"))
+                                                .school((String) e.get("school"))
+                                                .major((String) e.get("major"))
+                                                .start((String) e.get("start"))
+                                                .end((String) e.get("end"))
+                                                .description((String) e.get("description"))
+                                                .build()
+                                );
+                            }
+                        }
+                        break;
+
+                    // ===== EXPERIENCE =====
+                    case "experience":
+                        List<Map<String, Object>> jobList =
+                                (List<Map<String, Object>>) data.get("jobs");
+
+                        if (jobList != null) {
+                            for (Map<String, Object> j : jobList) {
+                                jobs.add(
+                                        JobResponse.builder()
+                                                .id((String) j.get("id"))
+                                                .company((String) j.get("company"))
+                                                .position((String) j.get("position"))
+                                                .start((String) j.get("start"))
+                                                .end((String) j.get("end"))
+                                                .description((String) j.get("description"))
+                                                .build()
+                                );
+                            }
+                        }
+                        break;
+
+                    // ===== CERTIFICATE =====
+                    case "certificate":
+                        List<Map<String, Object>> certList =
+                                (List<Map<String, Object>>) data.get("certificates");
+
+                        if (certList != null) {
+                            for (Map<String, Object> c : certList) {
+                                certificates.add(
+                                        CertificateResponse.builder()
+                                                .id((String) c.get("id"))
+                                                .name((String) c.get("name"))
+                                                .time((String) c.get("time"))
+                                                .build()
+                                );
+                            }
+                        }
+                        break;
+
+                    // ===== AWARD =====
+                    case "award":
+                        List<Map<String, Object>> awardList =
+                                (List<Map<String, Object>>) data.get("awards");
+
+                        if (awardList != null) {
+                            for (Map<String, Object> a : awardList) {
+                                awards.add(
+                                        AwardResponse.builder()
+                                                .id((String) a.get("id"))
+                                                .name((String) a.get("name"))
+                                                .time((String) a.get("time"))
+                                                .build()
+                                );
+                            }
+                        }
+                        break;
+
+                    // ===== ACTIVITY =====
+                    case "activity":
+                        List<Map<String, Object>> actList =
+                                (List<Map<String, Object>>) data.get("activities");
+
+                        if (actList != null) {
+                            for (Map<String, Object> a : actList) {
+                                activities.add(
+                                        ActivityResponse.builder()
+                                                .id((String) a.get("id"))
+                                                .organization((String) a.get("organization"))
+                                                .role((String) a.get("role"))
+                                                .start((String) a.get("start"))
+                                                .end((String) a.get("end"))
+                                                .description((String) a.get("description"))
+                                                .build()
+                                );
+                            }
+                        }
+                        break;
                 }
             }
 
-            // ===== PARSE SKILLS =====
-            Map<String, List<String>> skillsRaw =
-                    (Map<String, List<String>>) blocks.get("skills");
+            builder.skills(skills);
+            builder.educations(educations);
+            builder.jobs(jobs);
+            builder.certificates(certificates);
+            builder.awards(awards);
+            builder.activities(activities);
 
-            List<String> skills = new ArrayList<>();
-
-            if (skillsRaw != null) {
-                skills.addAll(skillsRaw.getOrDefault("technical", List.of()));
-                skills.addAll(skillsRaw.getOrDefault("frontend", List.of()));
-                skills.addAll(skillsRaw.getOrDefault("softSkills", List.of()));
-            }
-
-            return CvDetailResponse.builder()
-                    .id(cv.getId())
-                    .title(cv.getTitle())
-
-                    .fullName((String) profile.get("fullName"))
-                    .email((String) profile.get("email"))
-                    .phone((String) profile.get("phone"))
-                    .address((String) profile.get("address"))
-
-                    .careerGoal((String) blocks.get("careerGoal"))
-                    .additionalInfo((String) blocks.get("additionalInfo"))
-
-                    .projects(projects)
-                    .skills(skills)
-
-                    .build();
+            return builder.build();
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Error parsing CV blocks", e);
         }
     }
@@ -234,6 +355,8 @@ public class ManageCvService {
 
             projectMemberRepository.save(member);
         }
+        cv.setStatus(FormStatus.APPROVED);
+        cvsRepository.save(cv);
         projectApplicationRepository.save(application);
 
         return BaseResponse.builder()

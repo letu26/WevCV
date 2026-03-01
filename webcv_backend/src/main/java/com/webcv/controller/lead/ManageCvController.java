@@ -4,7 +4,7 @@ import com.webcv.entity.UserEntity;
 import com.webcv.enums.UserStatus;
 import com.webcv.exception.customexception.BadRequestException;
 import com.webcv.request.lead.ApplyCvRequest;
-import com.webcv.response.lead.CvDetailResponse;
+import com.webcv.response.lead.cvResponse.CvDetailResponse;
 import com.webcv.response.lead.CvResponse;
 import com.webcv.response.user.BaseResponse;
 import com.webcv.services.lead.ManageCvService;
@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/lead")

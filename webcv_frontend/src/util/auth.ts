@@ -27,5 +27,5 @@ export const getLoginRedirectPath = () => {
     return "/admin/login";
   }
 
-  return "/siginin";
+  return "/signin";
 };

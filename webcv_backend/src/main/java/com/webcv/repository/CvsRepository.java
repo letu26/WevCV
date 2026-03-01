@@ -2,7 +2,7 @@ package com.webcv.repository;
 
 import com.webcv.entity.CvEntity;
 import com.webcv.enums.UserStatus;
-import com.webcv.response.user.BaseResponse;
+import com.webcv.repository.custom.CvsRepositoryCustom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,13 +12,14 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface CvsRepository extends JpaRepository<CvEntity, Long> {
+public interface CvsRepository extends JpaRepository<CvEntity, Long>, CvsRepositoryCustom {
     boolean existsById(Long id);
 
     List<CvEntity> findAllByUsers_IdAndDeletedFalse(Long id);
 
     Optional<CvEntity> findByUsers_IdAndDeletedFalse(Long userId);
     Optional<CvEntity> findByIdAndUsers_IdAndDeletedFalse(Long cvId, Long userId);
+    Optional<CvEntity> findByToken(String token);
 
     Optional<CvEntity> findByIdAndStatusAndDeletedFalse(
             Long id,
@@ -42,11 +43,11 @@ public interface CvsRepository extends JpaRepository<CvEntity, Long> {
 //    );
 
 //    khong cho hien cv da co project
-    @Query("""
+@Query("""
     SELECT c
     FROM CvEntity c
     WHERE c.deleted = false
-    AND (:status IS NULL OR c.status = :status)
+    AND c.status = com.webcv.enums.FormStatus.APPROVED
     AND (:keyword IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
     AND NOT EXISTS (
         SELECT 1

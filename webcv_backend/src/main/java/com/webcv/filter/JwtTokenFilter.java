@@ -40,6 +40,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
+        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (isBypassToken(request)) {
             filterChain.doFilter(request, response);
             return;
@@ -99,7 +104,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of("/api/auth/refresh", "POST"),
                 Pair.of("/api/forgot/checkmail", "POST"),
                 Pair.of("/api/forgot/checkotp", "POST"),
-                Pair.of("/api/forgot/resetpassword", "POST")
+                Pair.of("/api/forgot/resetpassword", "POST"),
+                Pair.of("/api/cvs/share-cv", "GET")
         );
         for(Pair<String, String> bypassTokens: bypassToken) {
             if (request.getServletPath().contains(bypassTokens.getFirst()) &&

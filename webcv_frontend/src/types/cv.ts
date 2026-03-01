@@ -12,6 +12,7 @@ export interface CVBlock {
 export interface CVSavePayload {
   id: string | null;
   title: string;
+  status?: "PENDING" | "APPROVED" | "REJECTED";
   layout: {
     left: string[];
     right: string[];
@@ -23,6 +24,7 @@ export interface CVSavePayload {
     title: string;
     data: Record<string, unknown>;
   }>;
+  visibility: string;
 }
 
 

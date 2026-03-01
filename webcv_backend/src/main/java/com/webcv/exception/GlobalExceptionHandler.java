@@ -42,6 +42,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.CONFLICT,"CONFLICT", ex.getMessage());
     };
 
+    @ExceptionHandler(ServiceUnavailableException.class)
+    ResponseEntity<BaseResponse<Void>> serviceUnavailableException(ServiceUnavailableException ex){
+        return buildErrorResponse(HttpStatus.SERVICE_UNAVAILABLE,"SERVICE_UNAVAILABLE", ex.getMessage());
+    };
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<Void>> handleValidation(
             MethodArgumentNotValidException ex) {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,8 +14,6 @@ import {
   TabsTrigger,
 } from "@/app/components/ui/tabs";
 import { Label } from "@/app/components/ui/label";
-
-import { useEffect, useState } from "react";
 import { Button } from "@/app/components/ui/button";
 import {
   getLeadProjects,
@@ -23,47 +21,90 @@ import {
 } from "@/services/leadservice/lead.api";
 import { toast } from "sonner";
 
-interface Project {
+/* ================= TYPES ================= */
+
+interface Skill {
+  id: string;
   name: string;
   description: string;
-  role?: string;
-  technologies?: string[];
+}
+
+interface Education {
+  id: string;
+  school: string;
+  major: string;
+  start: string;
+  end: string;
+  description: string;
+}
+
+interface Job {
+  id: string;
+  company: string;
+  position: string;
+  start: string;
+  end: string;
+  description: string;
+}
+
+interface Certificate {
+  id: string;
+  name: string;
+  time: string;
+}
+
+interface Award {
+  id: string;
+  name: string;
+  time: string;
+}
+
+interface Activity {
+  id: string;
+  organization: string;
+  role: string;
+  start: string;
+  end: string;
+  description: string;
 }
 
 interface CvDetail {
   id: number;
   title: string;
-  description?: string;
-
-  fullName?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-
-  education?: string;
-  experience?: string;
-  careerGoal?: string;
-  additionalInfo?: string;
-
-  projects?: Project[];
-  skills?: string[];
+  fullName: string;
+  position: string;
+  avatar: string;
+  email: string;
+  phone: string;
+  address: string;
+  dob: string;
+  gender: string;
+  longTerm: string;
+  shortTerm: string;
+  skills: Skill[];
+  educations: Education[];
+  jobs: Job[];
+  certificates: Certificate[];
+  awards: Award[];
+  activities: Activity[];
 }
 
 interface CvDetailDialogProps {
   open: boolean;
   onClose: () => void;
-  data: CvDetail | null;
+  data: any; // nhận full response
 }
+
+/* ================= COMPONENT ================= */
 
 const CvDetailDialog: React.FC<CvDetailDialogProps> = ({
   open,
   onClose,
   data,
 }) => {
-  if (!data) return null;
   const [projects, setProjects] = useState<any[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
-    null,
+    null
   );
   const [loading, setLoading] = useState(false);
 
@@ -82,6 +123,14 @@ const CvDetailDialog: React.FC<CvDetailDialogProps> = ({
     fetchProjects();
   }, [open]);
 
+  if (!data) return null;
+  
+  const cv: CvDetail = data;
+  console.log(data);
+  console.log("Dialog render");
+console.log("open:", open);
+console.log("data:", data);
+
   const handleApply = async () => {
     if (!selectedProjectId) {
       toast.error("Vui lòng chọn project");
@@ -92,7 +141,7 @@ const CvDetailDialog: React.FC<CvDetailDialogProps> = ({
       setLoading(true);
 
       await applyCvToProject(selectedProjectId, {
-        cvId: data.id,
+        cvId: cv.id,
       });
 
       toast.success("Apply thành công");
@@ -108,9 +157,10 @@ const CvDetailDialog: React.FC<CvDetailDialogProps> = ({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Chi tiết CV</DialogTitle>
+          <DialogTitle>{cv.title}</DialogTitle>
         </DialogHeader>
 
+        {/* APPLY */}
         <div className="flex gap-3 items-center mb-4">
           <select
             value={selectedProjectId ?? ""}
@@ -130,120 +180,131 @@ const CvDetailDialog: React.FC<CvDetailDialogProps> = ({
           </Button>
         </div>
 
-        <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+        <Tabs defaultValue="personal">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="personal">Thông tin</TabsTrigger>
-            <TabsTrigger value="projects">Dự án</TabsTrigger>
+            <TabsTrigger value="experience">Kinh nghiệm</TabsTrigger>
             <TabsTrigger value="skills">Kỹ năng</TabsTrigger>
+            <TabsTrigger value="more">Khác</TabsTrigger>
           </TabsList>
 
           {/* ================= PERSONAL ================= */}
-          <TabsContent value="personal" className="space-y-6 mt-6">
+          <TabsContent value="personal" className="mt-6 space-y-6">
             <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <Label>Họ và tên</Label>
-                    <p className="mt-1 text-gray-700">{data.fullName || "-"}</p>
-                  </div>
+              <CardContent className="pt-6 space-y-6">
 
+                <div className="flex gap-6 items-center">
+                  <img
+                    src={cv.avatar}
+                    className="w-32 h-32 rounded-full object-cover border"
+                  />
                   <div>
-                    <Label>Email</Label>
-                    <p className="mt-1 text-gray-700">{data.email || "-"}</p>
+                    <h2 className="text-xl font-bold">{cv.fullName}</h2>
+                    <p className="text-gray-600">{cv.position}</p>
                   </div>
+                </div>
 
-                  <div>
-                    <Label>Số điện thoại</Label>
-                    <p className="mt-1 text-gray-700">{data.phone || "-"}</p>
-                  </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <p><strong>Email:</strong> {cv.email}</p>
+                  <p><strong>Phone:</strong> {cv.phone}</p>
+                  <p><strong>Address:</strong> {cv.address}</p>
+                  <p><strong>DOB:</strong> {cv.dob}</p>
+                  <p><strong>Gender:</strong> {cv.gender}</p>
+                </div>
 
-                  <div>
-                    <Label>Địa chỉ</Label>
-                    <p className="mt-1 text-gray-700">{data.address || "-"}</p>
-                  </div>
+                <div>
+                  <Label>Mục tiêu dài hạn</Label>
+                  <p>{cv.longTerm}</p>
+                </div>
+
+                <div>
+                  <Label>Mục tiêu ngắn hạn</Label>
+                  <p>{cv.shortTerm}</p>
                 </div>
 
                 <div>
                   <Label>Học vấn</Label>
-                  <p className="mt-1 text-gray-700 whitespace-pre-line">
-                    {data.education || "-"}
-                  </p>
+                  {cv.educations?.map((edu) => (
+                    <div key={edu.id} className="mt-3">
+                      <p className="font-semibold">
+                        {edu.school} - {edu.major}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {edu.start} - {edu.end}
+                      </p>
+                      <p>{edu.description}</p>
+                    </div>
+                  ))}
                 </div>
 
-                <div>
-                  <Label>Kinh nghiệm</Label>
-                  <p className="mt-1 text-gray-700 whitespace-pre-line">
-                    {data.experience || "-"}
-                  </p>
-                </div>
-
-                <div>
-                  <Label>Mục tiêu nghề nghiệp</Label>
-                  <p className="mt-1 text-gray-700 whitespace-pre-line">
-                    {data.careerGoal || "-"}
-                  </p>
-                </div>
-
-                <div>
-                  <Label>Thông tin bổ sung</Label>
-                  <p className="mt-1 text-gray-700 whitespace-pre-line">
-                    {data.additionalInfo || "-"}
-                  </p>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* ================= PROJECTS ================= */}
-          <TabsContent value="projects" className="space-y-4 mt-6">
-            {data.projects && data.projects.length > 0 ? (
-              data.projects.map((project, index) => (
-                <Card key={index}>
-                  <CardContent className="pt-6">
-                    <div className="space-y-2">
-                      <h3 className="font-semibold text-lg">{project.name}</h3>
-
-                      {project.role && (
-                        <p className="text-sm text-primary">
-                          Vai trò: {project.role}
-                        </p>
-                      )}
-
-                      {project.technologies && (
-                        <div className="flex flex-wrap gap-2">
-                          {project.technologies.map((tech, i) => (
-                            <Badge key={i} variant="secondary">
-                              {tech}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-
-                      <p className="text-gray-600 mt-2">
-                        {project.description}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <p className="text-gray-500">Chưa có dự án</p>
-            )}
+          {/* ================= EXPERIENCE ================= */}
+          <TabsContent value="experience" className="mt-6 space-y-4">
+            {cv.jobs?.map((job) => (
+              <Card key={job.id}>
+                <CardContent className="pt-6">
+                  <p className="font-semibold">
+                    {job.company} - {job.position}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {job.start} - {job.end}
+                  </p>
+                  <p className="mt-2">{job.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </TabsContent>
 
           {/* ================= SKILLS ================= */}
-          <TabsContent value="skills" className="space-y-4 mt-6">
-            {data.skills && data.skills.length > 0 ? (
+          <TabsContent value="skills" className="mt-6">
+            {cv.skills?.length ? (
               <div className="flex flex-wrap gap-2">
-                {data.skills.map((skill, index) => (
-                  <Badge key={index} variant="secondary">
-                    {skill}
+                {cv.skills.map((skill) => (
+                  <Badge key={skill.id} variant="secondary">
+                    {skill.name}
                   </Badge>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500">Chưa có kỹ năng</p>
+              <p>Chưa có kỹ năng</p>
             )}
+          </TabsContent>
+
+          {/* ================= MORE ================= */}
+          <TabsContent value="more" className="mt-6 space-y-6">
+
+            <div>
+              <Label>Chứng chỉ</Label>
+              {cv.certificates?.map((c) => (
+                <p key={c.id}>{c.name} ({c.time})</p>
+              ))}
+            </div>
+
+            <div>
+              <Label>Giải thưởng</Label>
+              {cv.awards?.map((a) => (
+                <p key={a.id}>{a.name} ({a.time})</p>
+              ))}
+            </div>
+
+            <div>
+              <Label>Hoạt động</Label>
+              {cv.activities?.map((a) => (
+                <div key={a.id} className="mt-2">
+                  <p className="font-semibold">
+                    {a.organization} - {a.role}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {a.start} - {a.end}
+                  </p>
+                  <p>{a.description}</p>
+                </div>
+              ))}
+            </div>
+
           </TabsContent>
         </Tabs>
       </DialogContent>

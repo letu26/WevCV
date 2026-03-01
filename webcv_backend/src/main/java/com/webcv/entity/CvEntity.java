@@ -1,9 +1,11 @@
 package com.webcv.entity;
 
-import com.webcv.enums.UserStatus;
+import com.webcv.enums.FormStatus;
+import com.webcv.enums.Visibility;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -30,7 +32,17 @@ public class CvEntity extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private UserStatus status;
+    private FormStatus status;
+
+    @Column(name = "token")
+    private String token;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "visibility", nullable = false)
+    private Visibility visibility;
+
+    @Column(name = "share_expired_at")
+    private Instant shareExpiredAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_cvs",

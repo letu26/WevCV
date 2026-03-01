@@ -1,5 +1,6 @@
 package com.webcv.services.user;
 
+import com.webcv.request.user.CvVisibilityRequest;
 import com.webcv.request.user.CvsRequest;
 import com.webcv.response.user.BaseResponse;
 import com.webcv.response.user.CvsResponse;
@@ -10,4 +11,7 @@ public interface ICvServices {
     BaseResponse<Void> createAndUpdateCv(CvsRequest request, Long userId);
     BaseResponse<List<CvsResponse>> getCvbyUserId(Long userId);
     BaseResponse<Void> deleteCvById(Long id);
+    BaseResponse<String> getLinkCvs(Long id);
+    BaseResponse<CvsResponse> getCvByToken(String token);
+    BaseResponse<Void> changeCvVisibility(CvVisibilityRequest request);
 }

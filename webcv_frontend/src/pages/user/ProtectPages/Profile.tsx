@@ -1,10 +1,10 @@
 import { Button } from '@/app/components/ui/button';
 import Preview from '@/components/user/cvpreview/Preview';
-import { deleteCv, exportCvPdf, getCvList } from '@/services/usersservices/CvsServices';
+import { deleteCv, exportCvPdf, getCvList, getCvShareLink, updateCvVisibility } from '@/services/usersservices/CvsServices';
 import { useCVLayoutStore } from '@/store/cvLayoutStore';
 import { CVBlock, CVLayout, CVSavePayload } from '@/types/cv';
 import axios from 'axios';
-import { Edit, Eye, Plus, Trash2 } from 'lucide-react';
+import { Edit, Eye, LucideShare2, Plus, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -123,6 +123,10 @@ export default function Profile({ language }: ProfileProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [viewingCv, setViewingCv] = useState<CVSavePayload | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [shareLink, setShareLink] = useState("");
+  const [sharingCv, setSharingCv] = useState<CVSavePayload | null>(null);
+  const [shareAccess, setShareAccess] = useState<string>();
   const navigate = useNavigate();
   const { setLayout, resetLayout } = useCVLayoutStore();
   const loadErrorText =
@@ -318,6 +322,92 @@ export default function Profile({ language }: ProfileProps) {
     }
   };
 
+
+  const handleShowShare = async (cv: CVSavePayload) => {
+    try {
+      if (!cv?.id) return;
+      const response = await getCvShareLink(cv.id);
+      setShareLink(response.data);
+      setSharingCv(cv);
+      setIsShareModalOpen(true);
+    } catch (error) {
+      console.error(error);
+      toast.error("Lấy link chia sẻ thất bại.");
+    }
+  };
+
+  const closeShareModal = () => {
+    setIsShareModalOpen(false);
+    setSharingCv(null);
+  };
+
+  const handleCopyShare = async () => {
+    if (!shareLink) return;
+    try {
+      await navigator.clipboard.writeText(shareLink);
+      toast.success("Đã copy link.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Copy link thất bại.");
+    }
+  };
+  const handleChangeAccess = async (cvId, visibility: string) => {
+    const currentVisibility =
+      sharingCv?.id === cvId
+        ? String(sharingCv.visibility ?? "")
+        : String(cvs.find((cv) => cv.id === cvId)?.visibility ?? "");
+
+    const result = await Swal.fire({
+      title: "Cập nhật quyền truy cập?",
+      text: `Bạn muốn đổi quyền truy cập sang ${visibility}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Cập nhật",
+      cancelButtonText: "Hủy",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#aaa",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const response = await updateCvVisibility({ cvId, visibility });
+      if (response.code === "200") {
+        setShareAccess(visibility);
+        setSharingCv((prev) =>
+          prev && prev.id === cvId ? { ...prev, visibility } : prev
+        );
+        setCvs((prev) =>
+          prev.map((cv) => (cv.id === cvId ? { ...cv, visibility } : cv))
+        );
+        Swal.fire({
+          icon: "success",
+          title: "Đã cập nhật!",
+          text: `Quyền truy cập đã chuyển sang ${visibility}.`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } else {
+        throw new Error(response.message || "Cập nhật thất bại");
+      }
+    } catch (error) {
+      console.error(error);
+      setSharingCv((prev) =>
+        prev && prev.id === cvId ? { ...prev, visibility: currentVisibility } : prev
+      );
+      setCvs((prev) =>
+        prev.map((cv) =>
+          cv.id === cvId ? { ...cv, visibility: currentVisibility } : cv
+        )
+      );
+      Swal.fire({
+        icon: "error",
+        title: "Cập nhật thất bại",
+        text: "Vui lòng thử lại.",
+      });
+    }
+  };
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -451,6 +541,14 @@ export default function Profile({ language }: ProfileProps) {
                       <span className="sr-only">{t.editCV}</span>
                     </Button>
                     <Button
+                      className="border border-blue-500 text-blue-500 bg-white hover:bg-blue-50"
+                      onClick={() => handleShowShare(cv)}
+                      title="Quản lý chia sẻ CV"
+                      aria-label="Quản lý chia sẻ CV"
+                    >
+                      <LucideShare2 />
+                    </Button>
+                    <Button
                       onClick={() => handleDeleteCv(cv.id)}
                       variant="destructive"
                       size="icon"
@@ -462,6 +560,62 @@ export default function Profile({ language }: ProfileProps) {
                       <span className="sr-only">{t.deleteCV}</span>
                     </Button>
                   </div>
+                  {isShareModalOpen && sharingCv?.id === cv.id && (
+                    <div
+                      className="fixed inset-0 z-50 bg-black/5 flex items-center justify-center overflow-y-auto overflow-x-hidden p-6"
+                      onClick={closeShareModal}
+                    >
+                      <div
+                        className="relative group bg-white w-full max-w-lg shadow-xl rounded-xl"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <div className="flex items-center justify-between px-6 py-4 border-b">
+                          <div className="text-gray-900 font-semibold">Quản lý chia sẻ cv</div>
+                          <Button variant="outline" onClick={closeShareModal}>
+                            {t.close}
+                          </Button>
+                        </div>
+
+                        <div className="p-6 space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Link chia sẻ
+                            </label>
+                            <div className="mt-1 flex items-center gap-2">
+                              <input
+                                value={shareLink}
+                                onChange={(event) => setShareLink(event.target.value)}
+                                placeholder="Nhập link chia sẻ"
+                                className="h-10 w-full rounded-md border bg-white px-3 text-sm text-gray-900 outline-none"
+                              />
+                              <Button variant="outline" onClick={handleCopyShare}>
+                                Copy
+                              </Button>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Quyền truy cập
+                            </label>
+                            <select
+                              value={(sharingCv?.visibility ?? "PRIVATE").toUpperCase().trim()}
+                              onChange={(event) =>
+                                handleChangeAccess(
+                                  cv.id,
+                                  event.target.value as string
+                                )
+                              }
+                              className="mt-1 h-10 w-full rounded-md border bg-white px-3 text-sm text-gray-900 outline-none"
+                            >
+                              <option value="PRIVATE">PRIVATE</option>
+                              <option value="PUBLIC">PUBLIC</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -499,8 +653,3 @@ export default function Profile({ language }: ProfileProps) {
     </div>
   );
 }
-
-
-
-
-

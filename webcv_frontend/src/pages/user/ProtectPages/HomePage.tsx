@@ -69,7 +69,7 @@ export default function HomePage({ language, setLanguage }: HomePageProps) {
 
   const navItems = [
     { label: 'Trang chủ', path: '/', end: true },
-    { label: 'Dự án', path: '/projects' },
+    { label: 'Dự án', path: '/project' },
     { label: 'Hồ sơ', path: '/profile' },
     { label: 'Tạo CV', path: '/cvs-edit' },
     { label: 'Cài đặt', path: '/settings' },
