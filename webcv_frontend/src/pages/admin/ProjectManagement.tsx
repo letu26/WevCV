@@ -96,7 +96,7 @@ const ProjectManagement: React.FC = () => {
       <div className="p-6">
         {/* HEADER */}
         <div
-          className="mb-6 rounded-xl bg-gradient-to-r from-red-600 to-red-700 p-6
+          className="mb-6 rounded-xl bg-linear-to-r from-red-600 to-red-700 p-6
           flex flex-col gap-4 md:flex-row md:justify-between md:items-center"
         >
           <h1 className="text-2xl font-semibold text-white">Quản lý Project</h1>
