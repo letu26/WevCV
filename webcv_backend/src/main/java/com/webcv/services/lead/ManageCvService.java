@@ -315,7 +315,7 @@ public class ManageCvService {
 
         //  Check CV tồn tại + ACTIVE + not deleted
         CvEntity cv = cvsRepository
-                .findByIdAndStatusAndDeletedFalse(cvId, UserStatus.ACTIVE)
+                .findByIdAndStatusAndDeletedFalse(cvId, FormStatus.ACTIVE)
                 .orElseThrow(() -> new BadRequestException("CV not available"));
 
         //  Check chưa apply trước đó

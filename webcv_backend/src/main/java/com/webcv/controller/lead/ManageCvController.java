@@ -79,7 +79,7 @@ public class ManageCvController {
             throw new BadRequestException("CV id is required");
         }
 
-       return manageCvService.applyCv(User, projectId, request.getCvId());
+        return manageCvService.applyCv(User, projectId, request.getCvId());
     }
 
     @PreAuthorize("hasRole('LEAD')")
