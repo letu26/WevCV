@@ -1,6 +1,7 @@
 package com.webcv.repository;
 
 import com.webcv.entity.CvEntity;
+import com.webcv.enums.FormStatus;
 import com.webcv.enums.UserStatus;
 import com.webcv.repository.custom.CvsRepositoryCustom;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ public interface CvsRepository extends JpaRepository<CvEntity, Long>, CvsReposit
 
     Optional<CvEntity> findByIdAndStatusAndDeletedFalse(
             Long id,
-            UserStatus status
+            FormStatus status
     );
 
     Page<CvEntity> findAll(Pageable pageable);
@@ -47,7 +48,7 @@ public interface CvsRepository extends JpaRepository<CvEntity, Long>, CvsReposit
     SELECT c
     FROM CvEntity c
     WHERE c.deleted = false
-    AND c.status = com.webcv.enums.FormStatus.APPROVED
+    AND c.status = com.webcv.enums.FormStatus.ACTIVE
     AND (:keyword IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
     AND NOT EXISTS (
         SELECT 1
