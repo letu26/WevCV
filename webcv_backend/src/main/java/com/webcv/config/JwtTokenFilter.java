@@ -1,4 +1,4 @@
-package com.webcv.filter;
+package com.webcv.config;
 
 import com.webcv.entity.UserEntity;
 import com.webcv.util.JwtTokenUtil;

@@ -1,6 +1,6 @@
 package com.webcv.cvpdf.job;
 
-import lombok.AllArgsConstructor;
+import com.webcv.enums.PdfJobStatus;
 import lombok.Getter;
 
 import java.nio.file.Path;

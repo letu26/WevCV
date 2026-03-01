@@ -1,4 +1,4 @@
-package com.webcv.cvpdf.job;
+package com.webcv.enums;
 
 public enum PdfJobStatus {
     QUEUED,

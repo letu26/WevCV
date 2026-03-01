@@ -3,7 +3,7 @@ package com.webcv.controller.user;
 import com.webcv.cvpdf.job.PdfJob;
 import com.webcv.cvpdf.job.PdfJobInfo;
 import com.webcv.cvpdf.job.PdfJobQueueService;
-import com.webcv.cvpdf.job.PdfJobStatus;
+import com.webcv.enums.PdfJobStatus;
 import com.webcv.exception.customexception.BadRequestException;
 import com.webcv.exception.customexception.NotFoundException;
 import com.webcv.response.user.BaseResponse;

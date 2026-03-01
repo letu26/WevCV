@@ -1,5 +1,6 @@
 package com.webcv.cvpdf.job;
 
+import com.webcv.enums.PdfJobStatus;
 import com.webcv.exception.customexception.ForbiddenException;
 import com.webcv.exception.customexception.NotFoundException;
 import com.webcv.exception.customexception.ServiceUnavailableException;

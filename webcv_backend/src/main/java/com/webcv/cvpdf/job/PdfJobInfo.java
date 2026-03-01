@@ -1,5 +1,7 @@
 package com.webcv.cvpdf.job;
 
+import com.webcv.enums.PdfJobStatus;
+
 import java.time.Instant;
 
 public record PdfJobInfo(
