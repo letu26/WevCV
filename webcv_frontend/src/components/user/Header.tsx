@@ -8,7 +8,6 @@ import {
 } from '@/app/components/ui/dropdown-menu';
 import { Button } from '@/app/components/ui/button';
 import { LogOut, Settings as SettingsIcon, User } from 'lucide-react';
-import { authService } from '@/services/authService';
 import { toast } from 'sonner';
 import React from 'react';
 
