@@ -7,7 +7,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # install playwright browsers + deps (chạy bằng Maven để có classpath)
-RUN ./mvnw -q -DskipTests exec:java \
+RUN mvn -q -DskipTests exec:java \
   -Dexec.mainClass=com.microsoft.playwright.CLI \
   -Dexec.args="install --with-deps chromium"
 
