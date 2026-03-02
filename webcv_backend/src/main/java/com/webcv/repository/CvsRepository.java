@@ -48,7 +48,7 @@ public interface CvsRepository extends JpaRepository<CvEntity, Long>, CvsReposit
     SELECT c
     FROM CvEntity c
     WHERE c.deleted = false
-    AND c.status = com.webcv.enums.FormStatus.ACTIVE
+    AND c.status IN (com.webcv.enums.FormStatus.ACTIVE, com.webcv.enums.FormStatus.PENDING)
     AND (:keyword IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
     AND NOT EXISTS (
         SELECT 1
