@@ -1,21 +1,21 @@
 # ---------- BUILD STAGE ----------
 FROM maven:3.9.9-eclipse-temurin-17 AS build
-
 WORKDIR /app
-
-# copy source
 COPY . .
 
 # build jar
 RUN mvn clean package -DskipTests
 
+# install playwright browsers + deps (chạy bằng Maven để có classpath)
+RUN ./mvnw -q -DskipTests exec:java \
+  -Dexec.mainClass=com.microsoft.playwright.CLI \
+  -Dexec.args="install --with-deps chromium"
 
 # ---------- RUNTIME STAGE ----------
 FROM eclipse-temurin:17-jdk-jammy
-
 WORKDIR /app
 
-# ===== install playwright dependencies =====
+# install playwright dependencies
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -41,12 +41,10 @@ RUN apt-get update && apt-get install -y \
     xdg-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# copy jar từ build stage (⭐ QUAN TRỌNG)
 COPY --from=build /app/target/*.jar app.jar
 
-# ===== install playwright chromium =====
-RUN java -cp app.jar com.microsoft.playwright.CLI install chromium
+# copy playwright browser cache from build stage
+COPY --from=build /root/.cache/ms-playwright /root/.cache/ms-playwright
 
 EXPOSE 8080
-
 CMD ["java", "-jar", "app.jar"]
