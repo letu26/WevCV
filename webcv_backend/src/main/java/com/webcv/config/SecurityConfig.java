@@ -58,7 +58,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
-                "https://wev-cv.vercel.app",
+                "https://wev-cv-git-deploy-tus-projects-e61aca52.vercel.app",
                 "http://localhost:5173"
         ));
 
