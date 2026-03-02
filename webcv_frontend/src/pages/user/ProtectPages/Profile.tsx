@@ -1,6 +1,6 @@
 import { Button } from '@/app/components/ui/button';
 import Preview from '@/components/user/cvpreview/Preview';
-import { deleteCv, exportCvPdf, getCvList, getCvShareLink, updateCvVisibility } from '@/services/usersservices/CvsServices';
+import { createCvPdfJob, deleteCv, downloadPdfJob, getCvList, getCvShareLink, getPdfJob, updateCvVisibility } from '@/services/usersservices/CvsServices';
 import { useCVLayoutStore } from '@/store/cvLayoutStore';
 import { CVBlock, CVLayout, CVSavePayload } from '@/types/cv';
 import axios from 'axios';
@@ -209,30 +209,58 @@ export default function Profile({ language }: ProfileProps) {
     resetLayout();
   };
 
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
   const handleExportPdf = async () => {
     if (!viewingCv?.id) {
       toast.error("Không tìm thấy CV để xuất.");
       return;
     }
     try {
-      const blob = await exportCvPdf(String(viewingCv.id));
-      if (!blob || blob.size === 0) {
-        toast.error("Xuất PDF thất bại (file rỗng).");
+      toast("Đang tạo PDF...");
+      const jobResponse = await createCvPdfJob(String(viewingCv.id));
+      const jobId = jobResponse?.data?.jobId;
+      if (!jobId) {
+        toast.error("Xuất PDF thất bại.");
         return;
       }
-      const pdfBlob = new Blob([blob], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      const safeTitle = (viewingCv.title || `cv-${viewingCv.id}`)
-        .trim()
-        .replace(/\s+/g, "-");
-      link.href = url;
-      link.download = `${safeTitle || `cv-${viewingCv.id}`}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-      toast.success("Đã xuất PDF.");
+
+      const maxPolls = 20;
+      const delayMs = 5000;
+      for (let attempt = 0; attempt < maxPolls; attempt += 1) {
+        const jobStatus = await getPdfJob(jobId);
+        const status = jobStatus?.data?.status;
+        if (status === "DONE") {
+          const blob = await downloadPdfJob(jobId);
+          if (!blob || blob.size === 0) {
+            toast.error("Xuất PDF thất bại (file rỗng).");
+            return;
+          }
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          const safeTitle = (viewingCv.title || `cv-${viewingCv.id}`)
+            .trim()
+            .replace(/\s+/g, "-");
+          link.href = url;
+          link.download = `${safeTitle || `cv-${viewingCv.id}`}.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          window.URL.revokeObjectURL(url);
+          toast.success("Đã xuất PDF.");
+          return;
+        }
+
+        if (status === "FAILED") {
+          const errorMessage = jobStatus?.data?.error;
+          toast.error(errorMessage ? `Xuất PDF thất bại: ${errorMessage}` : "Xuất PDF thất bại.");
+          return;
+        }
+
+        await sleep(delayMs);
+      }
+
+      toast.error("Xuất PDF thất bại (quá thời gian).");
     } catch (error) {
       console.error(error);
       toast.error("Xuất PDF thất bại.");
