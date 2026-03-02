@@ -19,6 +19,11 @@ spring:
           auth: true
           starttls:
             enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+        debug: true
 
   jpa:
     show-sql: true
