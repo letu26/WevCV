@@ -75,18 +75,14 @@ export default function HomePage({ language, setLanguage }: HomePageProps) {
     { label: 'Cài đặt', path: '/settings' },
   ];
 
-  const handleLogout = async () => {
-    try {
-      await authService.logout();
-
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-
-      toast.success(t.logoutSuccess);
-      navigate('/signin');
-    } catch (error) {
-      navigate('/signin');
-    }
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('fullname');
+    localStorage.removeItem('email');
+    localStorage.removeItem('roles');
+    navigate('/signin', { replace: true });
   };
 
   const getInitials = (name: string) => name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
