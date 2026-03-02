@@ -92,16 +92,16 @@ class AuthService {
    * Logout user
    * POST /auth/logout
    */
-  async logout(): Promise<void> {
-    try {
-      await fetcher.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT, {}, { requiresAuth: true });
+  // async logout(): Promise<void> {
+  //   try {
+  //     await fetcher.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT, {}, { requiresAuth: true });
 
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      fetcher.logout();
-    }
-  }
+  //   } catch (error) {
+  //     console.error('Logout error:', error);
+  //   } finally {
+  //     fetcher.logout();
+  //   }
+  // }
 
   /**
    * Step 1: Check email and send OTP

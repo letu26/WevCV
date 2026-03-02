@@ -48,19 +48,11 @@ export function Header({ language, setLanguage }: HeaderProps) {
     { label: 'Cài đặt', path: '/settings' },
   ];
 
-  const handleLogout = async () => {
-    try {
-      await authService.logout();
+  const handleLogout = () => {
 
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-
-      toast.success(t.logoutSuccess);
-      navigate('/signin');
-    } catch (error) {
-      console.error('Logout error:', error);
-      navigate('/signin');
-    }
+    localStorage.clear();
+    toast.success(t.logoutSuccess);
+    navigate('/signin');
   };
 
   const getInitials = (name: string) => {
