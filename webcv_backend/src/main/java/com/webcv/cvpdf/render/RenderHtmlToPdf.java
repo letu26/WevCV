@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -18,6 +19,12 @@ public class RenderHtmlToPdf {
         try (Playwright playwright = Playwright.create()) {
             Browser browser = playwright.chromium().launch(
                     new BrowserType.LaunchOptions().setHeadless(true)
+                            .setHeadless(true)
+                            .setArgs(List.of(
+                                    "--no-sandbox",
+                                    "--disable-setuid-sandbox",
+                                    "--disable-dev-shm-usage"
+                            ))
             );
             BrowserContext context = browser.newContext(
                     new Browser.NewContextOptions().setViewportSize(794, 1123)
