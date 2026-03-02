@@ -49,10 +49,13 @@ export function Header({ language, setLanguage }: HeaderProps) {
   ];
 
   const handleLogout = () => {
-
-    localStorage.clear();
-    toast.success(t.logoutSuccess);
-    navigate('/signin');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('fullname');
+    localStorage.removeItem('email');
+    localStorage.removeItem('roles');
+    navigate('/signin', { replace: true });
   };
 
   const getInitials = (name: string) => {
