@@ -1,6 +1,7 @@
 package com.webcv.controller.lead;
 
 import com.webcv.entity.UserEntity;
+import com.webcv.enums.FormStatus;
 import com.webcv.enums.UserStatus;
 import com.webcv.exception.customexception.BadRequestException;
 import com.webcv.request.lead.ApplyCvRequest;
@@ -28,7 +29,7 @@ public class ManageCvController {
     @PreAuthorize("hasRole('LEAD')")
     @GetMapping("/cvs")
     public Page<CvResponse> getAllCvs(
-            @RequestParam(required = false) UserStatus status,
+            @RequestParam(required = false) FormStatus status,
             @RequestParam(required = false) String keyword,
             Pageable pageable
     ) {
@@ -58,12 +59,12 @@ public class ManageCvController {
 //
 //        return ResponseEntity.ok().body(response);
 //    }
-    @GetMapping("cvs/{userId}")
-    public ResponseEntity<BaseResponse<CvDetailResponse>> getCvbyUserId(
-            @PathVariable Long userId) {
+    @GetMapping("cvs/{cvId}/{userId}")
+    public ResponseEntity<BaseResponse<CvDetailResponse>> getCvbyUserIdAndCvId(
+            @PathVariable Long cvId, @PathVariable Long userId) {
 
         return ResponseEntity.ok(
-                manageCvService.getCvbyUserId(userId)
+                manageCvService.getCvbyUserIdAndCvId(cvId, userId)
         );
     }
 

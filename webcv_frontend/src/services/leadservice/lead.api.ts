@@ -127,11 +127,11 @@ export const getAllCvs = (
 };
 
 /**
- * GET /api/lead/cvs/{userId}
+ * GET /api/lead/cvs/{cvId}/users/{userId}
  */
-export const getCvByUserId = (userId: number) => {
+export const getCvByCvIdAndUserId = (cvId: number, userId: number) => {
   return fetcher<BaseResponse<CvDetailResponse[]>>({
-    url: `/lead/cvs/${userId}`,
+    url: `/lead/cvs/${cvId}/${userId}`,
     method: "GET",
   });
 };

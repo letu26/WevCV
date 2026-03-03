@@ -479,6 +479,23 @@ export default function Profile({ language }: ProfileProps) {
               const avatar = getBlockDataByType(parsedBlocks, "avatar");
               const avatarUrl = String(avatar?.image ?? "").trim();
               const hasAvatar = Boolean(avatarUrl);
+              const statusLabel =
+                cv.status === "APPROVED"
+                  ? t.statusAccepted
+                  : cv.status === "REJECTED"
+                    ? t.statusRejected
+                    : cv.status === "PENDING"
+                      ? t.statusPending
+                      : statusNotReviewed;
+              const statusClass =
+                cv.status === "APPROVED"
+                  ? "bg-green-100 text-green-800 border-green-200"
+                  : cv.status === "REJECTED"
+                    ? "bg-red-100 text-red-800 border-red-200"
+                    : cv.status === "PENDING"
+                      ? "bg-amber-100 text-amber-800 border-amber-200"
+                      : "bg-gray-100 text-gray-700 border-gray-200";
+
               return (
                 <div
                   key={cv.id ?? index}
@@ -503,8 +520,10 @@ export default function Profile({ language }: ProfileProps) {
                           <div className="text-gray-900 font-semibold">
                             {title}
                           </div>
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200">
-                            {statusNotReviewed}
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${statusClass}`}
+                          >
+                            {statusLabel}
                           </span>
                         </div>
 

@@ -113,7 +113,7 @@ const CvDetailDialog: React.FC<CvDetailDialogProps> = ({
 
     const fetchProjects = async () => {
       try {
-        const res = await getLeadProjects(0, 100);
+        const res = await getLeadProjects(0, 10);
         setProjects(res.content);
       } catch {
         toast.error("Không tải được danh sách project");
@@ -124,13 +124,9 @@ const CvDetailDialog: React.FC<CvDetailDialogProps> = ({
   }, [open]);
 
   if (!data) return null;
-  
-  const cv: CvDetail = data;
-  console.log(data);
-  console.log("Dialog render");
-console.log("open:", open);
-console.log("data:", data);
 
+  const cv: CvDetail = data;
+  
   const handleApply = async () => {
     if (!selectedProjectId) {
       toast.error("Vui lòng chọn project");
@@ -140,9 +136,10 @@ console.log("data:", data);
     try {
       setLoading(true);
 
-      await applyCvToProject(selectedProjectId, {
+      const res=await applyCvToProject(selectedProjectId, {
         cvId: cv.id,
       });
+      console.log(res);
 
       toast.success("Apply thành công");
       onClose();

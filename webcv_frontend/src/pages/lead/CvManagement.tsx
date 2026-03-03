@@ -7,7 +7,7 @@ import useDebounce from "@/hooks/useDebounce";
 
 import {
   getAllCvs,
-  getCvByUserId,
+  getCvByCvIdAndUserId,
   CvResponse,
   CvPageResponse,
   CvStatus,
@@ -46,12 +46,12 @@ const ManageCv: React.FC = () => {
   /* ================= DETAIL ================= */
 
   
-  const openDetail = async (userId: number) => {
+  const openDetail = async (id: number, userId: number) => {
     try {
-      const res = await getCvByUserId(userId);
+      const res = await getCvByCvIdAndUserId(id, userId);
       setSelectedCv(res.data);
       setShowDetail(true);
-      
+      console.log(res);
     } catch {
       toast.error("Không tải được chi tiết CV");
     }
@@ -62,25 +62,10 @@ const ManageCv: React.FC = () => {
       <div className="p-6">
         {/* HEADER */}
         <div
-          className="mb-6 rounded-xl bg-gradient-to-r from-red-600 to-red-700 p-6
+          className="mb-6 rounded-xl bg-linear-to-r from-red-600 to-red-700 p-6
           flex flex-col gap-4 md:flex-row md:justify-between md:items-center"
         >
           <h1 className="text-2xl font-semibold text-white">Quản lý CV</h1>
-
-          <select
-            value={status ?? ""}
-            onChange={(e) =>
-              setStatus(
-                e.target.value ? (e.target.value as CvStatus) : undefined,
-              )
-            }
-            className="px-4 py-2 rounded-lg"
-          >
-            <option value="">Tất cả trạng thái</option>
-            <option value="ACTIVE">ACTIVE</option>
-            <option value="INACTIVE">INACTIVE</option>
-            <option value="BLOCKED">BLOCKED</option>
-          </select>
         </div>
 
         {/* TABLE */}
@@ -120,7 +105,7 @@ const ManageCv: React.FC = () => {
 
                   <td className="px-6 py-3 text-right">
                     <button
-                      onClick={() => openDetail(cv.userId)}
+                      onClick={() => openDetail(cv.id, cv.userId)}
                       className="bg-red-100 text-red-700 p-2 rounded-lg hover:bg-red-200"
                     >
                       <AiTwotoneEye size={18} />

@@ -13,7 +13,7 @@ import lombok.*;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"project_id", "cv_id"})
         })
-public class ProjectApplicationEntity  {
+public class ProjectApplicationEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

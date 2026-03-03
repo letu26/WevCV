@@ -43,7 +43,7 @@ public class ManageCvService {
         this.objectMapper = objectMapper;
     }
 
-    public Page<CvResponse> getAllCvs(UserStatus status, String keyword, Pageable pageable) {
+    public Page<CvResponse> getAllCvs(FormStatus status, String keyword, Pageable pageable) {
 
         Page<CvEntity> cvPage = cvsRepository.findAllWithFilter(status, keyword, pageable);
 
@@ -85,10 +85,9 @@ public class ManageCvService {
 //                .build();
 //    }
 
-    public BaseResponse<CvDetailResponse> getCvbyUserId(Long userId) {
+    public BaseResponse<CvDetailResponse> getCvbyUserIdAndCvId(Long cvId, Long userId) {
 
-        CvEntity cv = cvsRepository
-                .findByUsers_IdAndDeletedFalse(userId)
+        CvEntity cv = cvsRepository.findByIdAndUsers_IdAndDeletedFalse(cvId, userId)
                 .orElseThrow(() -> new RuntimeException("CV not found"));
 
         CvDetailResponse response = mapToDetailResponse(cv);
@@ -315,7 +314,7 @@ public class ManageCvService {
 
         //  Check CV tồn tại + ACTIVE + not deleted
         CvEntity cv = cvsRepository
-                .findByIdAndStatusAndDeletedFalse(cvId, UserStatus.ACTIVE)
+                .findByIdAndStatusAndDeletedFalse(cvId, FormStatus.PENDING)
                 .orElseThrow(() -> new BadRequestException("CV not available"));
 
         //  Check chưa apply trước đó
@@ -337,7 +336,7 @@ public class ManageCvService {
         List<UserEntity> users = cv.getUsers();
 
         if (users == null || users.isEmpty()) {
-            throw new RuntimeException("CV này chưa gắn với user nào");
+            throw new BadRequestException("CV này chưa gắn với user nào");
         }
 
         UserEntity userr = users.get(0);
