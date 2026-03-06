@@ -23,7 +23,8 @@ public class RenderHtmlToPdf {
                             .setArgs(List.of(
                                     "--no-sandbox",
                                     "--disable-setuid-sandbox",
-                                    "--disable-dev-shm-usage"
+                                    "--disable-dev-shm-usage",
+                                    "--disable-gpu"
                             ))
             );
             BrowserContext context = browser.newContext(
