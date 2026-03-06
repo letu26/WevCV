@@ -31,5 +31,6 @@ public class ManageCvsServices implements IManageCvsServices {
                 .message("Successfully fetched CV!")
                 .data(cvsResponses)
                 .build();
+
     }
 }
