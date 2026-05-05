@@ -43,7 +43,7 @@ public class WebSecurityConfig {
                             .requestMatchers(POST, "/api/admin/account/**").hasRole( "ADMIN")
                             .requestMatchers("/api/admin/project/**").hasRole("ADMIN")
 
-                            .requestMatchers(POST, "/api/cvs").hasAnyRole( "USER", "ADMIN")
+                            .requestMatchers(POST, "/api/cvs").hasAnyRole( "USER")
                             .requestMatchers(GET, "/api/cvs").hasRole( "USER")
                             .requestMatchers(DELETE, "/api/cvs").hasRole( "USER")
                             .anyRequest().authenticated();
