@@ -1,9 +1,11 @@
 package com.webcv.controller.user;
 
+import com.webcv.entity.IdempotencyRecord;
 import com.webcv.request.user.CvsRequest;
 import com.webcv.response.user.BaseResponse;
 import com.webcv.response.user.CvsResponse;
 import com.webcv.services.user.Impl.CvsService;
+import com.webcv.services.user.Impl.IdempotencyService;
 import com.webcv.services.user.Impl.PdfService;
 import com.webcv.util.JwtTokenUtil;
 import jakarta.validation.Valid;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,7 +30,7 @@ public class CvsController {
     private final CvsService cvsService;
     private final JwtTokenUtil jwtTokenUtil;
     private final PdfService pdfService;
-
+    private final IdempotencyService idempotencyService;
     /**
      * 8. Tạo và cập nhật CV
      * POST /api/cvs
@@ -38,6 +41,43 @@ public class CvsController {
      *              String blocks
      */
     @PostMapping
+    public ResponseEntity<BaseResponse<?>> createAndUpdateCv(
+            @RequestBody CvsRequest request,
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestHeader(value = "Idempotency-Key", required = false) String key
+    ) {
+
+        if (key == null || key.isEmpty()) {
+            String token = authorizationHeader.substring(7);
+            Long userId = (Long) jwtTokenUtil.extractUserId(token, jwtSecret);
+
+            BaseResponse<Void> response = cvsService.createAndUpdateCv(request, userId);
+
+            return ResponseEntity.ok(response);
+            // throw new RuntimeException("Missing Idempotency-Key");
+        }
+
+        Optional<IdempotencyRecord> existing = idempotencyService.get(key);
+
+        if (existing.isPresent()) {
+            System.out.println("Idempotency hit: return cached response");
+
+            BaseResponse<?> cached =
+                    idempotencyService.parseResponse(existing.get().getResponseBody());
+
+            return ResponseEntity.ok(cached);
+        }
+
+        String token = authorizationHeader.substring(7);
+        Long userId = (Long) jwtTokenUtil.extractUserId(token, jwtSecret);
+
+        BaseResponse<Void> response = cvsService.createAndUpdateCv(request, userId);
+
+        idempotencyService.save(key, response);
+
+        return ResponseEntity.ok(response);
+    }
+    /*@PostMapping
     public ResponseEntity<BaseResponse<Void>> createAndUpdateCv(
             @Valid
             @RequestBody CvsRequest request,
@@ -49,7 +89,7 @@ public class CvsController {
         BaseResponse<Void> response = cvsService.createAndUpdateCv(request, userId);
 
         return ResponseEntity.ok().body(response);
-    }
+    }*/
 
     @GetMapping
     public ResponseEntity<BaseResponse<List<CvsResponse>>> getCv(

@@ -1,5 +1,6 @@
 package com.webcv.controller.user;
 
+import com.webcv.entity.IdempotencyRecord;
 import com.webcv.exception.customexception.PasswordNotMatchException;
 import com.webcv.request.user.ChangePassRequest;
 import com.webcv.request.user.LoginRequest;
@@ -9,13 +10,13 @@ import com.webcv.response.user.BaseResponse;
 import com.webcv.response.user.LoginResponse;
 import com.webcv.response.user.RefreshTokenResponse;
 import com.webcv.services.user.IAuthServices;
+import com.webcv.services.user.Impl.IdempotencyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final IAuthServices userServices;
+    private final IdempotencyService idempotencyService;
 
     /**
      * 1. Đăng ký tài khoàn
@@ -31,6 +33,44 @@ public class AuthController {
      * @RegisterRequest: String username, String password, List<String> roles, String status, String email, String fullname
      */
     @PostMapping("/register")
+    public ResponseEntity<BaseResponse<?>> createUser(
+            @Valid @RequestBody RegisterRequest userRequest,
+            @RequestHeader(value = "Idempotency-Key", required = false) String key
+    ) {
+
+        if (key == null || key.isEmpty()) {
+            if(!userRequest.getPassword().equals(userRequest.getRetypePassword())){
+                throw new PasswordNotMatchException("Passwords don't match");
+            }
+            BaseResponse response = userServices.createUser(userRequest);
+            return ResponseEntity.ok(response);
+            //throw new RuntimeException("Missing Idempotency-Key");
+        }
+
+            Optional<IdempotencyRecord> existing = idempotencyService.get(key);
+
+            if (existing.isPresent()) {
+                System.out.println("Idempotency hit (register)");
+
+                BaseResponse<?> cached =
+                        idempotencyService.parseResponse(existing.get().getResponseBody());
+
+                return ResponseEntity.ok(cached);
+            }
+
+            if (!userRequest.getPassword().equals(userRequest.getRetypePassword())) {
+                throw new PasswordNotMatchException("Passwords don't match");
+            }
+
+            BaseResponse response = userServices.createUser(userRequest);
+
+            idempotencyService.save(key, response);
+
+            return ResponseEntity.ok(response);
+
+    }
+    /*
+    @PostMapping("/register")
     public ResponseEntity<BaseResponse> createUser(
             @Valid @RequestBody RegisterRequest userRequest) {
         if(!userRequest.getPassword().equals(userRequest.getRetypePassword())){
@@ -38,7 +78,7 @@ public class AuthController {
         }
         BaseResponse response = userServices.createUser(userRequest);
         return ResponseEntity.ok().body(response);
-    }
+    }*/
 
 
     /**
@@ -92,5 +132,11 @@ public class AuthController {
         }
         BaseResponse response = userServices.changePass(request.getOldPassword(), request.getNewPassword());
         return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<BaseResponse> logOut() {
+        BaseResponse response = new BaseResponse("200", "Logout successful", null);
+        return ResponseEntity.ok(response);
     }
 }
