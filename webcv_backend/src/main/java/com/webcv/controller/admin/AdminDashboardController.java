@@ -6,6 +6,8 @@ import com.webcv.response.admin.DashboardResponse;
 import com.webcv.services.admin.AdminActivityService;
 import com.webcv.services.admin.AdminDashboardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Controller chính cho Admin Dashboard
@@ -46,10 +49,22 @@ public class AdminDashboardController {
      *          4. List<ChartPointRequest> userChart;
      *             ChartPointRequest(String date, Long count)
      */
+    private int attempt = 0;
+
     @GetMapping
+    @Retryable(value = TimeoutException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000, multiplier = 2))
     public DashboardResponse getDashboard(
             @RequestParam(defaultValue = "DAY") RangeType range
-    ) {
+    ) throws TimeoutException {
+        attempt ++;
+        System.out.println("Attempt #" + attempt);
+
+        if ((attempt > 1) && (attempt < 5)) {
+            System.out.println("Simulate time out error");
+            throw new TimeoutException("Time out occurred");
+        }
+        System.out.println("Successful!");
+
         return dashboardService.getDashboard(range);
     }
 
