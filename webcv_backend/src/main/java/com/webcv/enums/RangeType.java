@@ -13,5 +13,8 @@ public enum RangeType {
     WEEK,
 
     /** Last 30 days */
-    MONTH
+    MONTH,
+
+    /** Last 365 days ago*/
+    YEAR
 }

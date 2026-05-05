@@ -113,6 +113,7 @@ public class AdminDashboardService {
             case DAY -> 1;
             case WEEK -> 7;
             case MONTH -> 30;
+            case YEAR -> 365;
         };
 
         List<ChartPointRequest> result = new ArrayList<>();

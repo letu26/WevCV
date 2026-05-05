@@ -1,4 +1,4 @@
-export type RangeType = "DAY" | "WEEK" | "MONTH";
+export type RangeType = "DAY" | "WEEK" | "MONTH" | "YEAR";
 
 export interface ChartPoint {
   date: string;
