@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react';
 import AppRoutes from '@/routes/AppRoutes';
 import { STORAGE_KEYS, APP_CONFIG } from '@/config';
 import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 function App() {
   const [language, setLanguage] = useState<'vi' | 'en'>(APP_CONFIG.DEFAULT_LANGUAGE);
+  const queryClient = new QueryClient()
 
   useEffect(() => {
     // Load language preference from localStorage
@@ -22,10 +24,12 @@ function App() {
   };
 
   return (
+      <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Toaster position="bottom-right" richColors />
       <AppRoutes language={language} setLanguage={handleSetLanguage} />
     </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 
