@@ -21,22 +21,91 @@ const UserManagement: React.FC = () => {
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [editingStatus, setEditingStatus] = useState<number | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<"ACTIVE" | "INACTIVE">("ACTIVE");
+  const [jumpPage, setJumpPage] = useState<string>("");
+  const totalPages = users?.totalPages || 1;
 
-  const totalPages = users ? users.totalPages : 1;
-
-  const fetchUsers = async () => {
+  const fetchUsers = async (
+      page: number,
+      role?: string,
+      status?: string,
+      keyword?: string) => {
     try {
-      const data = await getUsers(currentPage - 1, 8, role, status, debouncedSearch || undefined); // page=0, size=9, không filter
+      const data = await getUsers(
+          page - 1,
+          8,
+          role,
+          status,
+          keyword); // page=0, size=9
       setUser(data);
     } catch (error) {
       console.error(error);
     }
   };
 
+useEffect(() => {
+    fetchUsers(currentPage, role, status, debouncedSearch || undefined);
+  }, [currentPage, role, status, debouncedSearch]);
+
   useEffect(() => {
-    fetchUsers();
+    // fetchUsers();
     setCurrentPage(1);
-  }, [status, role, currentPage, debouncedSearch]);
+  }, [role, status, debouncedSearch]);
+
+const handleJump = () => {
+    const page = Number(jumpPage);
+
+    if (!page || page < 1 || page > totalPages) return;
+
+    setCurrentPage(page);
+    setJumpPage("");
+    }
+
+   const handlePageChange = (page: number) => {
+       setCurrentPage(page);
+     };
+
+ const getVisiblePages = () => {
+   const pages = [];
+   const start = Math.max(1, currentPage - 2);
+   const end = Math.min(totalPages, currentPage + 2);
+
+   for (let i = start; i <= end; i++) {
+     pages.push(i);
+   }
+
+   return pages;
+ };
+
+const getPagination = () => {
+  const pages: (number | string)[] = [];
+
+    //Pages it qua show toan bo
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    pages.push(1);
+
+    if (currentPage > 4) {
+      pages.push("...");
+    }
+
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (currentPage < totalPages - 3) {
+      pages.push("...");
+    }
+
+    // luôn có trang cuối
+    pages.push(totalPages);
+  }
+
+  return pages;
+};
 
   const handleCreateUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -474,7 +543,8 @@ const UserManagement: React.FC = () => {
               Trang {currentPage} / {totalPages}
             </span>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              {/* Prev */}
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => p - 1)}
@@ -483,10 +553,39 @@ const UserManagement: React.FC = () => {
                 Trước
               </button>
 
+              {/* Pages */}
+              {getPagination().map((item, index) => {
+                if (item === "...") {
+                  return (
+                    <span key={index} className="px-2">
+                      ...
+                    </span>
+                  );
+                }
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentPage(item as number)}
+                    className={`px-3 py-1 text-sm rounded-md border ${
+                      currentPage === item
+                        ? "bg-blue-500 text-white"
+                        : "bg-white hover:bg-gray-100"
+                    }`}
+                  >
+                    {item}
+                  </button>
+                );
+              })}
+
+                {/*
               {Array.from({ length: totalPages }).map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
+                  style={{
+                      fontWeight: currentPage === i + 1 ? "bold" : "normal"
+                  }}
                   className={`px-3 py-1 text-sm rounded-md ${currentPage === i + 1
                     ? "bg-indigo-600 text-white"
                     : "bg-white border hover:bg-gray-100"
@@ -496,6 +595,17 @@ const UserManagement: React.FC = () => {
                 </button>
               ))}
 
+              {currentPage > 3 && <span>...</span>}
+
+              {getVisiblePages().map(p => (
+                <button key={p} onClick={() => setCurrentPage(p)}>
+                  {p}
+                </button>
+              ))}
+
+              {currentPage < totalPages - 2 && <span>...</span>}
+              */}
+
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => p + 1)}
@@ -503,8 +613,29 @@ const UserManagement: React.FC = () => {
               >
                 Sau
               </button>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min={1}
+                  max={totalPages}
+                  value={jumpPage}
+                  onChange={(e) => setJumpPage(e.target.value)}
+                  placeholder="Trang..."
+                  className="w-20 px-2 py-1 border rounded"
+                />
+
+                <button
+                  onClick={handleJump}
+                  className="px-3 py-1 border rounded bg-blue-500 text-white"
+                >
+                  Go
+                </button>
+              </div>
             </div>
           </div>
+
+
         </div>
       </div>
       {checkForm && (

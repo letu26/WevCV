@@ -27,8 +27,8 @@ export const getCvs = (
     params: {
       page,
       size,
-      ...(deleted !== undefined && { deleted }),
-      ...(status && { status }),
+      ...(deleted !== undefined && deleted !== null && { deleted }),
+      ...(status !== undefined && { status }),
       ...(keyword && { keyword }),
     },
   });

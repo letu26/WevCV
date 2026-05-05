@@ -18,30 +18,97 @@ const CvManagement: React.FC = () => {
   const debouncedSearch = useDebounce(search, 500);
 
   const [cvs, setCvs] = useState<CvPageResponse | null>(null);
-  const [statusFilter, setStatusFilter] = useState<string>();
+  const [statusFilter, setStatusFilter] = useState<string | undefined>();
   const [deletedFilter, setDeletedFilter] = useState<boolean | undefined>();
   const [currentPage, setCurrentPage] = useState(1);
   const [detail, setDetail] = useState<Cv | null>(null);
   const [assignUserId, setAssignUserId] = useState<number>();
+  const [jumpPage, setJumpPage] = useState<string>("");
+  const totalPages = cvs?.totalPages || 1;
 
-  const fetchData = async () => {
+  const fetchData = async (
+      page: number,
+      status?: string,
+      deleted?: boolean,
+      keyword?: string) => {
     try {
       const data = await getCvs(
-        currentPage - 1,
+        page - 1,
         8,
-        deletedFilter,
-        statusFilter,
-        debouncedSearch
+        status,
+        deleted,
+        keyword
       );
-      setCvs(data);
+      const normalized = {
+            content: data?.content ?? [],
+            totalPages: data?.totalPages ?? 1,
+          };
+
+      setCvs(normalized);
     } catch (error) {
       console.error(error);
+
+      setCvs({ content: [], totalPages: 1});
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData(currentPage, deletedFilter, statusFilter, debouncedSearch);
   }, [currentPage, statusFilter, deletedFilter, debouncedSearch]);
+
+  useEffect(() => {
+      setCurrentPage(1);
+  }, [statusFilter, deletedFilter, debouncedSearch]);
+
+const handleJump = () => {
+    const page = Number(jumpPage);
+
+    if (!page || page < 1 || page > totalPages) return;
+
+    setCurrentPage(page);
+    setJumpPage("");
+};
+
+const handlePageChange = (page: number) => {
+       setCurrentPage(page);
+};
+
+const getVisiblePages = () => {
+   const pages = [];
+   const start = Math.max(1, currentPage - 2);
+   const end = Math.min(totalPages, currentPage + 2);
+
+   for (let i = start; i <= end; i++) {
+     pages.push(i);
+   }
+
+   return pages;
+};
+
+const getPagination = () => {
+  const pages: (number | string)[] = [];
+
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    pages.push(1);
+
+    if (currentPage > 4) pages.push("...");
+
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (currentPage < totalPages - 3) pages.push("...");
+
+    pages.push(totalPages);
+  }
+
+  return pages;
+};
 
   const handleStatusChange = async (id: number, status: CvStatus) => {
     await updateCvStatus(id, status);
@@ -64,7 +131,7 @@ const CvManagement: React.FC = () => {
     if (!assignUserId) return;
     await assignUserToCv(cvId, assignUserId);
     toast.success("Gán user thành công");
-    fetchData();
+                    fetchData();
   };
 
   return (
@@ -118,59 +185,70 @@ const CvManagement: React.FC = () => {
           </thead>
 
           <tbody>
-            {Array.isArray(cvs?.content) &&
-              cvs.content.map((cv) => (
-              <tr key={cv.id} className="border-b hover:bg-indigo-50">
-                <td className="px-6 py-4">{cv.id}</td>
-                <td className="px-6 py-4 font-semibold">{cv.title}</td>
+           {Array.isArray(cvs?.content) ? (
+             cvs.content.length > 0 ? (
 
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs ${
-                      cv.status === "ACTIVE"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
-                    {cv.status}
-                  </span>
-                </td>
+               cvs?.content?.map((cv) => (
 
-                <td className="px-6 py-4">
-                  {cv.deleted ? "Đã xóa" : "Hoạt động"}
-                </td>
+                 <tr key={cv?.id ?? Math.random()} className="border-b hover:bg-indigo-50">
+                   <td className="px-6 py-4">{cv.id}</td>
 
-                <td className="px-6 py-4 text-right space-x-2">
-                  <button
-                    onClick={() =>
-                      handleStatusChange(
-                        cv.id,
-                        cv.status === "ACTIVE"
-                          ? "INACTIVE"
-                          : "ACTIVE"
-                      )
-                    }
-                    className="px-3 py-1 bg-yellow-100 rounded"
-                  >
-                    Đổi status
-                  </button>
+                   <td className="px-6 py-4 font-semibold">{cv?.title ?? "N/A"}</td>
 
-                  <button
-                    onClick={() => handleViewDetail(cv.id)}
-                    className="px-3 py-1 bg-blue-100 rounded"
-                  >
-                    Xem
-                  </button>
+                   <td className="px-6 py-4">
+                     <span
+                       className={`px-3 py-1 rounded-full text-xs ${
+                         cv.status === "ACTIVE"
+                           ? "bg-green-100 text-green-700"
+                           : "bg-red-100 text-red-700"
+                       }`}
+                     >
+                       {cv.status}
+                     </span>
+                   </td>
 
-                  <button
-                    onClick={() => handleDelete(cv.id)}
-                    className="px-3 py-1 bg-red-100 rounded"
-                  >
-                    Xóa
-                  </button>
-                </td>
-              </tr>
-            ))}
+                   <td className="px-6 py-4">
+                     {cv.deleted ? "Đã xóa" : "Hoạt động"}
+                   </td>
+
+                   <td className="px-6 py-4 text-right space-x-2">
+                     <button
+                       onClick={() =>
+                         handleStatusChange(
+                           cv.id,
+                           cv.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"
+                         )
+                       }
+                       className="px-3 py-1 bg-yellow-100 rounded"
+                     >
+                       Đổi trạng thái
+                     </button>
+
+                     <button
+                       onClick={() => handleViewDetail(cv.id)}
+                       className="px-3 py-1 bg-blue-100 rounded"
+                     >
+                       Xem
+                     </button>
+
+                     <button
+                       onClick={() => handleDelete(cv.id)}
+                       className="px-3 py-1 bg-red-100 rounded"
+                     >
+                       Xóa
+                     </button>
+                   </td>
+                 </tr>
+               ))
+             ) : (
+               <tr>
+                 <td colSpan={5} className="text-center py-6 text-gray-400">
+                   Không có dữ liệu
+                 </td>
+               </tr>
+             )
+           ) : null}
+
           </tbody>
         </table>
       </div>
@@ -212,6 +290,73 @@ const CvManagement: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between px-6 py-4 bg-gray-50">
+        <span className="text-sm text-gray-600">
+          Trang {currentPage} / {totalPages}
+        </span>
+
+        <div className="flex gap-2 items-center">
+          {/* Prev */}
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((p) => p - 1)}
+            className="px-3 py-1 text-sm rounded-md bg-white border disabled:opacity-50"
+          >
+            Trước
+          </button>
+
+          {/* Pages */}
+          {getPagination().map((item, index) => {
+            if (item === "...") {
+              return <span key={index} className="px-2">...</span>;
+            }
+
+            return (
+              <button
+                key={index}
+                onClick={() => setCurrentPage(item as number)}
+                className={`px-3 py-1 text-sm rounded-md border ${
+                  currentPage === item
+                    ? "bg-indigo-600 text-white"
+                    : "bg-white hover:bg-gray-100"
+                }`}
+              >
+                {item}
+              </button>
+            );
+          })}
+
+          {/* Next */}
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((p) => p + 1)}
+            className="px-3 py-1 text-sm rounded-md bg-white border disabled:opacity-50"
+          >
+            Sau
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+            <input
+              type="number"
+              min={1}
+              max={totalPages}
+              value={jumpPage}
+              onChange={(e) => setJumpPage(e.target.value)}
+              placeholder="Trang..."
+              className="w-20 px-2 py-1 border rounded"
+            />
+
+            <button
+              onClick={handleJump}
+              className="px-3 py-1 border rounded bg-blue-500 text-white"
+            >
+              Go
+            </button>
+          </div>
+      </div>
     </div>
   );
 };

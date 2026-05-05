@@ -38,11 +38,11 @@ export function Header({ language, setLanguage }: HeaderProps) {
   const navigate = useNavigate();
   const t = translations[language];
 
-  const fullName = localStorage.getItem("fullname") || "User";
+  const fullName = localStorage.getItem("fullname") || "Guest";
 
   const navItems = [
     { label: "Trang chủ", path: "/", end: true },
-    { label: "Dự án", path: "/projects" },
+    { label: "Dự án", path: "/project" },
     { label: "Hồ sơ", path: '/profile' },
     { label: "Tạo CV", path: "/cvs-edit" },
     { label: 'Cài đặt', path: '/settings' },
@@ -54,7 +54,7 @@ export function Header({ language, setLanguage }: HeaderProps) {
 
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-
+      localStorage.removeItem("fullname");
       toast.success(t.logoutSuccess);
       navigate('/signin');
     } catch (error) {

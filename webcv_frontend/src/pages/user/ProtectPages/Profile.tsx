@@ -261,6 +261,7 @@ export default function Profile({ language }: ProfileProps) {
       try {
         const response = await getCvList();
         setCvs(response.data ?? []);
+        console.log(response.data);
       } catch (error) {
         console.error(error);
         setError(loadErrorText);
@@ -343,7 +344,7 @@ export default function Profile({ language }: ProfileProps) {
           <div className="text-gray-500">{t.noCVs}</div>
         ) : (
           <div className="space-y-3">
-            {cvs.map((cv, index) => {
+            {cvs?.content?.map((cv, index) => {
               const title = cv.title?.trim() || `CV ${index + 1}`;
               const parsedLayout = parseMaybeJson<CVSavePayload["layout"]>(
                 cv.layout

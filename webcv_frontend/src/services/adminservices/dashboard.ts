@@ -6,7 +6,7 @@ import {
   RangeType,
 } from "@/api/ApiDashboardAdmin";
 
-export type RangeType = "DAY" | "WEEK" | "MONTH";
+// export type RangeType = "DAY" | "WEEK" | "MONTH" | "YEAR";
 
 export const getDashboard = async (
   range: RangeType = "DAY"

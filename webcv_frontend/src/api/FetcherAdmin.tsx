@@ -19,6 +19,18 @@ export const apiClient = axios.create({
   timeout: 10000,
 });
 */
+/*apiCilent.interceptors.response.use(
+      (response) => response,
+      (error: AxiosError) => {
+        if (error.code === 'ECONNABORTED') {
+          console.error("Hệ thống phản hồi chậm, vui lòng thử lại!");
+        } else if (!error.response) {
+          console.error("Không thể kết nối đến server (có thể lỗi DB)!");
+        }
+        return Promise.reject(error);
+      }
+    );
+*/
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
 
