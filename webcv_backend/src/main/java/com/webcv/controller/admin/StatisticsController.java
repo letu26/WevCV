@@ -1,16 +1,17 @@
 package com.webcv.controller.admin;
 
 import com.webcv.entity.CvEntity;
-import org.springframework.cglib.core.Local;
+import com.webcv.services.admin.StatisticsService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import com.webcv.services.admin.StatisticsService;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("/api/admin/statistics")
@@ -92,9 +93,35 @@ public class StatisticsController {
         return statisticsService.getMinutesFromUserUpdatedAt(id);
     }
 
+    private int attempt = 0;
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/cvs")
-    public Long getTotalCvs(
+    @Retryable(value = TimeoutException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000, multiplier = 2))
+    public long getTotalCvs(
+            @RequestParam(required = false) LocalDate day
+    ) throws TimeoutException {
+        attempt++;
+        System.out.println("Attempt #" + attempt);
+
+        // Giả lập lỗi timeout trong lần thử đầu tiên
+        if (attempt < 3) {
+            System.out.println("Simulating timeout error...");
+            throw new TimeoutException("Timeout occurred");
+        }
+
+        // Giả lập thành công sau retry
+        System.out.println("Successfully fetched total CVs");
+        if (day == null) {
+            return statisticsService.getTotalCvs();
+        } else {
+            return statisticsService.getTotalCvsByDate(day);
+        }
+    }
+
+
+/*
+public Long getTotalCvs(
             @RequestParam(required = false) LocalDate day
     ) {
         if (day == null) {
@@ -103,7 +130,7 @@ public class StatisticsController {
             return statisticsService.getTotalCvsByDate(day);
         }
     }
-
+*/
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/projects")
     public Long getTotalProjects(
@@ -178,7 +205,6 @@ public class StatisticsController {
     }*/
 
 }
-
 /*@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/cvs/today")
     public Long getTotalCvsByToday() {

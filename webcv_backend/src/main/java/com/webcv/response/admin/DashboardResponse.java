@@ -15,4 +15,5 @@ public class DashboardResponse {
     private List<ChartPointRequest> cvChart;
     private List<ChartPointRequest> projectChart;
     private List<ChartPointRequest> userChart;
+    // private Long[] todayCvsCountByTime;
 }

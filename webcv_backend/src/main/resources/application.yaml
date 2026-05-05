@@ -46,3 +46,9 @@ jwt:
   refresh:
     expiration: 1209600000 #14 days to millisecond = 14 * 24 * 60 * 60 * 1000
     secret: TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI=
+
+logging:
+  level:
+    org:
+      springframework:
+        security=DEBUG:

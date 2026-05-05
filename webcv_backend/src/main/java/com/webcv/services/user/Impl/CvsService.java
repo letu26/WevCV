@@ -60,7 +60,7 @@ public class CvsService implements ICvServices {
 
 
         cvsRepository.save(newCv);
-
+        System.out.println("CREATE CV for user: " + userId);
         return BaseResponse.<Void>builder()
                 .code("200")
                 .message("Successfully created CV!")

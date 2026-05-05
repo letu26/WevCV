@@ -50,6 +50,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private List<RoleEntity> roles = new ArrayList<>();
     
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<PasswordResetEntity> resetTokens;
 
     @Column(name = "change_password_at", nullable = true)

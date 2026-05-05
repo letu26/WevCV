@@ -13,4 +13,6 @@ public class SummaryRequest {
 
     private Long newCvsToday;
     private Double cvGrowthPercent;
+
+    // private Long[] todayCvsCountByTime;
 }

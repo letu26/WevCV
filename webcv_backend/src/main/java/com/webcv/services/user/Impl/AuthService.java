@@ -1,9 +1,11 @@
 package com.webcv.services.user.Impl;
 
+import com.webcv.entity.IdempotencyRecord;
 import com.webcv.entity.RoleEntity;
 import com.webcv.entity.UserEntity;
 import com.webcv.enums.UserStatus;
 import com.webcv.exception.customexception.NotFoundException;
+import com.webcv.exception.customexception.PasswordNotMatchException;
 import com.webcv.exception.customexception.UnauthorizedException;
 import com.webcv.repository.RoleRepository;
 import com.webcv.repository.AuthRepository;
@@ -13,15 +15,21 @@ import com.webcv.response.user.LoginResponse;
 import com.webcv.response.user.RefreshTokenResponse;
 import com.webcv.services.user.IAuthServices;
 import com.webcv.util.JwtTokenUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.Instant;
 import java.util.List;
@@ -40,6 +48,7 @@ public class AuthService implements IAuthServices {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
 
+    @Transactional
     @Override
     public BaseResponse createUser(RegisterRequest registerRequest) {
         String username = registerRequest.getUsername();
@@ -60,7 +69,12 @@ public class AuthService implements IAuthServices {
                 .email(registerRequest.getEmail())
                 .build();
         newUser.getRoles().add(role);
-        userRepository.save(newUser);
+        System.out.println("BEFORE SAVE");
+
+        UserEntity saved = userRepository.save(newUser);
+        userRepository.flush();
+        System.out.println("AFTER SAVE: " + saved.getId());
+
 
         return BaseResponse.builder()
                 .code("200")

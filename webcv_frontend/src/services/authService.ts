@@ -99,7 +99,11 @@ class AuthService {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      fetcher.logout();
+      // fetcher.logout();
+      // fetcher.logout()
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem("fullname");
     }
   }
 
