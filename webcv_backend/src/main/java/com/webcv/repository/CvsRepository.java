@@ -38,6 +38,7 @@ public interface CvsRepository extends DateCountRepository<CvEntity, Long> {
                :keyword IS NULL
                OR LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
           )
+          ORDER BY c.id DESC
         """)
     Page<CvEntity> findAllWithFilter(@Param("deleted") Boolean deleted,
                                      @Param("status") UserStatus status,

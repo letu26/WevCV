@@ -39,6 +39,7 @@ public interface UserRepository extends DateCountRepository<UserEntity, Long> {
                        :keyword IS NULL 
                        OR LOWER(u.fullname) LIKE LOWER(CONCAT('%', :keyword, '%'))
                   )
+                ORDER BY u.id DESC
             """)
     Page<UserEntity> findAllWithFilter(@Param("role") String role, @Param("status")UserStatus status, @Param("keyword") String keyword, Pageable p);
 

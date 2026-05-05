@@ -41,6 +41,7 @@ public class AdminDashboardService {
                 .cvChart(buildChart(range, "CV"))
                 .projectChart(buildChart(range, "PROJECT"))
                 .userChart(buildChart(range, "USER"))
+                //.todayCvsCountByTime(todayCvsCountByTime)
                 .build();
     }
 
@@ -53,11 +54,35 @@ public class AdminDashboardService {
         Long totalProjects = projectRepository.count();
         Long totalUsers = userRepository.count();
 
-        LocalDate today = LocalDate.now();
+        //TODO: Uncomment later ...
+        LocalDate today = LocalDate.now(); // trả về ngày hiện tại - ví dụ 2026-04-30
 
-        Instant startToday = today.atStartOfDay(ZONE).toInstant();
+        Instant startToday = today.atStartOfDay(ZONE).toInstant(); // trả về thời điểm bắt đầu 1 ngày 2026-04-30T00:00:00
         Instant endToday = today.plusDays(1).atStartOfDay(ZONE).toInstant();
 
+        // Nếu là ngáy hôm nay đồ thị không biểu diễn theo ngày nữa do đồ thị có mỗi một điểm trông trống trải quá =))
+        // Biểu diễn tại mổi điểm tính từ thời điểm hiệm tại lùi đi 2 giờ
+/*
+        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime startOfPeriod = now.truncatedTo(ChronoUnit.HOURS);
+
+        int hoursToCover = now.getHour();
+        int steps = hoursToCover / 2 + 1;
+        Long[] todayCvsCountByTime = new Long[steps];
+
+        for (int i = 0; i < steps; i++) {
+            ZonedDateTime start = startOfPeriod.minusHours(2);
+
+            // Đếm trong khoảng [start, startOfPeriod]
+            todayCvsCountByTime[i] = cvsRepository.countByCreatedAtBetween(
+                    start.toInstant(),
+                    startOfPeriod.toInstant()
+            );
+
+            // Cập nhật lại mốc để lùi tiếp về quá khứ
+            startOfPeriod = start;
+        }
+*/
         Long todayCvs = cvsRepository.countByCreatedAtBetween(startToday, endToday);
 
         Long yesterdayCvs = cvsRepository.countByCreatedAtBetween(
@@ -75,6 +100,7 @@ public class AdminDashboardService {
                 .totalUsers(totalUsers)
                 .newCvsToday(todayCvs)
                 .cvGrowthPercent(growthPercent)
+                //.todayCvsCountByTime(todayCvsCountByTime)
                 .build();
     }
 

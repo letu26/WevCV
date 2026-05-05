@@ -34,6 +34,7 @@ public interface ProjectRepository extends DateCountRepository<ProjectEntity, Lo
                        :keyword IS NULL 
                        OR LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
                   )
+                ORDER BY u.id DESC
             """)
     Page<ProjectEntity> findAllWithFilter(@Param("status") String status, @Param("keyword") String keyword, Pageable p);
 
